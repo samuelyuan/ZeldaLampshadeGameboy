@@ -4,303 +4,30 @@ SECTION "ROM Bank $004", ROMX[$4000], BANK[$4]
 
     INCBIN "gfx/image_004_4002.2bpp"
 
-    db $e3
-    jr c, @-$1b
-
-    jr c, @-$1b
-
-    jr c, @-$1b
-
-    db $38
-
-    db $23
-
-    INCBIN "gfx/image_004_410b.2bpp"
-
-    INCBIN "gfx/image_004_450b.2bpp"
-
-    rlca
-    add l
-    rst $38
-    add l
-    ld a, a
-    db $fd
-    rst $38
-    db $ec
-    db $ec
-    db $e0
-
-    db $e0
-
-    INCBIN "gfx/image_004_45d6.2bpp"
-
-    INCBIN "gfx/image_004_47d6.2bpp"
-
-    adc $df
-
-    db $c0
-
-    INCBIN "gfx/image_004_4859.2bpp"
-
-    ei
-    inc bc
-    ei
-    inc bc
-    inc bc
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-
     db $81, $00
 
     INCBIN "gfx/image_004_4894.2bpp"
-
-    INCBIN "gfx/image_004_4c94.2bpp"
-
-    rst $38
-    nop
-    rst $38
-    nop
-    rst $38
-    nop
-    rst $38
-    nop
-    rst $38
-    nop
-    rst $38
-    nop
-
-    db $ff
-
-    INCBIN "gfx/image_004_4d81.2bpp"
-
-    inc e
-    rst $38
-    rlca
-    pop hl
-    rst $38
-    db $e3
-    rra
-    push bc
-
-    db $3f
-
-    INCBIN "gfx/image_004_4e5a.2bpp"
-
-    INCBIN "gfx/image_004_505a.2bpp"
-
-    inc bc
-    ei
-    inc bc
-    ei
-    inc bc
-    inc bc
-    rst $38
-    rst $38
-    rst $38
-    rst $38
 
     db $82, $00
 
     INCBIN "gfx/image_004_50a6.2bpp"
 
-    rst $38
-    rst $38
-    sbc $e1
-    add e
-
-    db $7c
-
-    INCBIN "gfx/image_004_510c.2bpp"
-
-    nop
-    rst $38
-    ld h, e
-    rst $38
-    sub h
-    sbc h
-    ld l, e
-    ld [$08eb], sp
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-
-    db $03
-
-    INCBIN "gfx/image_004_516b.2bpp"
-
-    INCBIN "gfx/image_004_536b.2bpp"
-
-    inc bc
-    cp e
-    add e
-    ld e, e
-    jp $e32b
-
-
-    inc de
-    di
-    adc e
-    ei
-    rrca
-    rlca
-    dec de
-
-    db $0c
-
-    INCBIN "gfx/image_004_53da.2bpp"
-
-    INCBIN "gfx/image_004_56da.2bpp"
-
-    db $bb
-
-    INCBIN "gfx/image_004_576b.2bpp"
-
-    jr c, @-$42
-
-    ld a, h
-    db $76
-    adc [hl]
-    ld a, e
-    add [hl]
-    ld a, a
-    add e
-    dec a
-    jp $ffff
-
-
-    rst $38
-
-    db $ff
-
-    INCBIN "gfx/image_004_57ca.2bpp"
-
-    ld [hl], e
-    ei
-    inc bc
-    ei
-    inc bc
-    ei
-    inc bc
-    inc bc
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-
     db $66, $00
 
     INCBIN "gfx/image_004_58c8.2bpp"
-
-    INCBIN "gfx/image_004_59c8.2bpp"
-
-    db $0f
-
-    INCBIN "gfx/image_004_5a39.2bpp"
-
-    INCBIN "gfx/image_004_5e39.2bpp"
-
-    xor e
-    ld [hl], e
-    adc e
-    ld [hl], e
-    ei
-    inc bc
-    ei
-    inc bc
-    ei
-    inc bc
-    inc bc
-    rst $38
-    rst $38
-    rst $38
-    rst $38
 
     db $84, $00
 
     INCBIN "gfx/image_004_5f2a.2bpp"
 
-    INCBIN "gfx/image_004_632a.2bpp"
-
-    db $7f
-
-    INCBIN "gfx/image_004_63bb.2bpp"
-
-    INCBIN "gfx/image_004_66bb.2bpp"
-
-    xor e
-    ld [hl], e
-    adc e
-    ld [hl], e
-    ei
-    inc bc
-    ei
-    inc bc
-    ei
-    inc bc
-    inc bc
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-
     db $7f, $00
 
     INCBIN "gfx/image_004_676c.2bpp"
-
-    INCBIN "gfx/image_004_6a6c.2bpp"
-
-    add $1d
-    push bc
-    ld e, $c7
-
-    db $1f
-
-    INCBIN "gfx/image_004_6b22.2bpp"
-
-    INCBIN "gfx/image_004_6f22.2bpp"
-
-    inc bc
-    ei
-    inc bc
-    ei
-    inc bc
-    inc bc
-    rst $38
-    rst $38
-    rst $38
-    rst $38
 
     db $81, $00
 
     INCBIN "gfx/image_004_6f5e.2bpp"
 
-    INCBIN "gfx/image_004_735e.2bpp"
-
-    rst $10
-
-    db $d0
-
-    INCBIN "gfx/image_004_73b0.2bpp"
-
-    INCBIN "gfx/image_004_76b0.2bpp"
-
-    ld [hl], e
-    adc e
-    ld [hl], e
-    ei
-    inc bc
-    ei
-    inc bc
-    ei
-    inc bc
-    inc bc
-    rst $38
-    rst $38
-    rst $38
-    rst $38
     ret nc
 
     add hl, de
