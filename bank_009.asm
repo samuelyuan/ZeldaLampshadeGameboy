@@ -10210,155 +10210,40 @@ jr_009_6bb5:
 jr_009_6bf7:
     nop
     nop
-    inc b
-    nop
-    and $e6
-    jr c, jr_009_6bf7
 
-    rst $38
-    rst $00
-    cp $82
-    cp $2a
-    cp $2e
-    db $ed
-    sub e
-    pop hl
-    cp a
-    cp $7e
-    cp $7e
-    db $f4
-    adc h
-    ld hl, sp+$78
-    call nz, $fc7c
-    db $fc
-    add sp, $18
-    db $fc
-    db $fc
-    rrca
-    rrca
-    inc de
-    rra
-    inc h
-    ccf
-    add hl, hl
-    ccf
-    inc sp
-    ccf
-    rla
-    dec e
-    rra
-    add hl, de
-    ccf
-    add hl, hl
-    ld a, l
-    ld c, [hl]
-    ld a, d
-    ld e, a
-    ld [hl], e
-    ld e, a
-    ld d, e
-    ld a, [hl]
-    inc sp
-    ld a, $0f
-    rrca
-    dec b
-    ld b, $0f
-    rrca
-    nop
-    ld [$0000], sp
-    nop
-    ld hl, sp+$02
-    nop
-    add b
+    db $04, $00
+
+    INCBIN "gfx/image_009_6bfb.2bpp"
+
+    db $00, $08, $00, $00, $00, $f8, $02, $00, $80
+
     nop
     nop
     nop
-    dec sp
-    ld l, h
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
+
+    db $3b, $6c, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
+    db $00, $00, $00, $00
+
     ld bc, $f000
-    ld b, a
-    ld l, h
-    ld c, c
-    ld l, h
-    ld e, c
-    ld l, h
+
+    db $47, $6c, $49, $6c, $59, $6c
+
     nop
     rrca
     ld hl, sp+$07
-    add hl, bc
-    ld sp, hl
-    ld l, e
+
+    db $09, $f9, $6b
+
     nop
     nop
     nop
-    inc b
-    nop
-    ldh a, [$f0]
-    db $fc
-    ld [$ffff], sp
-    rst $38
-    ld e, $ff
-    rst $08
-    rst $38
-    rla
-    or $4c
-    db $fc
-    db $fc
-    ld [bc], a
-    ld [bc], a
-    ld bc, $0101
-    ld bc, $0101
-    ld bc, $0101
-    ld bc, $0101
-    ld bc, $0301
-    inc bc
-    dec c
-    rrca
-    rra
-    ld d, $1f
-    inc de
-    scf
-    ld a, [hl-]
-    dec l
-    ld a, [hl-]
-    dec h
-    ld a, $3f
-    ccf
-    ld b, b
-    ld b, b
-    add b
-    add b
-    add b
-    add b
-    add b
-    add b
-    add b
-    add b
-    add b
-    add b
-    add b
-    add b
-    add b
-    add b
-    add b
+
+    db $04, $00
+
+    INCBIN "gfx/image_009_6c70.2bpp"
+
+    db $80
+
     nop
     nop
     nop
@@ -10372,152 +10257,35 @@ jr_009_6bf7:
     nop
     nop
     nop
-    or b
-    ld l, h
+
+    db $b0, $6c
+
     or h
     ld l, h
-    nop
-    ld bc, $0100
-    nop
-    ld bc, $0100
-    nop
-    ld bc, $0100
-    nop
-    ld bc, $0100
-    nop
-    nop
+
+    db $00, $01, $00, $01, $00, $01, $00, $01, $00, $01, $00, $01, $00, $01, $00, $01
+    db $00, $00
+
     ld [bc], a
     nop
-    ldh [$c0], a
-    ld l, h
-    call nz, $d46c
-    ld l, h
+    db $e0
+
+    db $c0, $6c, $c4, $6c, $d4, $6c
+
     nop
     rrca
     ld hl, sp+$07
-    add hl, bc
-    ld l, [hl]
-    ld l, h
+
+    db $09, $6e, $6c
+
     nop
     nop
     nop
-    inc d
-    nop
-    nop
-    nop
-    cp $fe
-    db $fd
-    inc bc
-    ld h, c
-    sbc a
-    ld e, a
-    cp a
-    ccf
-    rst $38
-    dec l
-    rst $30
-    ld e, a
-    push hl
-    ld e, a
-    push hl
-    ld h, l
-    rst $38
-    ccf
-    rst $38
-    ld bc, $0eff
-    cp $06
-    cp $02
-    cp $fe
-    cp $00
-    nop
-    ld bc, $0601
-    rlca
-    ld [$100f], sp
-    rra
-    db $10
-    rra
-    jr nz, jr_009_6d58
 
-    jr nz, jr_009_6d5a
+    db $14, $00
 
-    jr nz, jr_009_6d5c
+    INCBIN "gfx/image_009_6ceb.2bpp"
 
-    jr nc, jr_009_6d5e
-
-    jr jr_009_6d40
-
-    ld h, $3f
-    ld b, b
-    ld a, a
-    add b
-    rst $38
-    add b
-    rst $38
-    rst $38
-    rst $38
-    ld hl, sp-$08
-    db $f4
-    inc c
-    add h
-    ld a, h
-    ld a, h
-    db $fc
-    db $fc
-    db $fc
-    or h
-    call c, $947c
-    ld a, h
-    sub h
-    sub h
-    db $fc
-    db $fc
-    db $fc
-    inc b
-
-jr_009_6d40:
-    db $fc
-    ld [$70f8], sp
-    ldh a, [$30]
-    ldh a, [rNR10]
-    ldh a, [$f0]
-    ldh a, [rTAC]
-    rlca
-    dec de
-    inc e
-    ld hl, $413e
-    ld a, [hl]
-    ld b, b
-    ld a, a
-    add b
-    rst $38
-    add c
-
-jr_009_6d58:
-    rst $38
-    add c
-
-jr_009_6d5a:
-    rst $38
-    pop bc
-
-jr_009_6d5c:
-    rst $38
-    ld h, b
-
-jr_009_6d5e:
-    ld a, a
-    jr nc, @+$41
-
-    ld b, b
-    ld a, a
-    ld b, b
-    ld a, a
-    add b
-    rst $38
-    add b
-    rst $38
-    rst $38
-    rst $38
     ldh [$e0], a
     sbc b
     ld a, b
@@ -10525,174 +10293,19 @@ jr_009_6d5e:
     db $fc
     ld [bc], a
     cp $02
-    cp $01
-    rst $38
-    ld bc, $01ff
-    rst $38
-    ld bc, $01ff
-    rst $38
-    ld [bc], a
-    cp $06
-    cp $82
-    cp $01
-    rst $38
-    ld bc, $ffff
-    rst $38
-    rlca
-    rlca
-    add hl, bc
-    ld c, $13
-    inc e
-    inc de
-    inc e
-    ld [hl+], a
-    dec a
-    ld [hl+], a
-    dec a
-    ld b, b
-    ld a, a
-    ld b, b
-    ld a, a
-    ld b, b
-    ld a, a
-    ld h, b
-    ld a, a
-    jr nc, @+$41
-
-    jr jr_009_6dc2
-
-    inc de
-    rra
-    ld hl, $403f
-    ld a, a
-    ld a, a
-    ld a, a
-    ldh a, [$f0]
-    ret z
-
-    jr c, jr_009_6e14
-
-    sbc h
-    ld h, h
-    sbc h
-    ld [hl+], a
-    sbc $22
-    sbc $01
-    rst $38
-    ld bc, $01ff
-    rst $38
-    inc bc
-    rst $38
-    ld b, $fe
-    inc c
-
-jr_009_6dc2:
-    db $fc
-    db $e4
-    db $fc
-    ld b, d
-    cp $01
-    rst $38
-    rst $38
-    rst $38
-    inc bc
-    inc bc
-    inc c
-    rrca
-    db $10
-    rra
-    jr nz, jr_009_6e12
-
-    jr nz, jr_009_6e14
+    db $fe
+    
+    INCBIN "gfx/image_009_6d75.2bpp"
 
     ld b, b
-    ld a, a
-    ld b, b
-    ld a, a
-    ld b, b
-    ld a, a
-    ld b, b
-    ld a, a
-    ld b, b
-    ld a, a
-    jr nz, jr_009_6e20
-
-    jr nc, @+$41
-
-    jr nz, @+$41
-
-    ld b, b
-    ld a, a
-    ld b, b
-    ld a, a
-    ld a, a
-    ld a, a
-    ret nz
-
-    ret nz
-
-    ldh a, [$30]
-    ld l, b
-    sbc b
-    db $e4
-    db $fc
-    db $f4
-    db $fc
-    jp nc, $eabe
-
-    sbc [hl]
-    ld [$9a9e], a
-    cp $f2
-    cp $04
-    db $fc
-    inc c
-    db $fc
-    db $e4
-    db $fc
-    jp nz, $02fe
-
-    cp $fe
-    cp $0f
-    rrca
-    ld de, $201e
-    ccf
-    inc hl
-
-jr_009_6e12:
-    ccf
-    ld b, a
-
-jr_009_6e14:
-    ld a, a
-    ld b, l
-    ld a, [hl]
-    adc e
-    db $fc
-    adc e
-    db $fc
-    adc h
-    rst $38
-    rst $00
-    rst $38
-    ld h, b
-
-jr_009_6e20:
-    ld a, a
-    jr c, jr_009_6e62
-
-    ld hl, $403f
     ld a, a
     add b
     rst $38
     rst $38
     rst $38
-    nop
-    add hl, bc
-    stop
-    nop
-    ld hl, sp+$12
-    nop
-    add b
+
+    db $00, $09, $10, $00, $00, $f8, $12, $00, $80
+
     nop
     nop
     nop
