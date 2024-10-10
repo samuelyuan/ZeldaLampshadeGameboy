@@ -4823,178 +4823,22 @@ jr_006_588e:
 
     INCBIN "gfx/image_006_5a16.2bpp"
 
-    adc $7b
-    db $e4
-    dec de
-    db $e4
-    rst $38
-    nop
-    rst $38
-    nop
-    rst $38
-    ld e, c
-    and [hl]
-
-    db $5d
-
-    INCBIN "gfx/image_006_6023.2bpp"
-
-    rst $38
-    rst $38
-    rst $38
-
     db $6d, $00
 
     INCBIN "gfx/image_006_60d8.2bpp"
-
-    INCBIN "gfx/image_006_63d8.2bpp"
-
-    db $ff
-
-    INCBIN "gfx/image_006_6459.2bpp"
-
-    INCBIN "gfx/image_006_6759.2bpp"
-
-    xor e
-    ld [hl], e
-    adc e
-    ld [hl], e
-    ei
-    inc bc
-    ei
-    inc bc
-    ei
-    inc bc
-    inc bc
-    rst $38
-    rst $38
-    rst $38
-    rst $38
 
     db $70, $00
 
     INCBIN "gfx/image_006_67aa.2bpp"
 
-    INCBIN "gfx/image_006_6daa.2bpp"
-
-    db $ce
-
-    INCBIN "gfx/image_006_6e0b.2bpp"
-
-    xor e
-    ld [hl], e
-    adc e
-    ld [hl], e
-    ei
-    inc bc
-    ei
-    inc bc
-    ei
-    inc bc
-    inc bc
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-
     db $4e, $00
 
     INCBIN "gfx/image_006_6eac.2bpp"
-
-    INCBIN "gfx/image_006_72ac.2bpp"
 
     db $6f, $00
 
     INCBIN "gfx/image_006_738e.2bpp"
 
-    INCBIN "gfx/image_006_768e.2bpp"
-
-    ld a, a
-
-    db $00
-
-    INCBIN "gfx/image_006_7750.2bpp"
-
-    rst $38
-    nop
-    rst $38
-    nop
-    rst $38
-    nop
-    rst $38
-    nop
-    rst $38
-    nop
-    rst $38
-    nop
-    cp $00
-    db $db
-
-    db $1b
-
-    INCBIN "gfx/image_006_77b0.2bpp"
-
-    INCBIN "gfx/image_006_79b0.2bpp"
-
-    ld [hl], e
-    adc e
-    ld [hl], e
-    ei
-    inc bc
-    ei
-    inc bc
-    ei
-    inc bc
-    inc bc
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-
     db $58, $00
 
     INCBIN "gfx/image_006_7a80.2bpp"
-
-    INCBIN "gfx/image_006_7b80.2bpp"
-
-    pop de
-    rst $18
-    ret z
-
-    rst $08
-    call nc, $dac7
-    jp $c1dd
-
-
-    ret nz
-
-    ret nz
-
-    rst $38
-    rst $38
-    ret nz
-
-    db $df
-
-    INCBIN "gfx/image_006_7c70.2bpp"
-
-    inc bc
-    ei
-    inc bc
-    ei
-    inc bc
-    ei
-
-    db $03
-
-    INCBIN "gfx/image_006_7f77.2bpp"
-
-    ei
-    inc bc
-    ei
-    inc bc
-    inc bc
-    rst $38
-    rst $38
-    rst $38
-    rst $38
