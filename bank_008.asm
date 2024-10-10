@@ -7849,8 +7849,6 @@ Jump_008_414c:
 
     INCBIN "gfx/image_008_7b09.2bpp"
 
-    INCBIN "gfx/image_008_7c09.2bpp"
-
     db $80
 
     nop
@@ -7953,10 +7951,7 @@ Jump_008_414c:
 
     INCBIN "gfx/image_008_7d3e.2bpp"
 
-    INCBIN "gfx/image_008_7e3e.2bpp"
-
     db $16, $00
 
     INCBIN "gfx/image_008_7ea0.2bpp"
 
-    INCBIN "gfx/image_008_7fa0.2bpp"
