@@ -5987,27 +5987,6 @@ jr_007_75ce:
 
     INCBIN "gfx/image_007_771b.2bpp"
 
-    INCBIN "gfx/image_007_781b.2bpp"
-
-    db $27
-
-    INCBIN "gfx/image_007_784c.2bpp"
-
-    INCBIN "gfx/image_007_794c.2bpp"
-
-    dec hl
-    ld [bc], a
-    inc bc
-    dec b
-    ld b, $06
-    dec b
-    add hl, bc
-    ld c, $0a
-    dec c
-    ld b, $05
-    inc bc
-    inc bc
-
     db $2c, $00
 
     INCBIN "gfx/image_007_79dd.2bpp"
