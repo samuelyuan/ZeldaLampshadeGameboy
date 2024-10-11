@@ -1976,27 +1976,11 @@ jr_009_49d5:
     inc b
     ld b, b
     nop
-    ld e, c
-    ld l, a
-    ld [hl], l
-    jr nz, jr_009_4a58
 
-    ld [hl], l
-    ld l, h
-    ld l, h
-    ld h, l
-    ld h, h
-    jr nz, jr_009_4a63
+    db "You pulled the\n" ; 0x49e3
+    db "plug..."
 
-    ld l, b
-    ld h, l
-    ld a, [bc]
-    ld [hl], b
-    ld l, h
-    ld [hl], l
-    ld h, a
-    ld l, $2e
-    ld l, $00
+    nop
     ld b, a
     inc bc
     ld bc, $1404
@@ -2046,31 +2030,11 @@ jr_009_49d5:
     dec h
     ld b, b
     nop
-    ld b, c
-    jr nz, jr_009_4aae
+    
+    db "A sinister looking\n"
+    db "well..."
 
-    ld l, c
-    ld l, [hl]
-    ld l, c
-    ld [hl], e
-    ld [hl], h
-    ld h, l
-    ld [hl], d
-    jr nz, jr_009_4ab0
-
-    ld l, a
-    ld l, a
-    ld l, e
-    ld l, c
-    ld l, [hl]
-    ld h, a
-    ld a, [bc]
-    ld [hl], a
-    ld h, l
-    ld l, h
-    ld l, h
-    ld l, $2e
-    ld l, $00
+    nop
     ld b, a
     inc bc
     ld bc, $1404
@@ -2096,26 +2060,11 @@ jr_009_4a63:
     ld bc, $2500
     ld b, b
     nop
-    ld d, a
-    ld l, a
-    ld [hl], a
-    inc l
-    jr nz, jr_009_4ae9
+    
+    db "Wow, that was\n"
+    db "easy..."
 
-    ld l, b
-    ld h, c
-    ld [hl], h
-    jr nz, jr_009_4af1
-
-    ld h, c
-    ld [hl], e
-    ld a, [bc]
-    ld h, l
-    ld h, c
-    ld [hl], e
-    ld a, c
-    ld l, $2e
-    ld l, $00
+    nop
     ld b, a
     inc bc
     ld bc, $1404
@@ -2139,41 +2088,12 @@ jr_009_4a63:
     inc b
     ld b, b
     nop
-    ld e, c
-    ld l, a
-    ld [hl], l
-    jr nz, jr_009_4b0f
 
-    ld l, a
-    ld [hl], h
-    jr nz, @+$76
-
-    ld l, b
-    ld h, l
-
-jr_009_4aae:
-    ld a, [bc]
-    ld c, l
-
-jr_009_4ab0:
-    ld a, c
-    ld [hl], e
-    ld [hl], h
-    ld l, c
-    ld h, e
-    ld h, c
-    ld l, h
-    jr nz, jr_009_4b05
-
-    ld h, c
-    ld l, l
-    ld [hl], b
-    ld [hl], e
-    ld l, b
-    ld h, c
-    ld h, h
-    ld h, l
-    ld hl, $4700
+    db "You got the\n"
+    db "Mystical Lampshade!"
+    
+    nop
+    ld b, a
     inc bc
     ld bc, $1404
     nop
@@ -2187,38 +2107,10 @@ jr_009_4ab0:
     ld b, h
     rlca
     ld bc, $0040
-    ld e, c
-    ld l, a
-    ld [hl], l
-    daa
-    ld l, h
-    ld l, h
-    jr nz, @+$70
+    
+    db "You'll need to\n" ; 0x4ad6
+    db "take it to the"
 
-    ld h, l
-    ld h, l
-    ld h, h
-    jr nz, jr_009_4b57
-
-    ld l, a
-    ld a, [bc]
-    ld [hl], h
-    ld h, c
-    ld l, e
-    ld h, l
-
-jr_009_4ae9:
-    jr nz, jr_009_4b54
-
-    ld [hl], h
-    jr nz, jr_009_4b62
-
-    ld l, a
-    jr nz, jr_009_4b65
-
-jr_009_4af1:
-    ld l, b
-    ld h, l
     nop
     ld b, a
     inc bc
@@ -2231,39 +2123,11 @@ jr_009_4af1:
     ld b, h
     rlca
     ld bc, $0040
-    ld d, h
-    ld h, l
 
-jr_009_4b05:
-    ld l, l
-    ld [hl], b
-    ld l, h
-    ld h, l
-    jr nz, jr_009_4b7a
+    db "Temple of Light\n" ; 0x4b03
+    db "to the North."
 
-    ld h, [hl]
-    jr nz, jr_009_4b5a
-
-    ld l, c
-
-jr_009_4b0f:
-    ld h, a
-    ld l, b
-    ld [hl], h
-    ld a, [bc]
-    ld [hl], h
-    ld l, a
-    jr nz, jr_009_4b8b
-
-    ld l, b
-    ld h, l
-    jr nz, jr_009_4b69
-
-    ld l, a
-    ld [hl], d
-    ld [hl], h
-    ld l, b
-    ld l, $00
+    nop
     ld b, a
     inc bc
     ld bc, $1404
@@ -2344,44 +2208,11 @@ jr_009_4b69:
     dec h
     ld b, b
     nop
-    ld d, a
-    ld h, l
-    jr nz, jr_009_4be1
 
-    ld l, c
-    ld h, a
-    ld l, b
-    ld [hl], h
-    jr nz, jr_009_4bdc
-
-jr_009_4b7a:
-    ld h, l
-    ld a, [bc]
-    ld [hl], e
-    ld [hl], h
-    ld h, c
-    ld l, l
-    ld [hl], b
-    ld l, c
-    ld l, [hl]
-    ld h, a
-    jr nz, jr_009_4bea
-
-    ld l, a
-    ld [hl], a
-    ld l, [hl]
-    jr nz, jr_009_4bfa
-
-jr_009_4b8b:
-    ld l, [hl]
-    ld a, [bc]
-    ld [hl], b
-    ld [hl], d
-    ld l, c
-    ld h, e
-    ld h, l
-    ld [hl], e
-    inc l
+    db "We might be\n"
+    db "stamping down on\n"
+    db "prices,"
+    
     nop
     ld b, a
     inc bc
@@ -2398,40 +2229,12 @@ jr_009_4b8b:
     ld b, h
     rlca
     ld bc, $0040
-    ld h, d
-    ld [hl], l
-    ld [hl], h
-    jr nz, jr_009_4c24
 
-    ld h, l
-    jr nz, jr_009_4c14
+    db "but we don't seem\n"
+    db "to sell any PCs!"
 
-    ld l, a
-    ld l, [hl]
-    daa
-    ld [hl], h
-    jr nz, @+$75
-
-    ld h, l
-    ld h, l
-    ld l, l
-    ld a, [bc]
-    ld [hl], h
-    ld l, a
-    jr nz, @+$75
-
-    ld h, l
-    ld l, h
-    ld l, h
-    jr nz, jr_009_4c24
-
-    ld l, [hl]
-    ld a, c
-    jr nz, @+$52
-
-    ld b, e
-    ld [hl], e
-    ld hl, $4700
+    nop
+    ld b, a
     inc bc
     ld bc, $1405
     nop
@@ -2453,64 +2256,13 @@ jr_009_4bdc:
 jr_009_4be1:
     ld b, b
     nop
-    ld c, c
-    daa
-    ld l, l
-    jr nz, jr_009_4c56
+    
+    db "I'm not a plot\n"
+    db "character, but I'm\n"
+    db "still in the game!"
 
-    ld l, a
-    ld [hl], h
-
-jr_009_4bea:
-    jr nz, jr_009_4c4d
-
-    jr nz, jr_009_4c5e
-
-    ld l, h
-    ld l, a
-    ld [hl], h
-    ld a, [bc]
-    ld h, e
-    ld l, b
-    ld h, c
-    ld [hl], d
-    ld h, c
-    ld h, e
-    ld [hl], h
-    ld h, l
-
-jr_009_4bfa:
-    ld [hl], d
-    inc l
-    jr nz, jr_009_4c60
-
-    ld [hl], l
-    ld [hl], h
-    jr nz, @+$4b
-
-    daa
-    ld l, l
-    ld a, [bc]
-    ld [hl], e
-    ld [hl], h
-    ld l, c
-    ld l, h
-    ld l, h
-    jr nz, jr_009_4c75
-
-    ld l, [hl]
-    jr nz, jr_009_4c83
-
-    ld l, b
-    ld h, l
-    jr nz, @+$69
-
-    ld h, c
-
-jr_009_4c14:
-    ld l, l
-    ld h, l
-    ld hl, $4700
+    nop
+    ld b, a
     inc bc
     ld bc, $1405
     nop
@@ -2527,23 +2279,11 @@ jr_009_4c24:
     ld b, h
     rlca
     ld bc, $0040
-    ld d, b
-    ld l, a
-    ld [hl], a
-    ld h, l
-    ld [hl], d
-    jr nz, jr_009_4ca6
+    
+    db "Power to the NPC!"
 
-    ld l, a
-    jr nz, jr_009_4ca9
-
-    ld l, b
-    ld h, l
-    jr nz, jr_009_4c87
-
-    ld d, b
-    ld b, e
-    ld hl, $4700
+    nop
+    ld b, a
     inc bc
     ld bc, $1405
     nop
@@ -2563,27 +2303,11 @@ jr_009_4c4d:
     ld bc, $2500
     ld b, b
     nop
-    ld b, l
+    
+    db "Enjoy the movie!"
 
-jr_009_4c56:
-    ld l, [hl]
-    ld l, d
-    ld l, a
-    ld a, c
-    jr nz, jr_009_4cd0
-
-    ld l, b
-    ld h, l
-
-jr_009_4c5e:
-    jr nz, jr_009_4ccd
-
-jr_009_4c60:
-    ld l, a
-    db $76
-    ld l, c
-    ld h, l
-    ld hl, $4700
+    nop
+    ld b, a
     inc bc
     ld bc, $1404
     nop
@@ -2599,23 +2323,9 @@ jr_009_4c60:
 jr_009_4c75:
     rlca
     ld bc, $0040
-    ld l, $2e
-    ld l, $20
-    ld l, l
-    ld l, l
-    ld l, l
-    ld l, l
-    jr nz, jr_009_4cf3
+    
+    db "... mmmm popcorn"
 
-jr_009_4c83:
-    ld l, a
-    ld [hl], b
-    ld h, e
-    ld l, a
-
-jr_009_4c87:
-    ld [hl], d
-    ld l, [hl]
     nop
     ld b, a
     inc bc
@@ -2635,32 +2345,10 @@ jr_009_4c87:
     ld bc, $2500
     ld b, b
     nop
-    ld c, [hl]
-    ld l, a
-    ld [hl], d
-    ld [hl], h
 
-jr_009_4ca6:
-    ld l, b
-    ld a, [hl-]
-    ld a, [bc]
+    db "North:\n"
+    db "Temple of Light"
 
-jr_009_4ca9:
-    ld d, h
-    ld h, l
-    ld l, l
-    ld [hl], b
-    ld l, h
-    ld h, l
-    jr nz, jr_009_4d20
-
-    ld h, [hl]
-    jr nz, jr_009_4d00
-
-    ld l, c
-    ld h, a
-    ld l, b
-    ld [hl], h
     nop
     ld b, a
     inc bc
@@ -2676,25 +2364,10 @@ jr_009_4ca9:
     ld b, h
     rlca
     ld bc, $0040
-    ld d, a
 
-jr_009_4ccd:
-    ld h, l
-    ld [hl], e
-    ld [hl], h
+    db "West:\n"
+    db "Graveyard"
 
-jr_009_4cd0:
-    ld a, [hl-]
-    ld a, [bc]
-    ld b, a
-    ld [hl], d
-    ld h, c
-    db $76
-    ld h, l
-    ld a, c
-    ld h, c
-    ld [hl], d
-    ld h, h
     nop
     ld b, a
     inc bc
@@ -2716,22 +2389,10 @@ jr_009_4cd0:
 
 jr_009_4cf3:
     nop
-    ld c, c
-    daa
-    ld l, l
-    jr nz, @+$49
+    
+    db "I'm Gerkinman."
 
-    ld h, l
-    ld [hl], d
-    ld l, e
-    ld l, c
-    ld l, [hl]
-    ld l, l
-    ld h, c
-
-jr_009_4d00:
-    ld l, [hl]
-    ld l, $00
+    nop
     ld b, a
     inc bc
     ld bc, $1404
@@ -2746,28 +2407,11 @@ jr_009_4d00:
     ld b, h
     rlca
     ld bc, $0040
-    ld d, d
-    ld h, l
-    db $76
-    ld h, l
-    ld l, h
-    jr nz, @+$6b
-
-    ld l, [hl]
-    jr nz, jr_009_4d8d
-
-jr_009_4d20:
-    ld a, c
-    ld a, [bc]
-    ld [hl], a
-    ld h, l
-    ld l, c
-    ld [hl], d
-    ld h, h
-    ld h, l
-    ld [hl], d
-    ld a, c
-    ld l, $00
+    
+    db "Revel in my\n"
+    db "weirdery."
+    
+    nop
     ld b, a
     inc bc
     ld bc, $1404
@@ -2786,44 +2430,12 @@ jr_009_4d20:
     ld bc, $2500
     ld b, b
     nop
-    ld d, h
-    ld l, b
-    ld h, l
-    ld [hl], d
-    ld h, l
-    jr nz, jr_009_4dc0
 
-    ld [hl], e
-    ld h, l
-    ld h, h
-    jr nz, jr_009_4dc4
-
-    ld l, a
-    jr nz, jr_009_4db5
-
-    ld h, l
-    ld a, [bc]
-    ld h, c
-    jr nz, @+$48
-
-    ld d, d
-    ld c, a
-    ld b, a
-    jr nz, jr_009_4dc6
-
-    ld l, [hl]
-    jr nz, jr_009_4dd4
-
-    ld l, b
-    ld l, c
-    ld [hl], e
-    ld a, [bc]
-    ld [hl], b
-    ld l, a
-    ld l, [hl]
-    ld h, h
-    ld l, $2e
-    ld l, $00
+    db "There used to be\n"
+    db "a FROG in this\n"
+    db "pond..."
+    
+    nop
     ld b, a
     inc bc
     ld bc, $1405
@@ -2839,24 +2451,11 @@ jr_009_4d20:
     ld b, h
     rlca
     ld bc, $0040
-    ld h, d
-    ld [hl], l
-    ld [hl], h
-    jr nz, @+$6b
 
-    ld [hl], h
-    jr nz, @+$74
+    db "but it ran away!"
 
-    ld h, c
-    ld l, [hl]
-    jr nz, jr_009_4dec
-
-    ld [hl], a
-    ld h, c
-
-jr_009_4d8d:
-    ld a, c
-    ld hl, $4700
+    nop
+    ld b, a
     inc bc
     ld bc, $1405
     nop
@@ -2874,30 +2473,11 @@ jr_009_4d8d:
     ld bc, $2500
     ld b, b
     nop
-    ld c, b
-    ld l, c
-    inc l
-    jr nz, jr_009_4df6
-
-    daa
-    ld l, l
-    jr nz, jr_009_4e03
-
-    ld l, c
-    ld h, e
-    ld l, b
-    ld l, c
-
-jr_009_4db5:
-    ld h, l
-    ld a, [bc]
-    ld e, d
-    ld l, c
-    ld [hl], d
-    ld h, d
-    ld h, l
-    ld [hl], e
-    ld l, $00
+    
+    db "Hi, I'm Richie\n"
+    db "Zirbes."
+    
+    nop
     ld b, a
 
 jr_009_4dc0:
@@ -2919,62 +2499,12 @@ jr_009_4dc6:
     ld b, h
     rlca
     ld bc, $0040
-    ld c, c
-    daa
+    
+    db "I'm working really\n"
+    db "hard on PK4 and\n"
+    db "the PK: Game."
 
-jr_009_4dd4:
-    ld l, l
-    jr nz, jr_009_4e4e
-
-    ld l, a
-    ld [hl], d
-    ld l, e
-    ld l, c
-    ld l, [hl]
-    ld h, a
-    jr nz, @+$74
-
-    ld h, l
-    ld h, c
-    ld l, h
-    ld l, h
-    ld a, c
-    ld a, [bc]
-    ld l, b
-    ld h, c
-    ld [hl], d
-    ld h, h
-    jr nz, jr_009_4e5a
-
-    ld l, [hl]
-
-jr_009_4dec:
-    jr nz, @+$52
-
-    ld c, e
-    inc [hl]
-    jr nz, jr_009_4e53
-
-    ld l, [hl]
-    ld h, h
-    ld a, [bc]
-    ld [hl], h
-
-jr_009_4df6:
-    ld l, b
-    ld h, l
-    jr nz, jr_009_4e4a
-
-    ld c, e
-    ld a, [hl-]
-    jr nz, jr_009_4e45
-
-    ld h, c
-    ld l, l
-    ld h, l
-    ld l, $00
-
-jr_009_4e03:
+    nop
     ld b, a
     inc bc
     ld bc, $1405
@@ -3007,24 +2537,11 @@ jr_009_4e03:
     ld d, a
     ld b, b
     nop
-    ld b, c
-    ld [hl], a
-    ld [hl], a
-    ld l, $2e
-    ld l, $0a
-    ld l, b
-    ld h, l
-    daa
-    ld [hl], e
-    jr nz, jr_009_4e97
-
-    ld [hl], e
-    ld l, h
-    ld h, l
-    ld h, l
-    ld [hl], b
-    ld l, $2e
-    ld l, $00
+    
+    db "Aww...\n"
+    db "he's asleep..."
+    
+    nop
     ld b, a
     inc bc
     ld bc, $1404
@@ -3064,15 +2581,10 @@ jr_009_4e5a:
     adc b
     ld b, b
     nop
-    ld c, a
-    ld l, b
-    jr nz, @+$66
+    
+    db "Oh dear..."
 
-    ld h, l
-    ld h, c
-    ld [hl], d
-    ld l, $2e
-    ld l, $00
+    nop
     ld b, a
     inc bc
     ld bc, $1404
@@ -3102,43 +2614,11 @@ jr_009_4e5a:
     ld b, h
     ld b, b
     nop
-    ld c, l
+    
+    db "Maybe this taser\n"
+    db "will wake him up..."
 
-jr_009_4e97:
-    ld h, c
-    ld a, c
-    ld h, d
-    ld h, l
-    jr nz, jr_009_4f11
-
-    ld l, b
-    ld l, c
-    ld [hl], e
-    jr nz, jr_009_4f16
-
-    ld h, c
-    ld [hl], e
-    ld h, l
-    ld [hl], d
-    ld a, [bc]
-    ld [hl], a
-    ld l, c
-    ld l, h
-    ld l, h
-    jr nz, jr_009_4f24
-
-    ld h, c
-    ld l, e
-    ld h, l
-    jr nz, jr_009_4f1a
-
-    ld l, c
-    ld l, l
-    jr nz, jr_009_4f2b
-
-    ld [hl], b
-    ld l, $2e
-    ld l, $00
+    nop
     ld b, a
     inc bc
     ld bc, $1404
@@ -3264,48 +2744,12 @@ jr_009_4f2b:
     dec h
     ld b, b
     nop
-    ld d, a
-    ld h, l
-    ld l, h
-    ld h, e
-    ld l, a
-    ld l, l
-    ld h, l
-    jr nz, jr_009_4fc5
+    
+    db "Welcome to the top\n"
+    db "secret NG\n"
+    db "headquarters."
 
-    ld l, a
-    jr nz, jr_009_4fc8
-
-    ld l, b
-    ld h, l
-    jr nz, jr_009_4fcc
-
-    ld l, a
-    ld [hl], b
-    ld a, [bc]
-    ld [hl], e
-    ld h, l
-    ld h, e
-    ld [hl], d
-    ld h, l
-    ld [hl], h
-    jr nz, @+$50
-
-    ld b, a
-    ld a, [bc]
-    ld l, b
-    ld h, l
-    ld h, c
-    ld h, h
-    ld [hl], c
-    ld [hl], l
-    ld h, c
-    ld [hl], d
-    ld [hl], h
-    ld h, l
-    ld [hl], d
-    ld [hl], e
-    ld l, $00
+    nop
     ld b, a
     inc bc
     ld bc, $1405
@@ -3321,34 +2765,11 @@ jr_009_4f2b:
     ld b, h
     rlca
     ld bc, $0040
-    ld d, a
-    ld h, l
-    jr nz, jr_009_4ff0
+    
+    db "We finally set up\n"
+    db "an office."
 
-    ld l, c
-    ld l, [hl]
-    ld h, c
-    ld l, h
-    ld l, h
-    ld a, c
-    jr nz, jr_009_5005
-
-    ld h, l
-    ld [hl], h
-    jr nz, @+$77
-
-    ld [hl], b
-    ld a, [bc]
-    ld h, c
-    ld l, [hl]
-    jr nz, @+$71
-
-    ld h, [hl]
-    ld h, [hl]
-    ld l, c
-    ld h, e
-    ld h, l
-    ld l, $00
+    nop
     ld b, a
     inc bc
     ld bc, $1405
@@ -3360,12 +2781,11 @@ jr_009_4f2b:
     ld b, h
     rlca
     ld bc, $0040
-    ld e, c
-    ld c, a
-    ld c, c
-    ld c, [hl]
-    ld c, e
-    ld hl, $4700
+
+    db "YOINK!"
+
+    nop
+    ld b, a
     inc bc
     ld bc, $1405
     nop
@@ -3389,40 +2809,13 @@ jr_009_4fcc:
     ld bc, $2500
     ld b, b
     nop
-    ld c, l
-    ld l, l
-    ld l, l
-    inc l
-    jr nz, @+$76
-
-    ld l, b
-    ld h, c
-    ld [hl], h
-    jr nz, jr_009_503e
-
-    ld [hl], l
-    ld [hl], d
-    ld h, a
-    ld h, l
-    ld [hl], d
-    ld a, [bc]
-    ld [hl], a
-    ld h, c
-    ld [hl], e
-    jr nz, @+$66
-
-    ld h, l
-    ld h, c
-    ld h, h
-    jr nz, jr_009_5060
-
-    ld h, c
-    ld [hl], e
-    ld [hl], h
-    ld a, c
+    
+    db "Mmm, that burger\n"
+    db "was dead tasty!"
 
 jr_009_4ff0:
-    ld hl, $4700
+    nop
+    ld b, a
     inc bc
     ld bc, $1404
     nop
@@ -3458,36 +2851,10 @@ jr_009_5011:
     add b
     ld b, b
     nop
-    ld d, h
-    ld l, b
-    ld h, c
-    ld [hl], h
-    jr nz, jr_009_5097
+    
+    db "That water didn't\n"
+    db "wake him up,"
 
-    ld h, c
-    ld [hl], h
-    ld h, l
-    ld [hl], d
-    jr nz, jr_009_508a
-
-    ld l, c
-    ld h, h
-    ld l, [hl]
-    daa
-    ld [hl], h
-    ld a, [bc]
-    ld [hl], a
-    ld h, c
-    ld l, e
-    ld h, l
-    jr nz, jr_009_509a
-
-    ld l, c
-    ld l, l
-    jr nz, jr_009_50ab
-
-    ld [hl], b
-    inc l
     nop
     ld b, a
     inc bc
@@ -3505,38 +2872,11 @@ jr_009_503e:
     ld b, h
     rlca
     ld bc, $0040
-    ld l, b
-    ld h, l
-    jr nz, @+$70
+    
+    db "he needs to be\n"
+    db "shocked awake..."
 
-    ld h, l
-    ld h, l
-    ld h, h
-    ld [hl], e
-    jr nz, jr_009_50ca
-
-    ld l, a
-    jr nz, jr_009_50bb
-
-    ld h, l
-    ld a, [bc]
-    ld [hl], e
-    ld l, b
-    ld l, a
-    ld h, e
-    ld l, e
-
-jr_009_5060:
-    ld h, l
-    ld h, h
-    jr nz, jr_009_50c5
-
-    ld [hl], a
-    ld h, c
-    ld l, e
-    ld h, l
-    ld l, $2e
-    ld l, $00
+    nop
     ld b, a
     inc bc
     ld bc, $1404
@@ -3555,32 +2895,9 @@ jr_009_5060:
     ld bc, $2500
     ld b, b
     nop
-    ld c, [hl]
-    ld l, a
-    ld [hl], d
-    ld [hl], h
-    ld l, b
-    ld a, [hl-]
-
-jr_009_508a:
-    ld a, [bc]
-    ld d, h
-    ld h, l
-    ld l, l
-    ld [hl], b
-    ld l, h
-    ld h, l
-    jr nz, jr_009_5102
-
-    ld h, [hl]
-    jr nz, @+$4e
-
-    ld l, c
-
-jr_009_5097:
-    ld h, a
-    ld l, b
-    ld [hl], h
+    
+    db "North:\n"
+    db "Temple of Light"
 
 jr_009_509a:
     nop
@@ -3600,17 +2917,10 @@ jr_009_509a:
 
 jr_009_50ab:
     ld bc, $0040
-    ld d, e
-    ld l, a
-    ld [hl], l
-    ld [hl], h
-    ld l, b
-    ld a, [hl-]
-    ld a, [bc]
-    ld d, h
-    ld l, a
-    ld [hl], a
-    ld l, [hl]
+    
+    db "South:\n"
+    db "Town"
+
     nop
     ld b, a
 
@@ -3667,17 +2977,11 @@ jr_009_50ca:
     ld [bc], a
     ld b, b
     nop
-    ld b, a
-    ld l, a
-    ld l, a
-    ld h, h
-    jr nz, jr_009_5169
 
-    ld l, c
-    ld h, a
-    ld l, b
-    ld [hl], h
-    ld hl, $4700
+    db "Good night!"
+
+    nop
+    ld b, a
 
 jr_009_5102:
     inc bc
@@ -3727,58 +3031,11 @@ jr_009_5102:
     dec h
     ld b, b
     nop
-    ld c, a
-    ld l, h
-    ld h, h
-    jr nz, jr_009_516b
 
-    ld d, e
-    ld l, a
-    ld l, [hl]
-    ld l, c
-    ld h, e
-    jr nz, jr_009_51bf
+    db "Old 'Sonic the\n"
+    db "Comic's are piled\n"
+    db "against the wall"
 
-    ld l, b
-    ld h, l
-    ld a, [bc]
-    ld b, e
-    ld l, a
-    ld l, l
-    ld l, c
-    ld h, e
-    daa
-    ld [hl], e
-    jr nz, jr_009_51b8
-
-    ld [hl], d
-    ld h, l
-    jr nz, jr_009_51cb
-
-    ld l, c
-    ld l, h
-    ld h, l
-    ld h, h
-    ld a, [bc]
-    ld h, c
-    ld h, a
-    ld h, c
-    ld l, c
-    ld l, [hl]
-    ld [hl], e
-    ld [hl], h
-    jr nz, jr_009_51dd
-
-jr_009_5169:
-    ld l, b
-    ld h, l
-
-jr_009_516b:
-    jr nz, jr_009_51e4
-
-    ld h, c
-    ld l, h
-    ld l, h
     nop
     ld b, a
     inc bc
@@ -3802,41 +3059,11 @@ jr_009_516b:
     ld bc, $2500
     ld b, b
     nop
-    ld b, c
-    jr nz, jr_009_5203
 
-    ld l, c
-    ld l, [hl]
-    ld h, a
-    ld l, h
-    ld h, l
-    jr nz, jr_009_51f9
+    db "A single book lies\n"
+    db "in the bookcase."
 
-    ld l, a
-    ld l, a
-    ld l, e
-    jr nz, jr_009_5208
-
-    ld l, c
-    ld h, l
-    ld [hl], e
-    ld a, [bc]
-    ld l, c
-    ld l, [hl]
-    jr nz, @+$76
-
-    ld l, b
-    ld h, l
-    jr nz, jr_009_520a
-
-    ld l, a
-    ld l, a
-    ld l, e
-    ld h, e
-    ld h, c
-    ld [hl], e
-    ld h, l
-    ld l, $00
+    nop
     ld b, a
     inc bc
     ld bc, $1404
@@ -3855,46 +3082,10 @@ jr_009_51bf:
     ld b, h
     rlca
     ld bc, $0040
-    daa
-    ld d, h
-    ld l, b
-    ld h, l
-    jr nz, jr_009_5239
 
-    ld h, [hl]
+    db "'The official cheat\n"
+    db "guide to life:"
 
-jr_009_51cb:
-    ld h, [hl]
-    ld l, c
-    ld h, e
-    ld l, c
-    ld h, c
-    ld l, h
-    jr nz, jr_009_5236
-
-    ld l, b
-    ld h, l
-    ld h, c
-    ld [hl], h
-    ld a, [bc]
-    ld h, a
-    ld [hl], l
-    ld l, c
-    ld h, h
-    ld h, l
-
-jr_009_51dd:
-    jr nz, jr_009_5253
-
-    ld l, a
-    jr nz, jr_009_524e
-
-    ld l, c
-    ld h, [hl]
-
-jr_009_51e4:
-    ld h, l
-    ld a, [hl-]
     nop
     ld b, a
     inc bc
@@ -3907,43 +3098,10 @@ jr_009_51e4:
     ld b, h
     rlca
     ld bc, $0040
-    ld [hl], a
-    ld l, c
-    ld [hl], h
+    
+    db "with pull out\n"
+    db "secret section'"
 
-jr_009_51f9:
-    ld l, b
-    jr nz, @+$72
-
-    ld [hl], l
-    ld l, h
-    ld l, h
-    jr nz, jr_009_5270
-
-    ld [hl], l
-    ld [hl], h
-
-jr_009_5203:
-    ld a, [bc]
-    ld [hl], e
-    ld h, l
-    ld h, e
-    ld [hl], d
-
-jr_009_5208:
-    ld h, l
-    ld [hl], h
-
-jr_009_520a:
-    jr nz, jr_009_527f
-
-    ld h, l
-    ld h, e
-    ld [hl], h
-    ld l, c
-    ld l, a
-    ld l, [hl]
-    daa
     nop
     ld b, a
     inc bc
@@ -4002,19 +3160,11 @@ jr_009_5239:
 
 jr_009_524e:
     nop
+    
+    db "Good night!"
+
+    nop
     ld b, a
-    ld l, a
-    ld l, a
-    ld h, h
-
-jr_009_5253:
-    jr nz, jr_009_52c3
-
-    ld l, c
-    ld h, a
-    ld l, b
-    ld [hl], h
-    ld hl, $4700
     inc bc
     ld bc, $1404
     nop
@@ -6181,24 +5331,9 @@ jr_009_5ab0:
     inc bc
     ld b, b
     nop
-    ld c, h
-    ld b, c
-    ld c, l
-    ld d, b
-    ld d, e
-    ld c, b
-    ld b, c
-    ld b, h
-    ld b, l
-    jr nz, @+$49
 
-    ld d, l
-    ld b, c
-    ld d, d
-    ld b, h
-    ld c, c
-    ld b, c
-    ld c, [hl]
+    db "LAMPSHADE GUARDIAN" ; 0x5b6a
+
     nop
     ld b, a
     inc bc
@@ -6214,28 +5349,10 @@ jr_009_5ab0:
     ld b, h
     rlca
     ld bc, $0040
-    ld c, c
-    ld c, [hl]
-    ld d, [hl]
-    ld c, c
-    ld c, [hl]
-    ld b, e
-    ld c, c
-    ld b, d
-    ld c, h
-    ld b, l
-    jr nz, jr_009_5bef
 
-    ld b, l
-    ld d, a
-    ld b, l
-    ld d, d
-    ld a, [bc]
-    ld b, h
-    ld b, l
-    ld c, l
-    ld c, a
-    ld c, [hl]
+    db "INVINCIBLE SEWER\n" ; 0x5b90
+    db "DEMON"
+
     nop
     ld b, a
     inc bc
@@ -8868,44 +7985,13 @@ jr_009_65b5:
     nop
     nop
     nop
-    ld b, b
-    nop
-    ld d, a
-    ld h, l
-    jr nz, jr_009_6715
+    
+    db $40, $00
+    
+    db "We might be\n" ; 0x66a4
+    db "stamping down on\n"
+    db "prices,"
 
-    ld l, c
-    ld h, a
-    ld l, b
-    ld [hl], h
-    jr nz, jr_009_6710
-
-    ld h, l
-    ld a, [bc]
-    ld [hl], e
-    ld [hl], h
-    ld h, c
-    ld l, l
-    ld [hl], b
-    ld l, c
-    ld l, [hl]
-    ld h, a
-    jr nz, jr_009_671e
-
-    ld l, a
-    ld [hl], a
-    ld l, [hl]
-    jr nz, jr_009_672e
-
-    ld l, [hl]
-    ld a, [bc]
-    ld [hl], b
-    ld [hl], d
-    ld l, c
-    ld h, e
-    ld h, l
-    ld [hl], e
-    inc l
     nop
     ld b, a
     inc bc
@@ -8922,40 +8008,12 @@ jr_009_65b5:
     ld b, h
     rlca
     ld bc, $0040
-    ld h, d
-    ld [hl], l
-    ld [hl], h
-    jr nz, jr_009_6758
 
-    ld h, l
-    jr nz, @+$66
-
-    ld l, a
-    ld l, [hl]
-    daa
-    ld [hl], h
-    jr nz, jr_009_675d
-
-    ld h, l
-    ld h, l
-    ld l, l
-    ld a, [bc]
-    ld [hl], h
-    ld l, a
-    jr nz, jr_009_6765
-
-    ld h, l
-    ld l, h
-    ld l, h
-    jr nz, jr_009_6758
-
-    ld l, [hl]
-    ld a, c
-    jr nz, jr_009_674b
-
-    ld b, e
-    ld [hl], e
-    ld hl, $4700
+    db "but we don't seem\n"
+    db "to sell any PCs!"
+    
+    nop
+    ld b, a
     inc bc
     ld bc, $1405
     nop
@@ -8976,42 +8034,9 @@ jr_009_6710:
 
 jr_009_6715:
     nop
-    ld c, b
-    ld l, c
-    inc l
-    jr nz, @+$4b
+    db "Hi, I work here\n"
+    db "over the summer,"
 
-    jr nz, jr_009_6794
-
-    ld l, a
-
-jr_009_671e:
-    ld [hl], d
-    ld l, e
-    jr nz, jr_009_678a
-
-    ld h, l
-    ld [hl], d
-    ld h, l
-    ld a, [bc]
-    ld l, a
-    db $76
-    ld h, l
-    ld [hl], d
-    jr nz, @+$76
-
-    ld l, b
-    ld h, l
-
-jr_009_672e:
-    jr nz, jr_009_67a3
-
-    ld [hl], l
-    ld l, l
-    ld l, l
-    ld h, l
-    ld [hl], d
-    inc l
     nop
     ld b, a
     inc bc
@@ -9027,41 +8052,11 @@ jr_009_672e:
     ld b, h
     rlca
     ld bc, $0040
-    ld h, d
 
-jr_009_674b:
-    ld [hl], l
-    ld [hl], h
-    jr nz, jr_009_6798
+    db "but I keep burning\n"
+    db "myself..."
 
-    jr nz, @+$6d
-
-    ld h, l
-    ld h, l
-    ld [hl], b
-    jr nz, jr_009_67b8
-
-    ld [hl], l
-    ld [hl], d
-
-jr_009_6758:
-    ld l, [hl]
-    ld l, c
-    ld l, [hl]
-    ld h, a
-    ld a, [bc]
-
-jr_009_675d:
-    ld l, l
-    ld a, c
-    ld [hl], e
-    ld h, l
-    ld l, h
-    ld h, [hl]
-    ld l, $2e
-
-jr_009_6765:
-    ld l, $00
+    nop
     ld b, a
     inc bc
     ld bc, $1404
@@ -9079,40 +8074,10 @@ jr_009_6765:
     inc bc
     ld bc, $4000
     nop
-    ld d, e
-    ld l, a
-    ld [hl], d
-    ld [hl], d
-    ld a, c
-    inc l
-    jr nz, jr_009_67fd
 
-    ld h, l
-    daa
-    ld [hl], d
-    ld h, l
+    db "Sorry, we're all\n"
+    db "out of meat,"
 
-jr_009_678a:
-    jr nz, jr_009_67ed
-
-    ld l, h
-    ld l, h
-    ld a, [bc]
-    ld l, a
-    ld [hl], l
-    ld [hl], h
-    jr nz, @+$71
-
-jr_009_6794:
-    ld h, [hl]
-    jr nz, jr_009_6804
-
-    ld h, l
-
-jr_009_6798:
-    ld h, c
-    ld [hl], h
-    inc l
     nop
     ld b, a
     inc bc
@@ -9131,60 +8096,12 @@ jr_009_67a3:
     ld b, h
     rlca
     ld bc, $0040
-    ld d, a
-    ld h, l
-    jr nz, @+$6c
 
-    ld [hl], l
-    ld [hl], e
-    ld [hl], h
-    jr nz, jr_009_682b
+    db "We just sold our\n"
+    db "last burger to the\n"
+    db "guy with glasses."
 
-jr_009_67b8:
-    ld l, a
-    ld l, h
-    ld h, h
-    jr nz, @+$71
-
-    ld [hl], l
-    ld [hl], d
-    ld a, [bc]
-    ld l, h
-    ld h, c
-    ld [hl], e
-    ld [hl], h
-    jr nz, @+$64
-
-    ld [hl], l
-    ld [hl], d
-    ld h, a
-    ld h, l
-    ld [hl], d
-    jr nz, jr_009_6841
-
-    ld l, a
-    jr nz, jr_009_6844
-
-    ld l, b
-    ld h, l
-    ld a, [bc]
-    ld h, a
-    ld [hl], l
-    ld a, c
-    jr nz, jr_009_684f
-
-    ld l, c
-    ld [hl], h
-    ld l, b
-    jr nz, jr_009_6844
-
-    ld l, h
-    ld h, c
-    ld [hl], e
-    ld [hl], e
-    ld h, l
-    ld [hl], e
-    ld l, $00
+    nop
     ld b, a
     inc bc
     ld bc, $1405
@@ -9204,31 +8121,11 @@ jr_009_67ed:
     inc bc
     ld bc, $4000
     nop
-    ld d, h
+    
+    db "Thanks for the\n"
+    db "corpse."
 
-jr_009_67fd:
-    ld l, b
-    ld h, c
-    ld l, [hl]
-    ld l, e
-    ld [hl], e
-    jr nz, @+$68
-
-jr_009_6804:
-    ld l, a
-    ld [hl], d
-    jr nz, jr_009_687c
-
-    ld l, b
-    ld h, l
-    ld a, [bc]
-    ld h, e
-    ld l, a
-    ld [hl], d
-    ld [hl], b
-    ld [hl], e
-    ld h, l
-    ld l, $00
+    nop
     ld b, a
     inc bc
     ld bc, $1404
@@ -9243,48 +8140,11 @@ jr_009_6804:
     ld b, h
     rlca
     ld bc, $0040
-    ld c, c
-    jr nz, jr_009_68a0
 
-    ld h, c
-    ld [hl], e
+    db "I was worried we'd\n"
+    db "go out of business."
 
-jr_009_682b:
-    jr nz, jr_009_68a4
-
-    ld l, a
-    ld [hl], d
-    ld [hl], d
-    ld l, c
-    ld h, l
-    ld h, h
-    jr nz, jr_009_68ac
-
-    ld h, l
-    daa
-    ld h, h
-    ld a, [bc]
-    ld h, a
-    ld l, a
-    jr nz, jr_009_68ac
-
-    ld [hl], l
-    ld [hl], h
-    jr nz, jr_009_68b0
-
-jr_009_6841:
-    ld h, [hl]
-    jr nz, @+$64
-
-jr_009_6844:
-    ld [hl], l
-    ld [hl], e
-    ld l, c
-    ld l, [hl]
-    ld h, l
-    ld [hl], e
-    ld [hl], e
-    ld l, $00
+    nop
     ld b, a
     inc bc
 
@@ -9306,50 +8166,12 @@ jr_009_684f:
     inc b
     ld b, b
     nop
-    ld c, b
-    ld h, l
-    ld a, c
-    jr nz, @+$7b
+    
+    db "Hey you've got\n"
+    db "some meat! Good\n"
+    db "quality too..."
 
-    ld l, a
-    ld [hl], l
-    daa
-    db $76
-    ld h, l
-    jr nz, @+$69
-
-    ld l, a
-    ld [hl], h
-    ld a, [bc]
-    ld [hl], e
-    ld l, a
-    ld l, l
-    ld h, l
-    jr nz, jr_009_68e8
-
-    ld h, l
-
-jr_009_687c:
-    ld h, c
-    ld [hl], h
-    ld hl, $4720
-    ld l, a
-    ld l, a
-    ld h, h
-    ld a, [bc]
-    ld [hl], c
-    ld [hl], l
-    ld h, c
-    ld l, h
-    ld l, c
-    ld [hl], h
-    ld a, c
-    jr nz, @+$76
-
-    ld l, a
-    ld l, a
-    ld l, $2e
-    ld l, $00
+    nop
     ld b, a
     inc bc
     ld bc, $1405
@@ -9369,56 +8191,12 @@ jr_009_68a0:
 
 jr_009_68a4:
     ld bc, $0040
-    ld [hl], a
-    ld h, l
-    daa
-    ld l, h
-    ld l, h
+    
+    db "we'll make you a\n"
+    db "burger right now\n"
+    db "if you want."
 
-jr_009_68ac:
-    jr nz, jr_009_691b
-
-    ld h, c
-    ld l, e
-
-jr_009_68b0:
-    ld h, l
-    jr nz, jr_009_692c
-
-    ld l, a
-    ld [hl], l
-    jr nz, jr_009_6918
-
-    ld a, [bc]
-    ld h, d
-    ld [hl], l
-    ld [hl], d
-    ld h, a
-    ld h, l
-    ld [hl], d
-    jr nz, jr_009_6932
-
-    ld l, c
-    ld h, a
-    ld l, b
-    ld [hl], h
-    jr nz, jr_009_6934
-
-    ld l, a
-    ld [hl], a
-    ld a, [bc]
-    ld l, c
-    ld h, [hl]
-    jr nz, jr_009_6946
-
-    ld l, a
-    ld [hl], l
-    jr nz, jr_009_6948
-
-    ld h, c
-    ld l, [hl]
-    ld [hl], h
-    ld l, $00
+    nop
     ld b, a
     inc bc
     ld bc, $1405
@@ -9455,25 +8233,11 @@ jr_009_68e8:
     db $fc
     ld b, b
     nop
-    ld e, c
-    ld l, a
-    ld [hl], l
-    jr nz, jr_009_696a
+    
+    db "You got the Burger!"
 
-    ld l, a
-    ld [hl], h
-    jr nz, jr_009_697b
-
-    ld l, b
-    ld h, l
-    jr nz, jr_009_694d
-
-    ld [hl], l
-    ld [hl], d
-    ld h, a
-    ld h, l
-    ld [hl], d
-    ld hl, $4700
+    nop
+    ld b, a
     inc bc
     ld bc, $1405
     nop
@@ -9492,53 +8256,11 @@ jr_009_691b:
     ld b, h
     rlca
     ld bc, $0040
-    ld c, b
-    ld l, l
-    ld l, l
-    ld l, l
-    inc l
-    jr nz, jr_009_699f
 
-jr_009_692c:
-    ld l, a
-    jr nz, jr_009_69a3
-
-    ld l, b
-    ld h, c
-    ld [hl], h
-
-jr_009_6932:
-    daa
-    ld [hl], e
-
-jr_009_6934:
-    ld a, [bc]
-    ld [hl], a
-    ld l, b
-    ld a, c
-    jr nz, jr_009_69ae
-
-    ld l, b
-    ld h, l
-    ld a, c
-    jr nz, jr_009_69b3
-
-    ld h, c
-    ld [hl], e
-    ld [hl], h
-    ld h, l
-    ld a, [bc]
-    ld h, [hl]
-    ld [hl], l
-
-jr_009_6946:
-    ld l, [hl]
-    ld l, [hl]
-
-jr_009_6948:
-    ld a, c
-    ld l, $2e
-    ld l, $00
+    db "Hmmm, so that's\n" ; 0x6925
+    db "why they taste\n"
+    db "funny..."
+    nop
 
 jr_009_694d:
     ld b, a
@@ -9588,48 +8310,12 @@ jr_009_697b:
     db $fc
     ld b, b
     nop
-    ld e, c
-    ld l, a
-    ld [hl], l
-    jr nz, jr_009_69f5
 
-    ld l, h
-    ld h, c
-    ld h, e
-    ld h, l
-    ld h, h
-    jr nz, jr_009_6a00
+    db "You placed the\n" ; 0x6980
+    db "lampshade on\n"
+    db "the altar."
 
-    ld l, b
-    ld h, l
-    ld a, [bc]
-    ld l, h
-    ld h, c
-    ld l, l
-    ld [hl], b
-    ld [hl], e
-    ld l, b
-    ld h, c
-    ld h, h
-    ld h, l
-    jr nz, jr_009_6a09
-
-    ld l, [hl]
-    ld a, [bc]
-    ld [hl], h
-    ld l, b
-    ld h, l
-
-jr_009_699f:
-    jr nz, jr_009_6a02
-
-    ld l, h
-    ld [hl], h
-
-jr_009_69a3:
-    ld h, c
-    ld [hl], d
-    ld l, $00
+    nop
     ld b, a
     inc bc
     ld bc, $1405
@@ -9649,46 +8335,12 @@ jr_009_69b3:
     ld b, h
     rlca
     ld bc, $0040
-    ld d, h
-    ld l, b
-    ld h, l
-    jr nz, jr_009_6a05
-
-    ld h, l
-    ld l, [hl]
-    ld h, a
-    jr nz, jr_009_6a17
-
-    ld l, b
-    ld [hl], l
-    ld l, c
-    jr nz, @+$71
-
-    ld h, [hl]
-    ld a, [bc]
-    ld [hl], h
-    ld l, b
-    ld h, l
-    jr nz, jr_009_6a42
-
-    ld l, a
-    ld l, a
-    ld l, l
-    jr nz, jr_009_6a4c
-
-    ld h, c
-    ld [hl], e
-    ld a, [bc]
-    ld [hl], b
-    ld h, l
-    ld [hl], d
-    ld h, [hl]
-    ld h, l
-    ld h, e
-    ld [hl], h
-    ld h, l
-    ld h, h
-    ld l, $00
+    
+    db "The Feng Shui of\n" ; 0x69ba
+    db "the room was\n"
+    db "perfected."
+    
+    nop
     ld b, a
     inc bc
     ld bc, $1405
