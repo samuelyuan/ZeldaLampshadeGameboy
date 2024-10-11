@@ -4504,42 +4504,11 @@ jr_006_579c:
 
     ld b, b
     nop
-    ld c, b
-    ld h, l
-    ld a, c
-    jr nz, jr_006_57fe
 
-    daa
-    ld l, l
-    jr nz, jr_006_57fd
-
-    ld l, c
-    ld l, l
-    jr nz, jr_006_582c
-
-    ld h, [hl]
-    jr nz, jr_006_5834
-
-    ld l, b
-    ld h, l
-    ld a, [bc]
-    ld d, e
-    ld [hl], l
-    ld [hl], b
-    ld h, l
-    ld [hl], d
-    jr nz, jr_006_5810
-
-    ld l, h
-    ld h, c
-    ld [hl], e
-    ld l, b
-    jr nz, jr_006_5812
-
-    ld [hl], d
-    ld l, a
-    ld [hl], e
-    ld l, $00
+    db "Hey I'm Dim of the\n"
+    db "Super Flash Bros."
+   
+    nop
     ld b, a
     inc bc
     ld bc, $1405
@@ -4555,39 +4524,10 @@ jr_006_579c:
     ld b, h
     rlca
     ld bc, $0040
-    ld c, c
-    jr nz, @+$79
+    
+    db "I wonder when\n"
+    db "Randy will bring"
 
-    ld l, a
-    ld l, [hl]
-    ld h, h
-    ld h, l
-    ld [hl], d
-    jr nz, jr_006_5869
-
-    ld l, b
-    ld h, l
-    ld l, [hl]
-    ld a, [bc]
-    ld d, d
-    ld h, c
-    ld l, [hl]
-    ld h, h
-    ld a, c
-    jr nz, @+$79
-
-jr_006_57fd:
-    ld l, c
-
-jr_006_57fe:
-    ld l, h
-    ld l, h
-    jr nz, jr_006_5864
-
-    ld [hl], d
-    ld l, c
-    ld l, [hl]
-    ld h, a
     nop
     ld b, a
     inc bc
@@ -4604,45 +4544,12 @@ jr_006_5810:
 jr_006_5812:
     rlca
     ld bc, $0040
-    ld l, l
-    ld h, l
-    jr nz, jr_006_588e
+    
+    db "me the latest\n"
+    db "advertising\n"
+    db "payment..."
 
-    ld l, b
-    ld h, l
-    jr nz, jr_006_588a
-
-    ld h, c
-    ld [hl], h
-    ld h, l
-    ld [hl], e
-    ld [hl], h
-    ld a, [bc]
-    ld h, c
-    ld h, h
-    db $76
-    ld h, l
-    ld [hl], d
-    ld [hl], h
-    ld l, c
-    ld [hl], e
-
-jr_006_582c:
-    ld l, c
-    ld l, [hl]
-    ld h, a
-    ld a, [bc]
-    ld [hl], b
-    ld h, c
-    ld a, c
-    ld l, l
-
-jr_006_5834:
-    ld h, l
-    ld l, [hl]
-    ld [hl], h
-    ld l, $2e
-    ld l, $00
+    nop
     ld b, a
     inc bc
     ld bc, $1405
@@ -4664,42 +4571,10 @@ jr_006_5834:
 
     ld b, b
     nop
-    ld c, b
-    ld h, c
-    db $76
-    ld h, l
-    jr nz, @+$7b
 
-    ld l, a
+    db "Have you used the\n"
+    db "hair products?"
 
-jr_006_5864:
-    ld [hl], l
-    jr nz, @+$77
-
-    ld [hl], e
-    ld h, l
-
-jr_006_5869:
-    ld h, h
-    jr nz, @+$76
-
-    ld l, b
-    ld h, l
-    ld a, [bc]
-    ld l, b
-    ld h, c
-    ld l, c
-    ld [hl], d
-    jr nz, @+$72
-
-    ld [hl], d
-    ld l, a
-    ld h, h
-    ld [hl], l
-    ld h, e
-    ld [hl], h
-    ld [hl], e
-    ccf
     nop
     ld b, a
     inc bc
@@ -4719,32 +4594,11 @@ jr_006_588a:
 
 jr_006_588e:
     ld bc, $0040
-    ld e, c
-    ld l, a
-    ld [hl], l
-    ld [hl], d
-    jr nz, @+$6a
+    
+    db "Your hair looks\n"
+    db "so shiny..."
 
-    ld h, c
-    ld l, c
-    ld [hl], d
-    jr nz, @+$6e
-
-    ld l, a
-    ld l, a
-    ld l, e
-    ld [hl], e
-    ld a, [bc]
-    ld [hl], e
-    ld l, a
-    jr nz, @+$75
-
-    ld l, b
-    ld l, c
-    ld l, [hl]
-    ld a, c
-    ld l, $2e
-    ld l, $00
+    nop
     ld b, a
     inc bc
     ld bc, $1404
@@ -4768,25 +4622,38 @@ jr_006_588e:
     ld e, c
     db $ee
 
-    db $40, $00, $59, $6f, $75, $27, $76, $65, $20, $67, $6f, $74, $20, $6d, $79, $20
-    db $62, $69, $67, $0a, $62, $61, $67, $20, $6f, $66, $20, $6d, $6f, $6e, $65, $79
-    db $3f, $00, $47, $03, $01, $05, $14, $00, $00, $45, $ff, $0d, $00, $41, $ff, $00
-    db $44, $07, $01, $40, $00, $54, $68, $61, $6e, $6b, $73, $20, $2d, $20, $6e, $6f
-    db $77, $20, $49, $20, $63, $61, $6e, $0a, $62, $75, $79, $20, $61, $20, $52, $65
-    db $76, $6f, $6c, $75, $74, $69, $6f, $6e, $21, $00, $47, $03, $01, $05, $14, $00
-    db $00, $41, $ff, $00, $44, $07, $01, $40, $00, $50, $6c, $65, $61, $73, $65, $20
-    db $74, $61, $6b, $65, $20, $74, $68, $69, $73, $0a, $73, $70, $72, $61, $79, $20
-    db $62, $6f, $74, $74, $6c, $65, $20, $61, $73, $20, $61, $0a, $67, $69, $66, $74
-    db $2e, $00, $47, $03, $01, $05, $14, $00, $00, $41, $ff, $00, $44, $07, $01, $45
+    db $40, $00
+    
+    db "You've got my big\n"
+    db "bag of money?"
+    
+    db $00, $47, $03, $01, $05, $14, $00, $00, $45, $ff, $0d, $00, $41, $ff, $00
+    db $44, $07, $01, $40, $00
+    
+    db "Thanks - now I can\n"
+    db "buy a Revolution!"
+    
+    db $00, $47, $03, $01, $05, $14, $00, $00, $41, $ff, $00, $44, $07, $01, $40, $00
+    
+    db "Please take this\n"
+    db "spray bottle as a\n"
+    db "gift."
+    
+    db $00, $47, $03, $01, $05, $14, $00, $00, $41, $ff, $00, $44, $07, $01, $45
     db $fe, $12, $00, $44, $03, $01, $14, $00, $02, $00, $00, $14, $00, $03, $ff, $fc
-    db $14, $00, $02, $ff, $fd, $75, $ff, $fc, $40, $00, $59, $6f, $75, $20, $67, $6f
-    db $74, $20, $74, $68, $65, $20, $47, $69, $72, $6c, $79, $0a, $48, $61, $69, $72
-    db $20, $50, $72, $6f, $64, $75, $63, $74, $73, $21, $00, $47, $03, $01, $04, $14
-    db $00, $00, $45, $ff, $0e, $00, $41, $ff, $00, $44, $07, $01, $40, $00, $50, $65
-    db $72, $66, $65, $63, $74, $20, $66, $6f, $72, $0a, $66, $69, $67, $68, $74, $69
-    db $6e, $67, $20, $68, $61, $74, $20, $68, $61, $69, $72, $21, $00, $47, $03, $01
-    db $04, $14, $00, $00, $41, $ff, $00, $44, $07, $01, $45, $fe, $12, $00, $44, $03
-    db $01, $00
+    db $14, $00, $02, $ff, $fd, $75, $ff, $fc, $40, $00
+    
+    db "You got the Girly\n"
+    db "Hair Products!"
+    
+    db $00, $47, $03, $01, $04, $14, $00, $00, $45, $ff, $0e, $00, $41, $ff, $00, $44
+    db $07, $01, $40, $00
+
+    db "Perfect for\n"
+    db "fighting hat hair!"
+
+    db $00, $47, $03, $01, $04, $14, $00, $00, $41, $ff, $00, $44, $07, $01, $45, $fe
+    db $12, $00, $44, $03, $01, $00
 
     dec h
     ld b, b
