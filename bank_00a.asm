@@ -94,21 +94,9 @@ SECTION "ROM Bank $00a", ROMX[$4000], BANK[$a]
     ret
 
 
-    nop
-    rrca
-    ld [bc], a
-    nop
-    ld [bc], a
-    nop
-    nop
-    rra
-    ld bc, $0202
-    nop
-    nop
-    nop
-    nop
-    inc b
-    stop
+    db $00, $0f, $02, $00, $02, $00, $00, $1f, $01, $02, $02, $00, $00, $00, $00, $04
+    db $10, $00
+
     ld hl, $c7f5
     ld [hl], $00
     ld hl, $c816
@@ -131,22 +119,12 @@ SECTION "ROM Bank $00a", ROMX[$4000], BANK[$a]
     ret
 
 
-    dec h
-    ld b, b
-    nop
-    ld d, h
-    jr nc, jr_00a_4157
+    db $25, $40, $00
 
-    inc [hl]
-    ld sp, $5931
-    ld a, [bc]
-    ld sp, $3333
-    scf
-    ld a, [bc]
-    ld d, b
-    ld [hl], d
-    ld sp, $3343
-    dec [hl]
+    db "T0t411Y\n" ; 0x40e0
+    db "1337\n"
+    db "Pr1C35"
+
     nop
     ld b, a
     inc bc
@@ -167,22 +145,14 @@ SECTION "ROM Bank $00a", ROMX[$4000], BANK[$a]
     nop
     ld b, h
     inc bc
-    ld bc, $2500
-    ld b, b
+    db $01
     nop
-    ld c, c
-    daa
-    ld l, l
-    jr nz, jr_00a_4188
+    db $25, $40, $00
 
-    ld l, a
-    jr nz, @+$64
+    db "I'm so bored!" ; 0x4110
 
-    ld l, a
-    ld [hl], d
-    ld h, l
-    ld h, h
-    ld hl, $4700
+    nop
+    ld b, a
     inc bc
     ld bc, $1404
     nop
@@ -200,25 +170,14 @@ SECTION "ROM Bank $00a", ROMX[$4000], BANK[$a]
     nop
     ld b, h
     inc bc
-    ld bc, $2500
-    ld b, b
+    db $01
     nop
-    ld b, e
-    ld h, c
-    ld l, [hl]
-    jr nz, jr_00a_4188
+    db $25, $40, $00
 
-    ld a, [bc]
-    ld d, d
-    ld l, $49
-    ld l, $50
-    ld l, $0a
-    ld [hl], b
-    ld l, h
-    ld h, l
-    ld h, c
-    ld [hl], e
-    ld h, l
+    db "Can I\n" ; 0x413a
+    db "R.I.P.\n"
+    db "please"
+
     nop
     ld b, a
     inc bc
@@ -244,19 +203,11 @@ jr_00a_4157:
     ld bc, $2500
     ld b, b
     nop
-    ld d, h
-    jr nc, jr_00a_41e1
 
-    inc [hl]
-    ld sp, $5931
-    ld a, [bc]
-    ld sp, $3333
-    scf
-    ld a, [bc]
-    ld d, b
-    ld [hl], d
-    ld sp, $3343
-    dec [hl]
+    db "T0t411Y\n" ; 0x416a
+    db "1337\n"
+    db "Pr1C35"
+
     nop
     ld b, a
     inc bc
@@ -955,8 +906,9 @@ jr_00a_4279:
     rst $38
     db $fc
     nop
-    ld [bc], a
-    nop
+
+    db $02, $00
+
     db $fd
     ld [bc], a
     rst $18
