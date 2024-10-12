@@ -2682,21 +2682,20 @@ jr_005_4d09:
     ld [$ca4a], a
     ret
 
-
+OutsideShopTileImage::
     db $72, $00
-
     INCBIN "gfx/image_005_4d6b.2bpp"
 
+BridgeTileImage::
     db $79, $00
-
     INCBIN "gfx/image_005_548d.2bpp"
 
+RoomBeforeLampshadeBossTileImage::
     db $75, $00
-
     INCBIN "gfx/image_005_5c1f.2bpp"
 
+TempleLightOutsideTileImage::
     db $74, $00
-
     INCBIN "gfx/image_005_6371.2bpp"
 
     ld hl, $c51e

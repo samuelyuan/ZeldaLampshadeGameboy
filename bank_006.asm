@@ -205,7 +205,7 @@ jr_006_4156:
     ld hl, $6100
     call RST_08
     inc sp
-    ld hl, $059c
+    ld hl, $059c ; loads values in bank 0 address 0x059c
     ld b, [hl]
     ld hl, $059d
     ld a, [hl+]
@@ -4686,26 +4686,26 @@ jr_006_588e:
     db $01
     nop
 
+JTHouseOutsideTileImage::
     db $6c, $00
-
     INCBIN "gfx/image_006_5a16.2bpp"
 
+WellTileImage::
     db $6d, $00
-
     INCBIN "gfx/image_006_60d8.2bpp"
 
+NgHeadquartersOutsideTileImage::
     db $70, $00
-
     INCBIN "gfx/image_006_67aa.2bpp"
 
+DefeatedLampshadeBossScreenTileImage::
     db $4e, $00
-
     INCBIN "gfx/image_006_6eac.2bpp"
 
+TempleLightInsideTileImage::
     db $6f, $00
-
     INCBIN "gfx/image_006_738e.2bpp"
 
+GameFinishedScreenTileImage::
     db $58, $00
-
     INCBIN "gfx/image_006_7a80.2bpp"

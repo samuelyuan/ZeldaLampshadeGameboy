@@ -3102,13 +3102,13 @@ Jump_003_502c:
     add sp, $12
     ret
 
+GraveyardTileImage::
     db $8c, $00
-
     INCBIN "gfx/image_003_5031.2bpp" ; sprite sheet
 
+LampshadeBossRoomTileImage::
     db $ba, $00
-
-    INCBIN "gfx/image_003_58f3.2bpp" ; sprite sheet
+    INCBIN "gfx/image_003_58f3.2bpp" ; sprite sheet for lampshade boss
 
     nop
     nop
