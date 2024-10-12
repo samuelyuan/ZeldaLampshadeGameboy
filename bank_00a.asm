@@ -230,253 +230,155 @@ jr_00a_4188:
     nop
     ld b, h
     inc bc
-    ld bc, $1400
-    ld [de], a
-    inc bc
-    cpl
-    ld d, b
-    nop
-    nop
-    nop
-    rlca
-    ld [$0058], a
-    nop
-    nop
-    inc d
-    ld [de], a
-    inc b
-    nop
-    ld b, b
-    nop
-    nop
-    nop
-    ld [$4159], sp
-    nop
-    nop
-    nop
-    inc d
-    ld [de], a
-    ld b, $14
-    ld e, d
-    nop
-    nop
-    nop
-    ld [$42c1], sp
-    nop
-    nop
-    nop
-    inc d
-    ld [de], a
-    ld b, $d6
-    ld h, b
-    nop
-    nop
-    nop
-    ld [$4429], sp
-    nop
-    nop
-    nop
-    inc d
-    ld [de], a
-    inc b
-    sub d
-    ld c, b
-    nop
-    nop
-    nop
-    ld [$4591], sp
-    nop
-    nop
-    nop
-    inc d
-    ld [de], a
-    inc b
-    and h
 
-jr_00a_41e1:
-    ld d, b
-    nop
-    nop
-    nop
-    ld [$46f9], sp
-    nop
-    nop
-    nop
-    inc d
-    ld [de], a
-    inc b
-    add $58
-    nop
-    nop
-    nop
-    ld [$4861], sp
-    nop
-    nop
-    nop
-    inc d
-    ld [de], a
-    ld b, $a8
-    ld h, a
-    nop
-    nop
-    nop
-    ld [$49c9], sp
-    nop
-    nop
-    nop
-    inc d
-    ld [de], a
-    ld bc, $61dc
-    nop
-    nop
-    nop
-    ld [$4b31], sp
-    nop
-    nop
-    nop
-    inc d
-    ld [de], a
-    inc b
-    jr z, jr_00a_4279
+    db $01, $00
+    
+    ; Graveyard
+    db $14, $12
+    ; bank 3: 0x502f image
+    db $03, $2f, $50, $00, $00, $00
+    ; bank 7: 0x58a8 tilemap
+    db $07, $ea, $58, $00, $00, $00
 
-    nop
-    nop
-    nop
-    ld [$4c99], sp
-    nop
-    nop
-    nop
-    inc d
-    ld [de], a
-    dec b
-    ld l, c
-    ld c, l
-    nop
-    nop
-    nop
-    ld [$4e01], sp
-    nop
-    nop
-    nop
-    inc d
-    ld [de], a
-    inc b
-    ld l, d
-    ld h, a
-    nop
-    nop
-    nop
-    ld [$4f69], sp
-    nop
-    nop
-    nop
-    inc d
-    ld [de], a
-    inc b
-    ld e, h
-    ld l, a
-    nop
-    nop
-    nop
-    ld [$50d1], sp
-    nop
-    nop
-    nop
-    inc d
-    ld [de], a
-    dec b
-    adc e
-    ld d, h
-    nop
-    nop
-    nop
-    ld [$5239], sp
-    nop
-    nop
-    nop
-    inc d
-    ld [de], a
-    ld b, $aa
-    ld l, [hl]
-    nop
-    nop
-    nop
-    ld [$53a1], sp
-    nop
-    nop
-    nop
-    inc d
-    ld [de], a
-    inc bc
-    pop af
-    ld e, b
-    nop
-    nop
-    nop
-    ld [$5509], sp
-    nop
-    nop
-    nop
-    inc d
-    ld [de], a
+    ; JTHouseInside
+    db $14, $12
+    ; bank 4: 0x4000 image
+    db $04, $00, $40, $00, $00, $00
+    ; bank 8: 0x4159 tilemap
+    db $08, $59, $41, $00, $00, $00
+    
+    ; JTHouseOutside
+    db $14, $12
+    ; bank 6: 0x5a14 image
+    db $06, $14, $5a, $00, $00, $00
+    ; bank 8: 0x42c1 tilemap
+    db $08, $c1, $42, $00, $00, $00
+    
+    ; Well
+    db $14, $12
+    ; bank 6: 0x60d6 image
+    db $06, $d6, $60, $00, $00, $00 
+    ; bank 8: 0x4429 tilemap
+    db $08, $29, $44, $00, $00, $00
+    
+    ; DimHouseInside
+    db $14, $12
+    ; bank 4: 0x4892 image
+    db $04, $92, $48, $00, $00, $00
+    ; bank 8: 0x4591 tilemap
+    db $08, $91, $45, $00, $00, $00
+    
+    ; DimHouseOutside
+    db $14, $12 ; bank 0a: 0x41dd
+    ; bank 4: 0x50a4 image
+    db $04, $a4, $50, $00, $00, $00
+    ; bank 8: 0x46f9 tilemap
+    db $08, $f9, $46, $00, $00, $00
+    
+    ; NgHeadquartersInside
+    db $14, $12
+    ; bank 4: 0x58c6 image
+    db $04, $c6, $58, $00, $00, $00
+    ; bank 8: 0x4861 tilemap
+    db $08, $61, $48, $00, $00, $00
+    
+    ; NgHeadquartersOutside
+    db $14, $12
+    ; bank 6: 0x67a8 image
+    db $06, $a8, $67, $00, $00, $00
+    ; bank 8: 0x49c9 tilemap
+    db $08, $c9, $49, $00, $00, $00
+    
+    ; PC World
+    db $14, $12
+    ; bank 1: 0x61dc image
+    db $01, $dc, $61, $00, $00, $00
+    ; bank 8: 0x4b31 tilemap
+    db $08, $31, $4b, $00, $00, $00
+    
+    ; Mcdonalds
+    db $14, $12
+    ; bank 4: 0x5f28 image
+    db $04, $28, $5f, $00, $00, $00
+    ; bank 8: 0x4c99 tilemap
+    db $08, $99, $4c, $00, $00, $00
 
-jr_00a_4279:
-    dec b
-    dec e
-    ld e, h
-    nop
-    nop
-    nop
-    ld [$5671], sp
-    nop
-    nop
-    nop
-    inc d
-    ld [de], a
-    ld b, $8c
-    ld [hl], e
-    nop
-    nop
-    nop
-    ld [$57d9], sp
-    nop
-    nop
-    nop
-    inc d
-    ld [de], a
-    dec b
-    ld l, a
-    ld h, e
-    nop
-    nop
-    nop
-    ld [$5941], sp
-    nop
-    nop
-    nop
-    inc d
-    ld [de], a
-    ld b, $7e
-    ld a, d
-    nop
-    nop
-    nop
-    ld [$5aa9], sp
-    nop
-    nop
-    nop
-    inc d
-    ld [de], a
-    ld bc, $697e
-    nop
-    nop
-    nop
-    ld [$5c11], sp
-    nop
-    nop
-    nop
-    nop
-    nop
+    ; OutsideShop
+    db $14, $12
+    ; bank 5: 0x4d69 image
+    db $05, $69, $4d, $00, $00, $00
+    ; bank 8: 0x4e01 tilemap
+    db $08, $01, $4e, $00, $00, $00
+    
+    ; JRInside
+    db $14, $12
+    ; bank 4: 0x676a image
+    db $04, $6a, $67, $00, $00, $00
+    ; bank 8: 0x4f69 tilemap
+    db $08, $69, $4f, $00, $00, $00
+    
+    ; JROutside
+    db $14, $12
+    ; bank 4: 0x6f5c image
+    db $04, $5c, $6f, $00, $00, $00
+    ; bank 8: 0x50d1 tilemap
+    db $08, $d1, $50, $00, $00, $00
+    
+    ; Bridge
+    db $14, $12
+    ; bank 5: 0x548b image
+    db $05, $8b, $54, $00, $00, $00
+    ; bank 8: 0x5239 tilemap
+    db $08, $39, $52, $00, $00, $00
+    
+    db $14, $12
+    ; bank 6: 0x6eaa image
+    db $06, $aa, $6e, $00, $00, $00
+    ; bank 8: 0x53a1 tilemap
+    db $08, $a1, $53, $00, $00, $00
+
+    db $14, $12
+    ; bank 3: 0x58f1 image
+    db $03, $f1, $58, $00, $00, $00
+    ; bank 8: 0x5509 tilemap
+    db $08, $09, $55, $00, $00, $00
+
+    ; RoomBeforeLampshadeBoss
+    db $14, $12
+    ; bank 5: 0x5c1d image
+    db $05, $1d, $5c, $00, $00, $00
+    ; bank 8: 0x5671 tilemap
+    db $08, $71, $56, $00, $00, $00
+
+    ; TempleLightInside
+    db $14, $12
+    ; bank 6: 0x738c images
+    db $06, $8c, $73, $00, $00, $00
+    ; bank 8: 0x57d9 tilemap
+    db $08, $d9, $57, $00, $00, $00
+
+    ; TempleLightOutside
+    db $14, $12 ; bank 0a: 0x4293
+    ; bank 5: 0x636f image
+    db $05, $6f, $63, $00, $00, $00
+    ; bank 8: 0x5941 tilemap
+    db $08, $41, $59, $00, $00, $00
+    
+    ; GameFinishedScreen
+    db $14, $12 ; bank 0a: 0x42a1
+    ; bank 6: 0x7a7e image
+    db $06, $7e, $7a, $00, $00, $00
+    ; bank 8: 0x5aa9 tilemap
+    db $08, $a9, $5a, $00, $00, $00
+
+    ; Title Screen
+    db $14, $12 ; bank 0a: 0x42af
+    ; bank 1: 0x697e image
+    db $01, $7e, $69, $00, $00, $00
+    ; bank 8: 0x5c11 tilemap
+    db $08, $11, $5c, $00, $00, $00
+
+    db $00, $00
     ld a, $3e
     pop bc
     pop bc
