@@ -4688,24 +4688,24 @@ jr_006_588e:
 
 JTHouseOutsideTileImage::
     db $6c, $00
-    INCBIN "gfx/image_006_5a16.2bpp"
+    INCBIN "gfx/bank006_jthouseoutside_5a16.2bpp"
 
 WellTileImage::
     db $6d, $00
-    INCBIN "gfx/image_006_60d8.2bpp"
+    INCBIN "gfx/bank006_well_60d8.2bpp"
 
 NgHeadquartersOutsideTileImage::
     db $70, $00
-    INCBIN "gfx/image_006_67aa.2bpp"
+    INCBIN "gfx/bank006_ngheadquartersoutside_67aa.2bpp"
 
 DefeatedLampshadeBossScreenTileImage::
     db $4e, $00
-    INCBIN "gfx/image_006_6eac.2bpp"
+    INCBIN "gfx/bank006_defeatedlampshadeboss_6eac.2bpp"
 
 TempleLightInsideTileImage::
     db $6f, $00
-    INCBIN "gfx/image_006_738e.2bpp"
+    INCBIN "gfx/bank006_templelightinside_738e.2bpp"
 
 GameFinishedScreenTileImage::
     db $58, $00
-    INCBIN "gfx/image_006_7a80.2bpp"
+    INCBIN "gfx/bank006_gamefinished_7a80.2bpp"

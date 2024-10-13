@@ -5692,13 +5692,13 @@ jr_007_75ce:
     
     db $2c, $00
 
-    INCBIN "gfx/image_007_771b.2bpp"
+    INCBIN "gfx/bank007_771b.2bpp"
 
     db $2c, $00
 
-    INCBIN "gfx/image_007_79dd.2bpp"
+    INCBIN "gfx/bank007_79dd.2bpp"
 
-    INCBIN "gfx/image_007_7bdd.2bpp"
+    INCBIN "gfx/bank007_7bdd.2bpp"
 
     ld hl, $c51e
     ld [hl], $00

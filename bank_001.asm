@@ -6602,8 +6602,8 @@ jr_001_61aa:
     
 PcWorldTileImage::
     db $7a, $00
-    INCBIN "gfx/image_001_61de.2bpp"
+    INCBIN "gfx/bank001_pcworld_61de.2bpp"
 
 TitlescreenTileImage::
     db $68, $01
-    INCBIN "gfx/image_001_6980_title.2bpp" ; 0x6980 title screen
+    INCBIN "gfx/bank001_title_6980.2bpp" ; 0x6980 title screen

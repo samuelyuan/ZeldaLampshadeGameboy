@@ -7795,7 +7795,7 @@ TitlescreenTilemap:: ; 0x5c11
 
     db $16, $00
 
-    INCBIN "gfx/image_008_7b09.2bpp"
+    INCBIN "gfx/bank008_7b09.2bpp"
 
     db $80
 
@@ -7897,9 +7897,9 @@ TitlescreenTilemap:: ; 0x5c11
 
     db $16, $00
 
-    INCBIN "gfx/image_008_7d3e.2bpp"
+    INCBIN "gfx/bank008_7d3e.2bpp"
 
     db $16, $00
 
-    INCBIN "gfx/image_008_7ea0.2bpp"
+    INCBIN "gfx/bank008_7ea0.2bpp"
 

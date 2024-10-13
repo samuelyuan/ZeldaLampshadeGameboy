@@ -3104,11 +3104,11 @@ Jump_003_502c:
 
 GraveyardTileImage::
     db $8c, $00
-    INCBIN "gfx/image_003_5031.2bpp" ; sprite sheet
+    INCBIN "gfx/bank003_graveyard_5031.2bpp" ; sprite sheet
 
 LampshadeBossRoomTileImage::
     db $ba, $00
-    INCBIN "gfx/image_003_58f3.2bpp" ; sprite sheet for lampshade boss
+    INCBIN "gfx/bank003_lampshadeboss_58f3.2bpp" ; sprite sheet for lampshade boss
 
     nop
     nop
@@ -3304,7 +3304,7 @@ jr_003_6526:
 
     db $ca
 
-    INCBIN "gfx/image_003_6593.2bpp" ; font
+    INCBIN "gfx/bank003_font_6593.2bpp" ; font
 
     ld bc, $93ff
     ld h, h

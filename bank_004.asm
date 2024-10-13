@@ -2,31 +2,31 @@ SECTION "ROM Bank $004", ROMX[$4000], BANK[$4]
 
 JTHouseInsideTileImage::
     db $89, $00
-    INCBIN "gfx/image_004_4002.2bpp"
+    INCBIN "gfx/bank004_jthouseinside_4002.2bpp"
 
 DimHouseInsideTileImage::
     db $81, $00
-    INCBIN "gfx/image_004_4894.2bpp"
+    INCBIN "gfx/bank004_dimhouseinside_4894.2bpp"
 
 DimHouseOutsideTileImage::
     db $82, $00
-    INCBIN "gfx/image_004_50a6.2bpp"
+    INCBIN "gfx/bank004_dimhouseoutside_50a6.2bpp"
 
 NgHeadquartersInsideTileImage::
     db $66, $00
-    INCBIN "gfx/image_004_58c8.2bpp"
+    INCBIN "gfx/bank004_ngheadquartersinside_58c8.2bpp"
 
 McdonaldsTileImage::
     db $84, $00
-    INCBIN "gfx/image_004_5f2a.2bpp"
+    INCBIN "gfx/bank004_mcdonalds_5f2a.2bpp"
 
 JRInsideTileImage::
     db $7f, $00
-    INCBIN "gfx/image_004_676c.2bpp"
+    INCBIN "gfx/bank004_jrinside_676c.2bpp"
 
 JROutsideTileImage::
     db $81, $00
-    INCBIN "gfx/image_004_6f5e.2bpp"
+    INCBIN "gfx/bank004_jroutside_6f5e.2bpp"
 
     ret nc
 

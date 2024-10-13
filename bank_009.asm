@@ -5811,7 +5811,7 @@ jr_009_6bf7:
 
     db $04, $00
 
-    INCBIN "gfx/image_009_6bfb.2bpp"
+    INCBIN "gfx/bank009_6bfb.2bpp"
 
     db $00, $08, $00, $00, $00, $f8, $02, $00, $80
 
@@ -5838,7 +5838,7 @@ jr_009_6bf7:
 
     db $04, $00
 
-    INCBIN "gfx/image_009_6c70.2bpp"
+    INCBIN "gfx/bank009_6c70.2bpp"
 
     db $80
 
@@ -5882,7 +5882,7 @@ jr_009_6bf7:
 
     db $14, $00
 
-    INCBIN "gfx/image_009_6ceb.2bpp"
+    INCBIN "gfx/bank009_6ceb.2bpp"
 
     ldh [$e0], a
     sbc b
@@ -5893,7 +5893,7 @@ jr_009_6bf7:
     cp $02
     db $fe
     
-    INCBIN "gfx/image_009_6d75.2bpp"
+    INCBIN "gfx/bank009_6d75.2bpp"
 
     ld b, b
     ld a, a
