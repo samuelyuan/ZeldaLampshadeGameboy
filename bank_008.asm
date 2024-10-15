@@ -7793,9 +7793,9 @@ TitlescreenTilemap:: ; 0x5c11
     nop
     nop
 
+bank008_7b07:
     db $16, $00
-
-    INCBIN "gfx/bank008_7b09.2bpp"
+    INCBIN "gfx/bank008_dante_7b09.2bpp"
 
     db $80
 
@@ -7809,12 +7809,14 @@ TitlescreenTilemap:: ; 0x5c11
     nop
     nop
 
+    ; 0x7c79 hair products sprite
     db $00, $08, $04, $00, $00, $f8, $06, $00, $80
 
     nop
     nop
     nop
 
+    ; 0x7c85 tiny extreme iron sprite
     db $00, $08, $08, $00, $00, $f8, $0a, $00, $80
 
     nop
@@ -7869,6 +7871,7 @@ TitlescreenTilemap:: ; 0x5c11
     nop
     nop
 
+    ; 0x7cf1 source of lamp sprite
     db $00, $08, $28, $00, $00, $f8, $2a, $00, $80
 
     nop
@@ -7879,27 +7882,17 @@ TitlescreenTilemap:: ; 0x5c11
     db $c1, $7c, $cd, $7c, $d9, $7c, $e5, $7c, $f1, $7c, $00, $0c, $00, $0c, $00, $0c
     db $00, $0c, $00, $0c, $00, $0c, $00, $0c, $00, $0c, $00, $00
 
-    dec c
-    nop
-    db $f0
+    ; bank 8: 0x7d29
+    db $0d, $00, $f0, $fd, $7c, $17, $7d, $27, $7d, $00, $0f, $f8, $07
 
-    db $fd, $7c, $17, $7d, $27, $7d
+    ; bank 8: 0x7d36
+    db $07, $19, $77, $00, $00, $00 ; bank 7: 0x7719 sprite
 
-    nop
-    rrca
-    ld hl, sp+$07
-
-    db $07, $19, $77
-
-    nop
-    nop
-    nop
-
+bank008_7d3c:
     db $16, $00
+    INCBIN "gfx/bank008_randy_7d3e.2bpp"
 
-    INCBIN "gfx/bank008_7d3e.2bpp"
-
+bank008_7e9e:
     db $16, $00
-
-    INCBIN "gfx/bank008_7ea0.2bpp"
+    INCBIN "gfx/bank008_jt_7ea0.2bpp"
 
