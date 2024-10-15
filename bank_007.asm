@@ -5690,15 +5690,13 @@ jr_007_75ce:
     db $00, $47, $03, $01, $05, $14, $00, $00, $41, $ff, $00, $44, $07, $01, $45, $fe
     db $12, $00, $44, $03, $01, $09, $77, $18, $00
     
+bank007_7719:
     db $2c, $00
+    INCBIN "gfx/bank007_items_771b.2bpp"
 
-    INCBIN "gfx/bank007_771b.2bpp"
-
+bank007_79db:
     db $2c, $00
-
-    INCBIN "gfx/bank007_79dd.2bpp"
-
-    INCBIN "gfx/bank007_7bdd.2bpp"
+    INCBIN "gfx/bank007_link_79dd.2bpp"
 
     ld hl, $c51e
     ld [hl], $00
