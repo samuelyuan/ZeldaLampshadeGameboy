@@ -806,70 +806,20 @@ jr_00a_4188:
     db $fd
     ld [hl], l
     rst $38
-    db $fc
-    nop
-
+    db $fc, $00
+    
+bank00a_4536:
     db $02, $00
-
-    db $fd
-    ld [bc], a
-    rst $18
-
-jr_00a_453b:
-    jr nz, jr_00a_453b
-
-    ld bc, $08f7
-    ld a, a
-    add b
-    rst $38
-    nop
-    db $dd
-    ld [hl+], a
-    rst $30
-    ld [$02fd], sp
-    rst $18
-
-jr_00a_454b:
-    jr nz, jr_00a_454b
-
-    ld bc, $08f7
-    ld a, a
-    add b
-    rst $38
-    nop
-    db $dd
-    ld [hl+], a
-    rst $30
-    ld [$0080], sp
-    nop
-    nop
-    ld e, b
-    ld b, l
+    INCBIN "gfx/bank00a_gravecover_4538.2bpp"
+    
+    db $80
     nop
     nop
     nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
+    db $58, $45, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
+    db $00, $00, $00, $00
     ld bc, $f000
-    ld e, h
-    ld b, l
-    ld e, [hl]
-    ld b, l
-    ld l, [hl]
-    ld b, l
+    db $5c, $45, $5e, $45, $6e, $45
     nop
     rrca
     ld hl, sp+$07
