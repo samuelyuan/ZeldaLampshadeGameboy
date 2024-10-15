@@ -7803,6 +7803,8 @@ bank008_7b07:
     nop
     nop
 
+ItemSpriteFrames:
+    ; 0x7c6d big bag of money
     db $00, $08, $00, $00, $00, $f8, $02, $00, $80
 
     nop
@@ -7823,48 +7825,56 @@ bank008_7b07:
     nop
     nop
 
+    ; 0x7c91 vase
     db $00, $08, $0c, $00, $00, $f8, $0c, $20, $80
 
     nop
     nop
     nop
 
+    ; 0x7c9d frog
     db $00, $08, $0e, $00, $00, $f8, $10, $00, $80
 
     nop
     nop
     nop
 
+    ; 0x7ca9 tiger face paint
     db $00, $08, $12, $00, $00, $f8, $14, $00, $80
 
     nop
     nop
     nop
 
+    ; 0x7cb5 taser
     db $00, $08, $16, $00, $00, $f8, $18, $00, $80
 
     nop
     nop
     nop
 
+    ; 0x7cc1 light gun
     db $00, $08, $1a, $00, $00, $f8, $1c, $00, $80
 
     nop
     nop
     nop
 
+    ; 0x7ccd shovel
     db $00, $08, $1e, $00, $00, $f8, $20, $00, $80
 
     nop
     nop
     nop
 
+    ; 0x7cd9 human corpse
     db $00, $08, $22, $00, $00, $f8, $24, $00, $80
 
     nop
     nop
     nop
 
+    ; 0x7ce5 hamburger
     db $00, $08, $26, $00, $00, $f8, $26, $20, $80
 
     nop

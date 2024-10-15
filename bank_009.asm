@@ -6174,8 +6174,11 @@ jr_009_7276:
     rrca
     ld hl, sp+$07
 
+    ; bank 9 0x7283
     db $09, $06, $72, $00, $00, $00 ; points to bank 9: 0x7206
 
+GraveCoverFrames:
+    ; grave cover frame 0x7289
     db $00, $08, $00, $00, $00, $f8, $00, $00, $80
     nop
     nop
@@ -6418,6 +6421,7 @@ Jump_009_76ff:
     
     db $09, $5b, $76, $00, $00, $00 ; points to bank 9: 0x765b
 
+LinkFrames::
     ; link frame (down): 0x772a
     db $00, $08, $08, $00, $00, $f8, $0a, $00, $80
 
@@ -6516,6 +6520,7 @@ Jump_009_76ff:
     ; bank 9 0x7817
     db $07, $db, $79, $00, $00, $00 ; points to bank 7: 0x79db
 
+RandyFrames::
     ; randy frame 1: 0x781d
     db $00, $0f, $00, $00, $00, $f8, $02, $00, $f0, $00, $04, $00, $10, $f8, $06, $00
     db $f0, $00, $08, $00, $80
@@ -6657,6 +6662,7 @@ bank009_7a03:
     db $08, $00
     INCBIN "gfx/bank009_7a05.2bpp"
     
+JTFrames::
     ; JT frame 1: 0x7a85
     db $00, $08, $00, $00, $00, $f8, $02, $00, $80
 
@@ -6685,6 +6691,7 @@ bank009_7a03:
     nop
     nop
 
+    ; JT frame (dead): 0x7ac5
     db $00, $08, $14, $00, $00, $f8, $14, $20, $80
 
     nop
@@ -6870,6 +6877,7 @@ PondSpriteFrames::
     ; bank 9 0x7f80
     db $09, $a7, $7e, $00, $00, $00 ; points to bank 9: 0x7ea7
 
+bank009_7f86:
     db $25, $12, $01, $19, $00, $00, $ff, $ff, $1a, $00, $7f, $9a, $00, $01, $ff, $ff
     db $01, $09, $7f, $eb, $1a, $00, $7f, $a6, $00, $00, $00, $00, $01, $09, $7f, $ae
     
