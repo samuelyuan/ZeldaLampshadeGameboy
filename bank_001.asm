@@ -6595,15 +6595,17 @@ jr_001_61aa:
     add sp, $03
     ret
 
-
-    db $25, $40, $00, $57, $65, $6c, $63, $6f, $6d, $65, $20, $54, $6f, $20, $48, $79
-    db $73, $63, $75, $6c, $65, $00, $47, $03, $01, $04, $14, $00, $00, $45, $ff, $0e
+    ; bank 1 0x61ad
+    db $25, $40, $00
+    db "Welcome To Hyscule", $00
+    
+    db $47, $03, $01, $04, $14, $00, $00, $45, $ff, $0e
     db $00, $41, $ff, $00, $44, $07, $01, $45, $fe, $12, $00, $44, $03, $01, $00
     
-PcWorldTileImage::
+PcWorldTileImage:: ; 0x61dc
     db $7a, $00
     INCBIN "gfx/bank001_pcworld_61de.2bpp"
 
-TitlescreenTileImage::
+TitlescreenTileImage:: ; 0x697e
     db $68, $01
     INCBIN "gfx/bank001_title_6980.2bpp" ; 0x6980 title screen
