@@ -118,122 +118,42 @@ SECTION "ROM Bank $00a", ROMX[$4000], BANK[$a]
     ld [hl], $00
     ret
 
-
+pcworld_outside_sign_bank00a_40dd:
     db $25, $40, $00
 
     db "T0t411Y\n" ; 0x40e0
     db "1337\n"
     db "Pr1C35"
 
-    nop
-    ld b, a
-    inc bc
-    ld bc, $1405
-    nop
-    nop
-    ld b, l
-    rst $38
-    dec c
-    nop
-    ld b, c
-    rst $38
-    nop
-    ld b, h
-    rlca
-    ld bc, $fe45
-    ld [de], a
-    nop
-    ld b, h
-    inc bc
-    db $01
-    nop
+    db $00, $47, $03, $01, $05, $14, $00, $00, $45, $ff, $0d, $00, $41, $ff, $00, $44
+    db $07, $01, $45, $fe, $12, $00, $44, $03, $01, $00
 
-    ; bank 0a 0x410d
+jasper_dialogue:   ; bank 0a 0x410d
     db $25, $40, $00
 
     db "I'm so bored!" ; 0x4110
 
-    nop
-    ld b, a
-    inc bc
-    ld bc, $1404
-    nop
-    nop
-    ld b, l
-    rst $38
-    ld c, $00
-    ld b, c
-    rst $38
-    nop
-    ld b, h
-    rlca
-    ld bc, $fe45
-    ld [de], a
-    nop
-    ld b, h
-    inc bc
-    db $01
-    nop
+    db $00, $47, $03, $01, $04, $14, $00, $00, $45, $ff, $0e, $00, $41, $ff, $00, $44
+    db $07, $01, $45, $fe, $12, $00, $44, $03, $01, $00
+
     db $25, $40, $00
 
     db "Can I\n" ; 0x413a
     db "R.I.P.\n"
     db "please"
 
-    nop
-    ld b, a
-    inc bc
-    ld bc, $1405
-    nop
-    nop
-    ld b, l
-    rst $38
+    db $00, $47, $03, $01, $05, $14, $00, $00, $45, $ff, $0d, $00, $41, $ff, $00, $44
+    db $07, $01, $45, $fe, $12, $00, $44, $03, $01, $00
 
-jr_00a_4157:
-    dec c
-    nop
-    ld b, c
-    rst $38
-    nop
-    ld b, h
-    rlca
-    ld bc, $fe45
-    ld [de], a
-    nop
-    ld b, h
-    inc bc
-    
-    db $01, $00
-
-    ; bank 0a 0x4167
+pcworld_inside_sign_bank00a_4167: ; 0x4167
     db $25, $40, $00
 
     db "T0t411Y\n" ; 0x416a
     db "1337\n"
     db "Pr1C35"
 
-    nop
-    ld b, a
-    inc bc
-    ld bc, $1405
-    nop
-    nop
-    ld b, l
-    rst $38
-    dec c
-
-jr_00a_4188:
-    nop
-    ld b, c
-    rst $38
-    nop
-    ld b, h
-    rlca
-    ld bc, $fe45
-    ld [de], a
-    nop
-    ld b, h
-    inc bc
+    db $00, $47, $03, $01, $05, $14, $00, $00, $45, $ff, $0d, $00, $41, $ff, $00, $44, $07
+    db $01, $45, $fe, $12, $00, $44, $03
 
     db $01, $00
     
@@ -384,322 +304,253 @@ jr_00a_4188:
     ; bank 8: 0x5c11 tilemap
     db $08, $11, $5c, $00, $00, $00
 
-    db $00, $00
-    ld a, $3e
-    pop bc
-    pop bc
-    adc $8e
-    call z, $c484
-    add h
-    ld hl, sp-$08
-    nop
-    nop
-    rrca
-    ld a, [bc]
-    ld bc, $0a04
-    push af
-    ld b, l
-    ld bc, $0e09
-    ld bc, $0a02
-    ld a, a
-    ld c, d
-    inc bc
-    inc c
-    ld c, $01
-    ld [bc], a
-    ld a, [bc]
-    or c
-    ld c, d
-    inc bc
-    ld a, [bc]
-    sbc e
-    ld b, l
-    add hl, bc
-    ld l, l
-    ld a, c
-    add hl, bc
-    ld [bc], a
-    ld [hl], l
-    ld [$7d29], sp
-    rlca
-    ld de, $0102
-    ld a, [bc]
-    and c
-    ld c, b
-    ld bc, $060a
-    ld [bc], a
-    ld bc, $ab0a
-    ld c, c
-    inc bc
-    add hl, bc
-    sub h
-    ld a, [hl]
-    add hl, bc
-    ldh a, [$79]
-    ld [$7d29], sp
-    rlca
-    ld de, $0102
-    ld a, [bc]
-    db $ed
-    ld c, b
-    ld bc, $060a
-    ld [bc], a
-    ld bc, $8609
-    ld a, a
-    inc bc
-    add hl, bc
-    ld [$0978], a
-    rla
-    ld [hl], a
-    ld [$7d29], sp
-    rlca
-    ld de, $0102
-    ld a, [bc]
-    add hl, sp
-    ld c, c
-    ld bc, $d609
-    ld l, h
-    add hl, bc
-    xor l
-    ld l, [hl]
-    ld [$7d29], sp
-    ld a, [bc]
-    sbc e
-    ld b, l
-    add hl, bc
-    ld de, $0102
-    ld a, [bc]
-    sub a
-    ld b, a
-    ld bc, $d109
-    ld l, a
-    ld [$7d29], sp
-    ld a, [bc]
-    sbc e
-    ld b, l
-    rlca
-    ld de, $0102
-    ld a, [bc]
-    add hl, bc
-    ld c, b
-    ld bc, $0506
-    ld [bc], a
-    ld bc, $850a
-    ld c, c
-    ld bc, $9b0a
-    ld b, l
-    ld [$7d29], sp
-    ld [$7d29], sp
-    ld b, $11
-    inc b
-    ld bc, $0d0a
-    ld c, d
-    ld bc, $0506
-    inc b
-    ld bc, $330a
-    ld c, d
-    ld bc, $2908
-    ld a, l
-    ld b, $03
-    inc b
-    ld bc, $dd0a
-    ld c, c
-    ld bc, $1107
-    ld [bc], a
-    ld bc, $590a
-    ld c, d
-    ld bc, $1309
-    ld a, e
-    add hl, bc
-    xor l
-    ld l, [hl]
-    ld [$7d29], sp
-    nop
-    ld a, [bc]
-    ld bc, $0a04
-    dec de
-    ld b, [hl]
-    ld bc, $0002
-    ld c, $01
-    ld a, [bc]
-    cp l
-    ld b, a
-    ld bc, $000f
-    ld bc, $0a0e
-    ld e, a
-    ld c, c
-    ld bc, $0904
-    ld [bc], a
-    ld bc, $710a
-    ld b, a
-    ld bc, $1225
-    inc b
-    inc d
-    nop
-    nop
-    rst $38
-    db $fc
-    inc sp
-    rst $38
-    db $fc
-    ld d, l
-    ld b, h
-    add sp, $0a
-    inc b
-    ld d, e
-    add h
-    db $10
-    inc d
-    nop
-    ld bc, $fcff
-    dec c
-    rst $38
-    db $fc
-    nop
-    ld d, l
-    xor a
-    ld [bc], a
-    ld hl, $c61f
-    dec c
-    ld d, a
-    inc bc
-    nop
-    ld a, [bc]
-    ld [hl], b
-    ld b, l
-    ld a, [bc]
-    ret
+bank00a_42bd:
+    ; unknown
+    db $00, $00, $3e, $3e, $c1, $c1, $ce, $8e, $cc, $84, $c4, $84, $f8, $f8, $00, $00
 
-
-    ld b, l
-    ld a, [bc]
-    sbc e
-    ld b, l
-    add hl, bc
-    xor l
-    ld l, [hl]
-    ld [$7d29], sp
-    nop
-    nop
-    ld bc, $0a0e
-    db $e3, $4a, $01, $00, $00, $10
-    db $01, $0a, $09, $4b, $01, $0f, $00, $01, $0e, $0a, $2f, $4b, $01, $08, $29, $7d
-    db $00, $00, $01, $0e, $0a, $55, $4b, $01, $00, $00, $0a, $01, $0a, $7b, $4b, $01
-    db $0c, $09, $02, $01, $0a, $e3, $47, $01, $09, $6a, $7c, $08, $29, $7d, $02, $11
-    db $0e, $01, $0a, $a1, $4b, $01, $0f, $04, $01, $0e, $0a, $41, $46, $01, $08, $05
-    db $02, $01, $0a, $2f, $48, $01, $09, $f3, $71, $0a, $9b, $45, $09, $5b, $6c, $09
-    db $76, $72, $09, $7f, $74, $09, $48, $76, $08, $29, $7d, $00, $08, $01, $0a, $0a
-    db $67, $46, $01, $00, $11, $10, $01, $0a, $8d, $46, $01, $0f, $08, $01, $0a, $0a
-    db $b3, $46, $01, $04, $00, $08, $01, $0a, $d9, $46, $01, $02, $07, $02, $01, $0a
-    db $7b, $48, $01, $0c, $07, $02, $01, $0a, $c7, $48, $01, $09, $73, $7f, $09, $85
-    db $75, $09, $48, $76, $08, $29, $7d, $00, $04, $01, $0e, $0a, $ff, $46, $01, $00
-    db $11, $0a, $01, $0a, $25, $47, $01, $06, $05, $02, $01, $0a, $13, $49, $01, $0a
-    db $9b, $45, $09, $67, $78, $08, $29, $7d, $04, $11, $08, $01, $0a, $4b, $47, $01
-    db $06, $00, $04, $01, $0a, $e7, $49, $01, $09, $f1, $7d, $08, $29, $7d, $07, $11
-    db $02, $01, $0a, $55, $48, $01, $12, $04, $21, $03, $c6, $0d, $57, $01, $14, $00
-    db $00, $ff, $fc, $14, $03, $00, $ff, $fd, $14, $06, $00, $ff, $fe, $35, $ff, $fc
-    db $32, $02, $ff, $fc, $27, $03, $02
+GraveyardTransition:: ; 0x42cd
+    db $0f, $0a, $01, $04
+    db $0a, $f5, $45, $01 ; bank 0a 0x45f5 JT House Outside
+    db $09, $0e, $01, $02
+    db $0a, $7f, $4a, $03 ; bank 0a 0x4a7f unknown
+    db $0c, $0e, $01, $02
+    db $0a, $b1, $4a, $03 ; bank 0a 0x4ab1 unknown
     
-    db $09, $6f, $5a
-
-    nop
-    ld [de], a
-    inc b
-    ld hl, $c603
-    dec c
-    ld d, a
-    ld bc, $0014
-    nop
-    rst $38
-    db $fc
-    inc d
-    nop
-    nop
-    rst $38
-    db $fd
-    inc d
-    nop
-    nop
-    rst $38
-    cp $35
-    rst $38
-    db $fc
-    ld [hl-], a
-    nop
-    rst $38
-    db $fc
-    daa
-    inc bc
-    ld [bc], a
-    add hl, bc
-    db $e3
-    ld e, a
-    nop
-    ld [de], a
-    dec b
-    inc d
-    nop
-    ld [bc], a
-    rst $38
-    db $fc
-    inc d
-    nop
-    ld bc, $fdff
-    ld [hl], l
-    rst $38
-    db $fc
-    inc d
-    nop
-    inc c
-    rst $38
-    ei
-    dec c
-    rst $38
-    ei
-    nop
-    ld d, l
-    xor a
-    ld [bc], a
-    inc d
-    nop
-    ld [bc], a
-    rst $38
-    db $fc
-    inc d
-    nop
-    nop
-    rst $38
-    db $fd
-    ld [hl], l
-    rst $38
-    db $fc, $00
+PcWorldSprites:: ; 0x42e5
+    db $0a, $9b, $45
+    db $09, $6d, $79
+    db $09, $02, $75
+    db $08, $29, $7d
     
-bank00a_4536:
+PCWorldTransition:: ;0x42f1
+    db $07, $11, $02, $01
+    db $0a, $a1, $48, $01 ; bank 0a 0x48a1 OutsideShop
+    db $0a, $06, $02, $01
+    db $0a, $ab, $49, $03 ; bank 0a 0x49ab unknown
+    
+McdonaldsSprites:: ; 0x4301
+    db $09, $94, $7e
+    db $09, $f0, $79
+    db $08, $29, $7d
+    
+McdonaldsTransition:: ; 0x430a
+    db $07, $11, $02, $01
+    db $0a, $ed, $48, $01 ; bank 0a 0x48ed OutsideShop
+    db $0a, $06, $02, $01
+    db $09, $86, $7f, $03 ; bank 9 0x786f unknown
+    
+JRInsideSprites:: ; 0x431a
+    db $09, $ea, $78
+    db $09, $17, $77
+    db $08, $29, $7d
+    
+JRInsideTransition:: ; 0x4323
+    db $07, $11, $02, $01
+    db $0a, $39, $49, $01 ; bank 0a 0x4939 JR Outside
+    
+JTHouseInsideSprites:: ; 0x432b
+    db $09, $d6, $6c
+    db $09, $ad, $6e
+    db $08, $29, $7d
+    db $0a, $9b, $45
+
+JTHouseInsideTransition:: ; 0x4337
+    db $09, $11, $02, $01
+    db $0a, $97, $47, $01 ; bank 0a 0x4797 JTHouseOutside
+    
+DimHouseInsideSprites:: ; 0x433f
+    db $09, $d1, $6f
+    db $08, $29, $7d
+    db $0a, $9b, $45
+
+DimHouseInsideTransition:: ; 0x4348
+    db $07, $11, $02, $01
+    db $0a, $09, $48, $01 ; bank 0a 0x4809 DimHouseOutside
+
+RoomBeforeLampshadeBossTransition:: ; 0x4350
+    db $06, $05, $02, $01
+    db $0a, $85, $49, $01 ; bank 0a 0x4985 LampshadeBossRoom
+    
+DefeatedLampshadeBossScreenSprites:: ; 0x4358
+    db $0a, $9b, $45
+    db $08, $29, $7d
+
+TempleLightOutsideSprites:: ; 0x435e
+    db $08, $29, $7d
+    
+TempleLightOutsideTransition:: ; 0x4361
+    db $06, $11, $04, $01
+    db $0a, $0d, $4a, $01 ; bank 0a 0x4a0d Bridge
+    db $06, $05, $04, $01
+    db $0a, $33, $4a, $01 ; bank 0a 0x4a33 TempleLightInside
+    
+TempleLightInsideSprites:: ; bank 0a 0x4371
+    db $08, $29, $7d
+
+TempleLightInsideTransition:: ; bank 0a 0x4374 
+    db $06, $03, $04, $01
+    db $0a, $dd, $49, $01 ; bank 0a 0x49dd
+    db $07, $11, $02, $01
+    db $0a, $59, $4a, $01 ; bank 0a 0x4a59 TempleLightOutside
+
+JTHouseOutsideSprites:: ; bank 0a 0x4384  
+    db $09, $13, $7b
+    db $09, $ad, $6e
+    db $08, $29, $7d
+    
+JTHouseOutsideTransition:: ; bank 0a 0x438d
+    db $00, $0a, $01, $04
+    db $0a, $1b, $46, $01 ; bank 0a 0x461b Graveyard
+    db $02, $00, $0e, $01
+    db $0a, $bd, $47, $01 ; bank 0a 0x47bd NgHeadquartersOutside
+    db $0f, $00, $01, $0e
+    db $0a, $5f, $49, $01 ; bank 0a 0x495f Well
+    db $04, $09, $02, $01
+    db $0a, $71, $47, $01 ; bank 0a 0x4771 JTHouseInside
+    
+bank00a_43ad: ; related to GameFinishedScreen
+    db $25, $12, $04, $14, $00, $00, $ff, $fc, $33, $ff, $fc, $55, $44, $e8, $0a, $04
+    db $53, $84, $10, $14, $00, $01, $ff, $fc, $0d, $ff, $fc, $00, $55, $af, $02, $21
+    db $1f, $c6, $0d, $57, $03, $00
+    
+WellSprites:: ; bank 0a 0x43d3
+    db $0a, $70, $45
+    db $0a, $c9, $45
+    db $0a, $9b, $45
+    db $09, $ad, $6e
+    db $08, $29, $7d
+
+WellTransition:: ; bank 0a 0x43e2
+    db $00, $00, $01, $0e
+    db $0a, $e3, $4a, $01 ; bank 0a 0x4ae3 JTHouseOutside
+    db $00, $00, $10, $01
+    db $0a, $09, $4b, $01 ; bank 0a 0x4b09 OutsideShop
+    db $0f, $00, $01, $0e
+    db $0a, $2f, $4b, $01 ; bank 0a 0x4b2f DimHouseOutside
+    
+DimHouseOutsideSprites:: ; bank 0a 0x43fa
+    db $08, $29, $7d
+    
+DimHouseOutsideTransition:: ; bank 0a 0x43fd
+    db $00, $00, $01, $0e
+    db $0a, $55, $4b, $01 ; bank 0a 0x4b55 Well
+    db $00, $00, $0a, $01
+    db $0a, $7b, $4b, $01 ; bank 0a 0x4b7b JR Outside
+    db $0c, $09, $02, $01
+    db $0a, $e3, $47, $01 ; bank 0a 0x47e3 DimHouseInside
+    
+NgHeadquartersOutsideSprites:: ; bank 0a 0x4415
+    db $09, $6a, $7c ; bank 9 0x7c6a snake
+    db $08, $29, $7d ; bank 8 0x7d29 items
+    
+NgHeadquartersOutsideTransition:: ; bank 0a 0x441b
+    db $02, $11, $0e, $01
+    db $0a, $a1, $4b, $01 ; bank 0a 0x4ba1 JTHouseOutside
+    db $0f, $04, $01, $0e
+    db $0a, $41, $46, $01 ; bank 0a 0x4641 OutsideShop
+    db $08, $05, $02, $01 
+    db $0a, $2f, $48, $01 ; bank 0a 0x482f NgHeadquartersInside
+    
+OutsideShopSprites:: ; bank 0a 0x4433
+    db $09, $f3, $71 ; bank 9: 0x71f3 flower
+    db $0a, $9b, $45
+    db $09, $5b, $6c ; bank 9 0x6c5b alex labbe
+    db $09, $76, $72 ; bank 9 0x7276 gerkinman
+    db $09, $7f, $74 ; bank 9: 0x747f jasper
+    db $09, $48, $76 ; bank 9: 0x7648 john
+    db $08, $29, $7d ; bank 8: 0x7d29 items
+
+OutsideShopTransition:: ; bank 0a 0x4448
+    db $00, $08, $01, $0a
+    db $0a, $67, $46, $01 ; bank 0a 0x4667 NgHeadquartersOutside
+    db $00, $11, $10, $01
+    db $0a, $8d, $46, $01 ; bank 0a 0x468d Well
+    db $0f, $08, $01, $0a
+    db $0a, $b3, $46, $01 ; bank 0a 0x46b3 JR Outside
+    db $04, $00, $08, $01
+    db $0a, $d9, $46, $01 ; bank 0a 0x46d9 Bridge
+    db $02, $07, $02, $01
+    db $0a, $7b, $48, $01 ; bank 0a 0x487b PC World
+    db $0c, $07, $02, $01
+    db $0a, $c7, $48, $01 ; bank 0a 0x48c7 McDonalds
+
+JROutsideSprites:: ; 0x4478
+    db $09, $73, $7f
+    db $09, $85, $75
+    db $09, $48, $76
+    db $08, $29, $7d
+    
+JROutsideTransition:: ; 0x4484
+    db $00, $04, $01, $0e
+    db $0a, $ff, $46, $01 ; bank 0a 0x46ff OutsideShop
+    db $00, $11, $0a, $01
+    db $0a, $25, $47, $01 ; bank 0a 0x4725 DimHouseOutside
+    db $06, $05, $02, $01
+    db $0a, $13, $49, $01 ; bank 0a 0x4913 JR Inside
+    
+BridgeSprites:: ; 0x449c
+    db $0a, $9b, $45
+    db $09, $67, $78
+    db $08, $29, $7d
+    
+BridgeTransition:: ; 0x44a5
+    db $04, $11, $08, $01
+    db $0a, $4b, $47, $01 ; bank 0a 0x474b OutsideShop
+    db $06, $00, $04, $01
+    db $0a, $e7, $49, $01 ; bank 0a 0x49e7 TempleLightOutside
+
+NgHeadquartersInsideSprites:: ; 0x44b5
+    db $09, $f1, $7d
+    db $08, $29, $7d
+    
+NgHeadquartersInsideTransition:: ; 0x44bb
+    db $07, $11, $02, $01
+    db $0a, $55, $48, $01 ; bank 0a 0x4855 NgHeadquartersOutside
+    
+bank00a_44c3:
+    db $12, $04, $21, $03, $c6, $0d, $57, $01, $14, $00, $00, $ff, $fc, $14, $03, $00
+    db $ff, $fd, $14, $06, $00, $ff, $fe, $35, $ff, $fc, $32, $02, $ff, $fc, $27, $03
+    db $02
+    
+; 0x44e4
+    db $09, $6f, $5a ; bank 9 0x5a6f RoomBeforeLampshadeBoss
+
+    db $00
+
+bank00a_44e8:
+    db $12, $04, $21, $03, $c6, $0d, $57, $01, $14, $00, $00, $ff, $fc, $14, $00, $00
+    db $ff, $fd, $14, $00, $00, $ff, $fe, $35, $ff, $fc, $32, $00, $ff, $fc, $27, $03
+    db $02
+    
+    db $09, $e3, $5f ; bank 9 0x5fe3 title screen
+    
+    db $00
+
+    db $12, $05, $14, $00, $02, $ff, $fc, $14, $00, $01, $ff, $fd, $75, $ff, $fc, $14
+    db $00, $0c, $ff, $fb, $0d, $ff, $fb, $00, $55, $af, $02, $14, $00, $02, $ff, $fc
+    db $14, $00, $00, $ff, $fd, $75, $ff, $fc, $00
+    
+GraveCoverSpriteImage:: ; 0x4536
     db $02, $00
     INCBIN "gfx/bank00a_gravecover_4538.2bpp"
     
-    db $80
-    nop
-    nop
-    nop
+ImageBank009_7a05SpriteFrames::
+    ; bank 0a 0x4558
+    db $80, $00, $00, $00
 
-    db $58, $45, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
+    ; frames
+    db $58, $45
+    
+    db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
     db $00, $00, $00, $00
     
-    ld bc, $f000
-    
-    db $5c, $45, $5e, $45, $6e, $45
-    nop
-    rrca
-    ld hl, sp+$07
-    db $09, $03, $7a
-    nop
-    nop
-    nop
-    db $80
-    nop
-    nop
-    nop
+    ; bank0a 0x4570
+    db $01, $00, $f0, $5c, $45, $5e, $45, $6e, $45, $00, $0f, $f8, $07
+
+    db $09, $03, $7a, $00, $00, $00 ; points to bank 9 0x7a03
+
+    db $80, $00, $00, $00
+
     db $83, $45, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
     db $00, $00, $00, $00
     ld bc, $f000
@@ -707,20 +558,11 @@ bank00a_4536:
     nop
     rrca
     ld hl, sp+$07
-    db $0a, $ae, $45
-    nop
-    nop
-    nop
+    db $0a, $ae, $45, $00, $00, $00
 
-    db $00, $00
+    db $00, $00, $00
 
-    nop
-
-    db $80
-
-    nop
-    nop
-    nop
+    db $80, $00, $00, $00
 
     db $b1, $45, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
     db $00, $00, $00, $00
@@ -757,164 +599,182 @@ bank00a_4536:
     nop
     nop
 
-    ; bank 0a 0x45f5
-
+GraveyardToJTHouseOutsideTransition:: ; bank 0a 0x45f5
     db $25, $12, $04, $21, $03, $c6, $0d, $57, $01, $14, $00, $00, $ff, $fc, $14, $00
     db $80, $ff, $fd, $14, $05, $80, $ff, $fe, $35, $ff, $fc, $32, $01, $ff, $fc, $27
     db $03, $02, $09, $76, $5f
     
     nop
     
-    ; bank 0a 0x461b
-    
+ JTHouseOutsideToGraveyardTransition:: ; bank 0a 0x461b
     db $25, $12, $04, $21, $03, $c6, $0d, $57, $01, $14, $00, $00, $ff, $fc, $14, $06
     db $80, $ff, $fd, $14, $05, $80, $ff, $fe, $35, $ff, $fc, $32, $03, $ff, $fc, $27
     db $03, $02, $09, $61, $54
 
     nop
 
+NgHeadquartersOutsideToOutsideShopTransition:: ; 0x4641
     db $25, $12, $04, $21, $03, $c6, $0d, $57, $01, $14, $00, $00, $ff, $fc, $14, $00
     db $80, $ff, $fd, $14, $05, $80, $ff, $fe, $35, $ff, $fc, $32, $01, $ff, $fc, $27
     db $03, $02, $09, $46, $63
     
     nop
     
+OutsideShopToNgHeadquartersOutsideTransition:: ; 0x4667
     db $25, $12, $04, $21, $03, $c6, $0d, $57, $01, $14, $00, $00, $ff, $fc, $14, $06
     db $80, $ff, $fd, $14, $05, $80, $ff, $fe, $35, $ff, $fc, $32, $03, $ff, $fc, $27
     db $03, $02, $09, $0b, $63
     
     nop
-    
+
+OutsideShopToWellTransition:: ; 0x468d
     db $25, $12, $04, $21, $03, $c6, $0d, $57, $01, $14, $00, $00, $ff, $fc, $14, $03
     db $80, $ff, $fd, $14, $00, $80, $ff, $fe, $35, $ff, $fc, $32, $00, $ff, $fc, $27
     db $03, $02, $09, $91, $61
     
     nop
 
+OutsideShopToJROutsideTransition:: ; 0x46b3
     db $25, $12, $04, $21, $03, $c6, $0d, $57, $01, $14, $00, $00, $ff, $fc, $14, $00
     db $80, $ff, $fd, $14, $05, $80, $ff, $fe, $35, $ff, $fc, $32, $01, $ff, $fc, $27
     db $03, $02, $09, $85, $64
 
     nop
 
+OutsideShopToBridgeTransition:: ; 0x46d9
     db $25, $12, $04, $21, $03, $c6, $0d, $57, $01, $14, $00, $00, $ff, $fc, $14, $03
     db $80, $ff, $fd, $14, $08, $00, $ff, $fe, $35, $ff, $fc, $32, $02, $ff, $fc, $27
     db $03, $02, $09, $90, $65
 
     nop
 
+JROutsideToOutsideShopTransition:: ; 0x46ff
     db $25, $12, $04, $21, $03, $c6, $0d, $57, $01, $14, $00, $00, $ff, $fc, $14, $06
     db $80, $ff, $fd, $14, $05, $80, $ff, $fe, $35, $ff, $fc, $32, $03, $ff, $fc, $27
     db $03, $02, $09, $46, $63
 
     nop
     
+JROutsideToDimHouseOutsideTransition:: ; 0x4725
     db $25, $12, $04, $21, $03, $c6, $0d, $57, $01, $14, $00, $00, $ff, $fc, $14, $03
     db $00, $ff, $fd, $14, $00, $80, $ff, $fe, $35, $ff, $fc, $32, $00, $ff, $fc, $27
     db $03, $02, $09, $34, $62
     
     nop
 
+BridgeToOutsideShopTransition:: ; 0x474b
     db $25, $12, $04, $21, $03, $c6, $0d, $57, $01, $14, $00, $00, $ff, $fc, $14, $03
     db $80, $ff, $fd, $14, $00, $80, $ff, $fe, $35, $ff, $fc, $32, $00, $ff, $fc, $27
     db $03, $02, $09, $46, $63
 
     nop
 
+JTHouseOutsideToJTHouseInsideTransition:: ; 0x4771
     db $25, $12, $04, $21, $03, $c6, $0d, $57, $01, $14, $00, $00, $ff, $fc, $14, $04
     db $80, $ff, $fd, $14, $08, $00, $ff, $fe, $35, $ff, $fc, $32, $02, $ff, $fc, $27
     db $03, $02, $09, $29, $59
 
     nop
 
-    ; bank 0a 0x4797
-
+JTHouseInsideToJTHouseOutsideTransition:: ; bank 0a 0x4797
     db $25, $12, $04, $21, $03, $c6, $0d, $57, $01, $14, $00, $00, $ff, $fc, $14, $02
     db $00, $ff, $fd, $14, $05, $00, $ff, $fe, $35, $ff, $fc, $32, $00, $ff, $fc, $27
     db $03, $02, $09, $76, $5f
 
     nop
 
-    ; bank 0a 0x47bd
-
+JTHouseOutsideToNgHeadquartersOutsideTransition:: ; bank 0a 0x47bd
     db $25, $12, $04, $21, $03, $c6, $0d, $57, $01, $14, $00, $00, $ff, $fc, $14, $05
     db $00, $ff, $fd, $14, $08, $00, $ff, $fe, $35, $ff, $fc, $32, $02, $ff, $fc, $27
     db $03, $02, $09, $0b, $63
 
     nop
 
+DimHouseOutsideToDimHouseInsideTransition:: ; 0x47e3
     db $25, $12, $04, $21, $03, $c6, $0d, $57, $01, $14, $00, $00, $ff, $fc, $14, $03
     db $80, $ff, $fd, $14, $08, $00, $ff, $fe, $35, $ff, $fc, $32, $02, $ff, $fc, $27
     db $03, $02, $09, $34, $5a
 
     nop
 
+DimHouseInsideToDimHouseOutsideTransition:: ; 0x4809
     db $25, $12, $04, $21, $03, $c6, $0d, $57, $01, $14, $00, $00, $ff, $fc, $14, $06
     db $00, $ff, $fd, $14, $05, $00, $ff, $fe, $35, $ff, $fc, $32, $00, $ff, $fc, $27
     db $03, $02, $09, $34, $62
 
     nop
 
+NgHeadquartersOutsideToNgHeadquartersInsideTransition:: ; 0x482f
     db $25, $12, $04, $21, $03, $c6, $0d, $57, $01, $14, $00, $00, $ff, $fc, $14, $03
     db $80, $ff, $fd, $14, $08, $00, $ff, $fe, $35, $ff, $fc, $32, $02, $ff, $fc, $27
     db $03, $02, $09, $67, $66
 
     nop
 
+NgHeadquartersInsideToNgHeadquartersOutsideTransition:: ; 0x4855
     db $25, $12, $04, $21, $03, $c6, $0d, $57, $01, $14, $00, $00, $ff, $fc, $14, $04
     db $00, $ff, $fd, $14, $03, $00, $ff, $fe, $35, $ff, $fc, $32, $00, $ff, $fc, $27
     db $03, $02, $09, $0b, $63
 
     nop
 
+OutsideShopToPCWorldTransition:: ; 0x487b
     db $25, $12, $04, $21, $03, $c6, $0d, $57, $01, $14, $00, $00, $ff, $fc, $14, $03
     db $80, $ff, $fd, $14, $08, $00, $ff, $fe, $35, $ff, $fc, $32, $02, $ff, $fc, $27
     db $03, $02, $09, $a0, $55
 
     nop
 
+PCWorldToOutsideShopTransition:: ; 0x48a1
     db $25, $12, $04, $21, $03, $c6, $0d, $57, $01, $14, $00, $00, $ff, $fc, $14, $01
     db $00, $ff, $fd, $14, $04, $00, $ff, $fe, $35, $ff, $fc, $32, $00, $ff, $fc, $27
     db $03, $02, $09, $46, $63
 
     nop
 
+OutsideShopToMcdonaldsTransition:: ; 0x48c7
     db $25, $12, $04, $21, $03, $c6, $0d, $57, $01, $14, $00, $00, $ff, $fc, $14, $03
     db $80, $ff, $fd, $14, $08, $00, $ff, $fe, $35, $ff, $fc, $32, $02, $ff, $fc, $27
     db $03, $02, $09, $ab, $56
 
     nop
 
+McdonaldsToOutsideShopTransition:: ; 0x48ed
     db $25, $12, $04, $21, $03, $c6, $0d, $57, $01, $14, $00, $00, $ff, $fc, $14, $06
     db $00, $ff, $fd, $14, $04, $80, $ff, $fe, $35, $ff, $fc, $32, $00, $ff, $fc, $27
     db $03, $02, $09, $46, $63
 
     nop
 
+JROutsideToJRInsideTransition:: ; 0x4913
     db $25, $12, $04, $21, $03, $c6, $0d, $57, $01, $14, $00, $00, $ff, $fc, $14, $03
     db $80, $ff, $fd, $14, $08, $00, $ff, $fe, $35, $ff, $fc, $32, $02, $ff, $fc, $27
     db $03, $02, $09, $b6, $57
 
     nop
 
+JRInsideToJROutsideTransition:: ; 0x4939
     db $25, $12, $04, $21, $03, $c6, $0d, $57, $01, $14, $00, $00, $ff, $fc, $14, $03
     db $00, $ff, $fd, $14, $03, $00, $ff, $fe, $35, $ff, $fc, $32, $00, $ff, $fc, $27
     db $03, $02, $09, $85, $64
 
     nop
 
+JTHouseOutsideToWellTransition:: ; 0x495f
     db $25, $12, $04, $21, $03, $c6, $0d, $57, $01, $14, $00, $00, $ff, $fc, $14, $00
     db $80, $ff, $fd, $14, $05, $80, $ff, $fe, $35, $ff, $fc, $32, $01, $ff, $fc, $27
     db $03, $02, $09, $91, $61
 
     nop
 
+RoomBeforeLampshadeBossToLampshadeBossRoomTransition:: ; 0x4985
     db $25, $12, $04, $21, $03, $c6, $0d, $57, $01, $14, $00, $00, $ff, $fc, $14, $03
     db $00, $ff, $fd, $14, $07, $80, $ff, $fe, $35, $ff, $fc, $32, $02, $ff, $fc, $27
     db $03, $02, $09, $bc, $5b
 
     nop
 
+; 0x49ab
     db $25, $12, $01, $19, $00, $00, $ff, $ff, $1a, $00, $49, $bf, $00, $01, $ff, $ff
     db $01, $09, $49, $c8, $55, $66, $a2, $09, $04, $53, $84, $10, $00, $19, $00, $00
     db $ff, $ff, $1a, $00, $49, $d9, $00, $02, $ff, $ff, $01
@@ -925,137 +785,84 @@ bank00a_4536:
     
     db $00
 
+BridgeToTempleLightOutsideTransition:: ; 0x49e7
     db $25, $12, $04, $21, $03, $c6, $0d, $57, $01, $14, $00, $00, $ff, $fc, $14
     db $03, $80, $ff, $fd, $14, $08, $00, $ff, $fe, $35, $ff, $fc, $32, $02, $ff
     db $fc, $27, $03, $02, $09, $93, $5d
     
     nop
-    
+
+TempleLightOutsideToBridgeTransition:: ; 0x4a0d
     db $25, $12, $04, $21, $03, $c6, $0d, $57, $01, $14, $00, $00, $ff, $fc, $14, $03
     db $80, $ff, $fd, $14, $00, $80, $ff, $fe, $35, $ff, $fc, $32, $00, $ff, $fc, $27
     db $03, $02, $09, $90, $65
     
     nop
 
+TempleLightOutsideToTempleLightInsideTransition:: ; 0x4a33
     db $25, $12, $04, $21, $03, $c6, $0d, $57, $01, $14, $00, $00, $ff, $fc, $14, $03
     db $80, $ff, $fd, $14, $08, $00, $ff, $fe, $35, $ff, $fc, $32, $02, $ff, $fc, $27
     db $03, $02, $09, $6b, $5e
 
     nop
-    dec h
-    ld [de], a
-    inc b
-    ld hl, $c603
-    dec c
-    ld d, a
-    ld bc, $0014
-    nop
-    rst $38
-    db $fc
-    inc d
-    inc bc
-    add b
-    rst $38
-    db $fd
-    inc d
-    inc bc
-    nop
-    rst $38
-    cp $35
-    rst $38
-    db $fc
-    ld [hl-], a
-    nop
-    rst $38
-    db $fc
-    daa
-    inc bc
-    ld [bc], a
-    add hl, bc
-    sub e
-    ld e, l
-    nop
-    dec h
-    ld [de], a
-    ld bc, $0019
-    nop
-    rst $38
-    rst $38
-    ld a, [de]
-    nop
-    ld c, d
-    sub e
-    nop
-    ld bc, $ffff
-    ld bc, $4a09
-    sbc h
-    ld d, l
-    ld [hl], h
-    inc bc
-    rlca
-    inc b
-    ld d, e
-    add h
-    stop
-    add hl, de
-    nop
-    nop
-    rst $38
-    rst $38
-    ld a, [de]
-    nop
-    ld c, d
-    xor l
-    nop
-    ld [bc], a
-    rst $38
-    rst $38
-    ld bc, $4a09
-    or b
-    ld e, a
-    stop
+
+TempleLightInsideToTempleLightOutsideTransition:: ; 0x4a59
+    db $25, $12, $04, $21, $03, $C6, $0D, $57, $01, $14, $00, $00, $ff, $fc, $14, $03
+    db $80, $ff, $fd, $14, $03, $00, $ff, $fe, $35, $ff, $fc, $32, $00, $ff, $fc, $27
+    db $03, $02, $09, $93, $5d
+
     nop
 
+; 0x4a7f
+    db $25, $12, $01, $19, $00, $00, $ff, $ff, $1a, $00, $4a, $93, $00, $01, $ff, $ff
+    db $01, $09, $4a, $9c, $55, $74, $03, $07, $04, $53, $84, $10, $00, $19, $00, $00
+    db $ff, $ff, $1a, $00, $4a, $ad, $00, $02, $ff, $ff, $01, $09, $4a, $b0, $5f, $10, $00
+
+    nop
+
+; 0x4ab1
     db $25, $12, $01, $19, $00, $00, $ff, $ff, $1a, $00, $4a, $c5, $00, $01, $ff, $ff
     db $01, $09, $4a, $ce, $55, $75, $8e, $07, $04, $53, $84, $10, $00, $19, $00, $00
     db $ff, $ff, $1a, $00, $4a, $df, $00, $02, $ff, $ff, $01, $09, $4a, $e2, $5f, $10, $00
 
     nop
 
-    ; bank 0a 0x4ae3
-
+WellToJTHouseOutsideTransition:: ; bank 0a 0x4ae3
     db $25, $12, $04, $21, $03, $c6, $0d, $57, $01, $14, $00, $00, $ff, $fc, $14, $06
     db $80, $ff, $fd, $14, $05, $80, $ff, $fe, $35, $ff, $fc, $32, $03, $ff, $fc, $27
     db $03, $02, $09, $76, $5f
 
     nop
 
+WellToOutsideShopTransition:: ; 0x4b09
     db $25, $12, $04, $21, $03, $c6, $0d, $57, $01, $14, $00, $00, $ff, $fc, $14, $03
     db $80, $ff, $fd, $14, $08, $00, $ff, $fe, $35, $ff, $fc, $32, $02, $ff, $fc, $27
     db $03, $02, $09, $46, $63
 
     nop
 
+ WellToDimHouseOutsideTransition:: ; 0x4b2f
     db $25, $12, $04, $21, $03, $c6, $0d, $57, $01, $14, $00, $00, $ff, $fc, $14, $00
     db $80, $ff, $fd, $14, $05, $80, $ff, $fe, $35, $ff, $fc, $32, $01, $ff, $fc, $27
     db $03, $02, $09, $34, $62
 
     nop
 
+DimHouseOutsideToWellTransition:: ; 0x4b55
     db $25, $12, $04, $21, $03, $c6, $0d, $57, $01, $14, $00, $00, $ff, $fc, $14, $06
     db $80, $ff, $fd, $14, $05, $80, $ff, $fe, $35, $ff, $fc, $32, $03, $ff, $fc, $27
     db $03, $02, $09, $91, $61
 
     nop
 
+DimHouseOutsideToJROutsideTransition:: ; 0x4b7b
     db $25, $12, $04, $21, $03, $c6, $0d, $57, $01, $14, $00, $00, $ff, $fc, $14, $03
     db $00, $ff, $fd, $14, $08, $00, $ff, $fe, $35, $ff, $fc, $32, $02, $ff, $fc, $27
     db $03, $02, $09, $85, $64
 
     nop
 
-    ; bank 0a 0x4ba1
-
+NgHeadquartersOutsideToJTHouseOutsideTransition:: ; bank 0a 0x4ba1
     db $25, $12, $04, $21, $03, $c6, $0d, $57, $01, $14, $00, $00, $ff, $fc, $14, $05
     db $00, $ff, $fd, $14, $00, $80, $ff, $fe, $35, $ff, $fc, $32, $00, $ff, $fc, $27
     db $03, $02, $09, $76, $5f
