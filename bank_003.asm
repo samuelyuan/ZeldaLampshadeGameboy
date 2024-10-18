@@ -3306,6 +3306,7 @@ jr_003_6526:
 
     INCBIN "gfx/bank003_font_6593.2bpp" ; font
 
+    ; 0x7243
     ld bc, $93ff
     ld h, h
     nop
@@ -6813,28 +6814,8 @@ jr_003_7ec4:
     ld a, [hl]
     ld c, e
     ld [hl], d
-    call z, Call_000_257e
-    ld [de], a
-    inc b
-    ld h, c
-    inc d
-    nop
-    nop
-    rst $38
-    db $fc
-    ld sp, $fcff
-    inc d
-    nop
-    ld bc, $fcff
-    dec c
-    rst $38
-    db $fc
-    nop
-    ld d, l
-    xor a
-    ld [bc], a
-    ld hl, $c601
-    dec c
-    ld d, a
-    inc bc
-    nop
+    db $cc, $7e
+    
+bank003_7fe1:
+    db $25, $12, $04, $61, $14, $00, $00, $ff, $fc, $31, $ff, $fc, $14, $00, $01, $ff
+    db $fc, $0d, $ff, $fc, $00, $55, $af, $02, $21, $01, $c6, $0d, $57, $03, $00
