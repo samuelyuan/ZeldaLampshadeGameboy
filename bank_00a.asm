@@ -305,9 +305,8 @@ TitleScreenMapDraw:: ; bank 0a: 0x42af
     ; bank 8: 0x5c11 tilemap
     db $08, $11, $5c, $00, $00, $00
 
-bank00a_42bd:
-    ; unknown
-    db $00, $00, $3e, $3e, $c1, $c1, $ce, $8e, $cc, $84, $c4, $84, $f8, $f8, $00, $00
+CursorImage:: ; 0x42bd
+    INCBIN "gfx/bank00a_cursor_42bd.2bpp"
 
 GraveyardTransition:: ; 0x42cd
     db $0f, $0a, $01, $04
