@@ -3163,7 +3163,7 @@ jr_009_527f:
 bank009_5296:
     INCBIN "gfx/bank009_5296.2bpp"
     
-bank009_5326:
+Palette1::
     db $ff, $d0, $e0
     
 GraveyardDialogue:: ; 0x5329
@@ -3227,8 +3227,8 @@ GraveyardEntry::    ; bank 9 0x5461
     db $00, $09, $0a, $78
     db $0a, $97, $41 ; bank 0a: 0x4197 tiles
     db $08, $79, $5d ; bank 8 0x5d79 collision
-    db $04, $b4
-    db $7f, $09, $26, $53
+    db $04, $b4, $7f ; bank 4 0x7fb4 palette 0
+    db $09, $26, $53 ; bank 9 0x5326 palette 1
     db $07, $52, $5a, $00
     db $00, $00
     db $07, $05, $5c ; bank 7 0x5c05 sprites
@@ -3291,8 +3291,8 @@ PCWorldEntry::    ; bank 9 0x55a0
     db $00, $09, $0a, $78
     db $0a, $07, $42  ; bank 0a: 0x4207 tiles
     db $08, $e1, $5e ; bank 8: 0x5ee1 collision
-    db $04, $b4
-    db $7f, $09, $26, $53
+    db $04, $b4, $7f ; bank 4 0x7fb4 palette 0
+    db $09, $26, $53 ; bank 9 0x5326 palette 1
     db $07, $14, $5c, $00
     db $00, $00
     db $0a, $e5, $42 ; bank 0a 0x42e5 sprites
@@ -3340,8 +3340,8 @@ McdonaldsEntry::    ; bank 9 0x56ab
     db $00, $09, $0a, $78
     db $0a, $15, $42  ; bank 0a: 0x4215 tiles
     db $08, $49, $60 ; bank 8 0x6049 collision
-    db $04, $b4
-    db $7f, $09, $26, $53
+    db $04, $b4, $7f ; bank 4 0x7fb4 palette 0
+    db $09, $26, $53 ; bank 9 0x5326 palette 1
     db $07, $95, $5d, $00
     db $00, $00
     db $0a, $01, $43  ; bank 0a 0x4301 sprites
@@ -3389,8 +3389,8 @@ JRInsideEntry::    ; 0x57b6
     db $00, $09, $0a, $78
     db $0a, $31, $42  ; bank 0a: 0x4231 tiles
     db $08, $b1, $61 ; bank 8 0x61b1 collision
-    db $04, $b4
-    db $7f, $09, $26, $53
+    db $04, $b4, $7f ; bank 4 0x7fb4 palette 0
+    db $09, $26, $53 ; bank 9 0x5326 palette 1
     db $07, $16, $5f, $00
     db $00, $00
     db $0a, $1a, $43 ; bank 0a 0x431a sprites
@@ -3452,7 +3452,8 @@ JTHouseInsideEntry::    ; 0x5929
     db $00, $09, $0a, $78
     db $0a, $a5, $41  ; bank 0a: 0x41a5 tiles
     db $08, $19, $63 ; bank 8 0x6319 collision
-    db $04, $b4, $7f, $09, $26, $53
+    db $04, $b4, $7f ; bank 4 0x7fb4 palette 0
+    db $09, $26, $53 ; bank 9 0x5326 palette 1
     db $07, $97, $60, $00
     db $00, $00
     db $0a, $2b, $43 ; bank 0a 0x432b sprites
@@ -3506,7 +3507,8 @@ DimHouseInsideEntry::    ; bank 9 0x5a34
     db $00, $09, $0a, $78
     db $0a, $cf, $41  ; points to bank 0a: 0x41cf tiles
     db $08, $81, $64 ; bank 8 0x6481 collision
-    db $04, $b4, $7f, $09, $26, $53
+    db $04, $b4, $7f ; bank 4 0x7fb4 palette 0
+    db $09, $26, $53 ; bank 9 0x5326 palette 1
     db $07, $18, $62
     db $00, $00, $00
     db $0a, $3f, $43 ; bank 0a 0x433f sprites
@@ -3523,8 +3525,8 @@ RoomBeforeLampshadeBossEntry::    ; bank 9 0x5a6f
     db $00, $09, $0a, $78
     db $0a, $77, $42  ; points to bank 0a: 0x4277 tiles
     db $08, $e9, $65 ; bank 8 0x65e9 collision
-    db $04, $b4
-    db $7f, $09, $26, $53
+    db $04, $b4, $7f ; bank 4 0x7fb4 palette 0
+    db $09, $26, $53 ; bank 9 0x5326 palette 1
     db $03, $e1, $7f
     db $00, $00, $00
     db $00, $00, $00 ; no sprites
@@ -3581,8 +3583,8 @@ LampshadeBossRoomEntry::    ; 0x5bbc
     db $00, $09, $0a, $78
     db $0a, $69, $42  ; points to bank 0a: 0x4269 tiles
     db $08, $51, $67 ; bank 8 0x6751 collision
-    db $04, $b4
-    db $7f, $09, $26, $53
+    db $04, $b4, $7f ; bank 4 0x7fb4 palette 0
+    db $09, $26, $53 ; bank 9 0x5326 palette 1
     db $09, $46, $5b, $00
     db $00, $00
     db $08, $b9, $68 ; bank 8 0x68b9 sprites
@@ -3631,8 +3633,8 @@ DefeatedLampshadeBossScreenEntry::    ; 0x5cf0
     db $00, $09, $0a, $78
     db $0a, $5b, $42  ; bank 0a: 0x425b tiles
     db $08, $bf, $68 ; bank 0x68bf collision
-    db $04, $b4
-    db $7f, $09, $26, $53
+    db $04, $b4, $7f ; bank 4 0x7fb4 palette 0
+    db $09, $26, $53 ; bank 9 0x5326 palette 1
     db $09, $93, $5c, $00
     db $00, $00
     db $0a, $58, $43 ; bank 0a 0x4358 sprites
@@ -3666,8 +3668,8 @@ TempleLightOutsideEntry::    ; 0x5d93
     db $00, $09, $0a, $78
     db $0a, $93, $42 ; bank 0a: 0x4293 tiles
     db $08, $27, $6a ; bank 8 0x6a27 collision
-    db $04, $b4
-    db $7f, $09, $26, $53
+    db $04, $b4, $7f ; bank 4 0x7fb4 palette 0
+    db $09, $26, $53 ; bank 9 0x5326 palette 1
     db $07, $99, $63, $00
     db $00, $00
     db $0a, $5e, $43 ; bank 0a 0x435e sprites
@@ -3707,8 +3709,8 @@ TempleLightInsideEntry::    ; 0x5e6b
     db $00, $09, $0a, $78    
     db $0a, $85, $42 ; bank 0a: 0x4285 tiles
     db $08, $8f, $6b ; bank 8 0x6b8f collision
-    db $04, $b4
-    db $7f, $09, $26, $53
+    db $04, $b4, $7f ; bank 4 0x7fb4 palette 0
+    db $09, $26, $53 ; bank 9 0x5326 palette 1
     db $09, $36, $5e, $00
     db $00, $00
     db $0a, $71, $43 ; bank 0a 0x4371 sprites
@@ -3756,8 +3758,8 @@ JTHouseOutsideEntry:: ; bank 9 0x5f76
     db $00, $09, $0a, $78
     db $0a, $b3, $41  ; bank 0a: 0x41b3 tiles
     db $08, $f7, $6c ; bank 8 0x6cf7 collision
-    db $04, $b4
-    db $7f, $09, $26, $53
+    db $04, $b4, $7f ; bank 4 0x7fb4 palette 0
+    db $09, $26, $53 ; bank 9 0x5326 palette 1
     db $07, $1a, $65, $00
     db $00, $00
     db $0a, $84, $43 ; bank 0a 0x4384 sprites
@@ -3785,8 +3787,8 @@ TitleScreenEntry:: ; bank 09: 0x5fe3
     db $00, $09, $0a, $78
     db $0a, $af, $42  ; bank 0a: 0x42af tiles
     db $08, $5f, $6e ; bank 8 0x6e5f collision
-    db $04, $b4
-    db $7f, $09, $26, $53
+    db $04, $b4, $7f ; bank 4 0x7fb4 palette 0
+    db $09, $26, $53 ; bank 9 0x5326 palette 1
     db $09, $b1, $5f, $00
     db $00, $00 
     db $00, $00, $00 ; no sprites
@@ -3803,8 +3805,8 @@ GameFinishedScreenEntry:: ; 0x601e
     db $00, $09, $0a, $78
     db $0a, $a1, $42  ; bank 0a: 0x42a1 tiles
     db $08, $c7, $6f ; bank 8 0x6fc7 collision
-    db $04, $b4
-    db $7f, $09, $26, $53
+    db $04, $b4, $7f ; bank 4 0x7fb4 palette 0
+    db $09, $26, $53 ; bank 9 0x5326 palette 1
     db $0a, $ad, $43, $00
     db $00, $00
     db $00, $00, $00
@@ -3866,8 +3868,8 @@ WellEntry:: ; bank 9 0x6191
     db $00, $09, $0a, $78
     db $0a, $c1, $41  ; bank 0a: 0x41c1 tiles
     db $08, $2f, $71 ; bank 8 0x712f collision
-    db $04, $b4
-    db $7f, $09, $26, $53
+    db $04, $b4, $7f ; bank 4 0x7fb4 palette 0
+    db $09, $26, $53 ; bank 9 0x5326 palette 1
     db $07, $eb, $66, $00
     db $00, $00
     db $0a, $d3, $43 ; bank 0a 0x43d3 sprites
@@ -3901,8 +3903,8 @@ DimHouseOutsideEntry:: ; 0x6234
     db $00, $09, $0a, $78
     db $0a, $dd, $41 ; bank 0a: 0x41dd tiles
     db $08, $97, $72 ; bank 8 0x7297 collision
-    db $04, $b4
-    db $7f, $09, $26, $53
+    db $04, $b4, $7f ; bank 4 0x7fb4 palette 0
+    db $09, $26, $53 ; bank 9 0x5326 palette 1
     db $07, $99, $68, $00
     db $00, $00
     db $0a, $fa, $43 ; bank 0a 0x43fa sprites
@@ -3945,8 +3947,8 @@ NgHeadquartersOutsideEntry:: ; 0x630b
     db $00, $09, $0a, $78
     db $0a, $f9, $41  ; bank 0a: 0x41f9 tiles
     db $08, $ff, $73 ; bank 8 0x73ff collision
-    db $04, $b4
-    db $7f, $09, $26, $53
+    db $04, $b4, $7f ; bank 4 0x7fb4 palette 0
+    db $09, $26, $53 ; bank 9 0x5326 palette 1
     db $07, $1a, $6a, $00
     db $00, $00
     db $0a, $15, $44 ; bank 0a 0x4415 sprites
@@ -3963,8 +3965,8 @@ OutsideShopEntry:: ; bank 9 0x6346
     db $00, $09, $0a, $78
     db $0a, $23, $42  ; bank 0a: 0x4223 tiles
     db $08, $67, $75 ; bank 8 0x7567 collision
-    db $04, $b4
-    db $7f, $09, $26, $53
+    db $04, $b4, $7f ; bank 4 0x7fb4 palette 0
+    db $09, $26, $53 ; bank 9 0x5326 palette 1
     db $07, $6f, $6d, $00
     db $00, $00
     db $0a, $33, $44 ; bank 0a: 0x4433 sprites
@@ -4019,8 +4021,8 @@ JROutsideEntry:: ; bank 9 0x6485
     db $00, $09, $0a, $78
     db $0a, $3f, $42  ; points to bank 0a: 0x423f tiles
     db $08, $cf, $76 ; bank 8 0x76cf collision
-    db $04, $b4
-    db $7f, $09, $26, $53
+    db $04, $b4, $7f ; bank 4 0x7fb4 palette 0
+    db $09, $26, $53 ; bank 9 0x5326 palette 1
     db $07, $58, $6f, $00
     db $00, $00
     db $0a, $78, $44
@@ -4068,8 +4070,8 @@ BridgeEntry:: ; bank 9 0x6590
     db $00, $09, $0a, $78
     db $0a, $4d, $42 ; points to bank 0a: 0x424d tiles
     db $08, $37, $78 ; bank 8 0x7837 collision
-    db $04, $b4
-    db $7f, $09, $26, $53
+    db $04, $b4, $7f ; bank 4 0x7fb4 palette 0
+    db $09, $26, $53 ; bank 9 0x5326 palette 1
     db $07, $ed, $70, $00
     db $00, $00
     db $0a, $9c, $44 ; bank 0a 0x449c sprites
@@ -4110,8 +4112,8 @@ NgHeadquartersInsideEntry:: ; bank 9 0x6667
     db $00, $09, $0a, $78
     db $0a, $eb, $41 ; bank 0a: 0x41eb tiles
     db $08, $9f, $79 ; bank 8: 0x799f collision
-    db $04, $b4
-    db $7f, $09, $26, $53
+    db $04, $b4, $7f ; bank 4 0x7fb4 palette 0
+    db $09, $26, $53 ; bank 9 0x5326 palette 1
     db $07, $82, $72, $00
     db $00, $00
     db $0a, $b5, $44 ; bank 0a 0x44b5 sprites
