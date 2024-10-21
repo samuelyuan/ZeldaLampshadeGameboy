@@ -3561,8 +3561,11 @@ LampshadeBossRoomDialogue:: ; 0x5aaa
     
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
 
-bank009_5b46: ; 0x5b46
-    db $25, $12, $01, $58, $45, $0d, $0a, $01, $59, $0f, $01, $60, $00, $7f, $9f, $04
+LampshadeBossRoomSceneInit:: ; 0x5b46
+    db $25, $12, $01, $58, $45, $0d, $0a, $01, $59, $0f, $01
+    
+    db $60, $00, $7f, $9f, $04 ; bank 4 0x7f9f lampshade boss music
+
     db $14, $00, $01, $ff, $ff, $0d, $ff, $ff, $00, $55, $af, $02, $21, $0f, $c6, $0d
     db $57, $03, $40, $00
 
@@ -3585,8 +3588,8 @@ LampshadeBossRoomEntry::    ; 0x5bbc
     db $08, $51, $67 ; bank 8 0x6751 collision
     db $04, $b4, $7f ; bank 4 0x7fb4 palette 0
     db $09, $26, $53 ; bank 9 0x5326 palette 1
-    db $09, $46, $5b, $00
-    db $00, $00
+    db $09, $46, $5b ; bank 9 0x5b46 scene init
+    db $00, $00, $00
     db $08, $b9, $68 ; bank 8 0x68b9 sprites
     db $09, $aa, $5a ; bank 9 0x5aaa dialogue match
     db $00, $00, $00, $00 ; no transition
@@ -3697,10 +3700,13 @@ TempleLightInsideDialogue:: ; 0x5dce
     
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
     
-bank009_5e36: ; related to TempleLightInside
+TempleLightInsideSceneInit:: ; 0x5e36
     db $25, $12, $04, $14, $00, $01, $ff, $fc, $14, $00, $0c, $ff, $fd, $75, $ff, $fc
-    db $14, $00, $02, $ff, $fc, $14, $00, $00, $ff, $fd, $75, $ff, $fc, $60, $00, $6e
-    db $b1, $02, $14, $00, $01, $ff, $fc, $0d, $ff, $fc, $00, $55, $af, $02, $21, $01
+    db $14, $00, $02, $ff, $fc, $14, $00, $00, $ff, $fd, $75, $ff, $fc
+    
+    db $60, $00, $6e, $b1, $02 ; bank 2 0x6eb1 intro music
+    
+    db $14, $00, $01, $ff, $fc, $0d, $ff, $fc, $00, $55, $af, $02, $21, $01
     db $c6, $0d, $57, $03, $00
     
 TempleLightInsideEntry::    ; 0x5e6b 
@@ -3711,8 +3717,8 @@ TempleLightInsideEntry::    ; 0x5e6b
     db $08, $8f, $6b ; bank 8 0x6b8f collision
     db $04, $b4, $7f ; bank 4 0x7fb4 palette 0
     db $09, $26, $53 ; bank 9 0x5326 palette 1
-    db $09, $36, $5e, $00
-    db $00, $00
+    db $09, $36, $5e ; bank 9 0x5e36 scene init
+    db $00, $00, $00
     db $0a, $71, $43 ; bank 0a 0x4371 sprites
     db $09, $ce, $5d ; bank 9 0x5dce dialogue match
     db $0a, $74, $43, $00 ; bank 0a 0x4374 transition
@@ -3770,9 +3776,12 @@ JTHouseOutsideEntry:: ; bank 9 0x5f76
     
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
 
-bank009_5fb1: ; title screen
-    db $25, $12, $04, $76, $00, $02, $00, $00, $00, $00, $60, $00, $6e, $b1, $02, $14
-    db $00, $00, $ff, $fc, $33, $ff, $fc, $55
+TitleScreenSceneInit:: ; 0x5fb1
+    db $25, $12, $04, $76, $00, $02, $00, $00, $00, $00
+    
+    db $60, $00, $6e, $b1, $02 ; bank 2 0x6eb1 intro music
+    
+    db $14, $00, $00, $ff, $fc, $33, $ff, $fc, $55
     
     ; 0x5fc9
     db $44, $c3, $0a ; bank 0a 0x44c3
@@ -3789,8 +3798,8 @@ TitleScreenEntry:: ; bank 09: 0x5fe3
     db $08, $5f, $6e ; bank 8 0x6e5f collision
     db $04, $b4, $7f ; bank 4 0x7fb4 palette 0
     db $09, $26, $53 ; bank 9 0x5326 palette 1
-    db $09, $b1, $5f, $00
-    db $00, $00 
+    db $09, $b1, $5f ; bank 9 0x5fb1 scene init
+    db $00, $00, $00 
     db $00, $00, $00 ; no sprites
     db $00, $00, $00 ; no dialogue match
     db $00, $00, $00, $00 ; no transition
@@ -3870,8 +3879,8 @@ WellEntry:: ; bank 9 0x6191
     db $08, $2f, $71 ; bank 8 0x712f collision
     db $04, $b4, $7f ; bank 4 0x7fb4 palette 0
     db $09, $26, $53 ; bank 9 0x5326 palette 1
-    db $07, $eb, $66, $00
-    db $00, $00
+    db $07, $eb, $66 ; bank 7 0x66eb scene init
+    db $00, $00, $00
     db $0a, $d3, $43 ; bank 0a 0x43d3 sprites
     db $09, $59, $60
     db $0a, $e2, $43, $00 ; bank 0a: 0x43e2 transition
