@@ -130,7 +130,7 @@ jr_008_4099:
     ld l, a
     push hl
     push de
-    call Call_000_1323
+    call _MemcpyBanked
     add sp, $07
     pop bc
     jr jr_008_4127
@@ -158,7 +158,7 @@ jr_008_40c7:
     push af
     inc sp
     push de
-    call Call_000_1307
+    call _ReadBankedUWORD
     add sp, $03
     ld hl, sp+$06
     ld [hl], e
@@ -215,7 +215,7 @@ jr_008_4109:
     push af
     inc sp
     push de
-    call Call_000_1307
+    call _ReadBankedUWORD
     add sp, $03
     ld hl, $c64a
     ld [hl], e

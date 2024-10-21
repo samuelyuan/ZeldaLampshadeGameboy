@@ -1,5 +1,6 @@
 SECTION "ROM Bank $005", ROMX[$4000], BANK[$5]
 
+_events_init:
     ld hl, sp+$06
     ld a, [hl]
     or a
@@ -18,7 +19,7 @@ jr_005_4008:
     add hl, hl
     add hl, hl
     add hl, bc
-    ld de, $c5c0
+    ld de, _INPUT_EVENTS
     add hl, de
     xor a
     ld [hl+], a
@@ -31,21 +32,21 @@ jr_005_401d:
     push de
     ld de, $0000
     push de
-    ld de, $c5e8
+    ld de, _INPUT_SLOTS
     push de
-    call Call_000_37b0
+    call _memset2
     add sp, $06
     ld de, $0028
     push de
     ld de, $0000
     push de
-    ld de, $c5c0
+    ld de, _INPUT_EVENTS
     push de
-    call Call_000_37b0
+    call _memset2
     add sp, $06
     ret
 
-
+_timers_init:
     ld hl, sp+$06
     ld a, [hl]
     or a
@@ -64,7 +65,7 @@ jr_005_4048:
     add hl, hl
     add hl, hl
     add hl, bc
-    ld de, $c5f0
+    ld de, _TIMER_EVENTS
     add hl, de
     xor a
     ld [hl+], a
@@ -77,73 +78,73 @@ jr_005_405d:
     push de
     ld de, $0000
     push de
-    ld de, $c604
+    ld de, _TIMER_VALUES
     push de
-    call Call_000_37b0
+    call _memset2
     add sp, $06
     ld de, $0014
     push de
     ld de, $0000
     push de
-    ld de, $c5f0
+    ld de, _TIMER_EVENTS
     push de
-    call Call_000_37b0
+    call _memset2
     add sp, $06
     ret
 
-
+_scroll_init:
     xor a
-    ld hl, $c7d8
+    ld hl, _DRAW_SCROLL_X
     ld [hl+], a
     ld [hl], a
     xor a
-    ld hl, $c7da
+    ld hl, _DRAW_SCROLL_Y
     ld [hl+], a
     ld [hl], a
     xor a
-    ld hl, $c7dc
+    ld hl, _SCROLL_X_MAX
     ld [hl+], a
     ld [hl], a
     xor a
-    ld hl, $c7de
+    ld hl, _SCROLL_Y_MAX
     ld [hl+], a
     ld [hl], a
-    ld hl, $c7e0
+    ld hl, _SCROLL_OFFSET_X
     ld [hl], $00
-    ld hl, $c7e1
+    ld hl, _SCROLL_OFFSET_Y
     ld [hl], $00
     ld e, $05
-    ld hl, $40aa
+    ld hl, _scroll_reset ; jumps to bank 5: 0x40aa
     jp RST_08
 
-
-    ld hl, $c7e7
+_scroll_reset:
+    ld hl, _pending_w_i
     ld [hl], $00
-    ld hl, $c7e4
+    ld hl, _pending_h_i
     ld [hl], $00
-    ld hl, $c7d4
+    ld hl, _scroll_x
     ld a, $ff
     ld [hl+], a
     ld [hl], $7f
-    ld hl, $c7d6
+    ld hl, _scroll_y
     ld a, $ff
     ld [hl+], a
     ld [hl], $7f
-    ld hl, $da1f
+    ld hl, _GAME_TIME
     ld [hl], $00
     ret
 
-
+_scroll_update:
     dec sp
     dec sp
-    ld hl, $c51a
+    ld hl, _camera_x
     ld a, [hl+]
     add $b0
     ld c, a
     ld a, [hl]
     adc $ff
     ld b, a
-    ld hl, $c51c
+    ld hl, _camera_y
     ld a, [hl+]
     add $b8
     ld e, a
@@ -161,7 +162,7 @@ jr_005_40eb:
     inc sp
     push bc
     push de
-    ld de, $c7dc
+    ld de, _SCROLL_X_MAX
     ld hl, sp+$02
     ld a, [de]
     inc de
@@ -172,7 +173,7 @@ jr_005_40eb:
     pop de
     jr nc, jr_005_4103
 
-    ld hl, $c7dc
+    ld hl, _SCROLL_X_MAX
     ld a, [hl+]
     ld c, a
     ld b, [hl]
@@ -189,7 +190,7 @@ jr_005_410c:
     inc sp
     push de
     push de
-    ld de, $c7de
+    ld de, _SCROLL_Y_MAX
     ld hl, sp+$02
     ld a, [de]
     inc de
@@ -200,16 +201,16 @@ jr_005_410c:
     pop de
     jr nc, jr_005_4124
 
-    ld hl, $c7de
+    ld hl, _SCROLL_Y_MAX
     ld a, [hl+]
     ld e, a
     ld d, [hl]
 
 jr_005_4124:
-    ld a, [$c7d4]
-    ld [$c7ec], a
-    ld a, [$c7d5]
-    ld hl, $c7ed
+    ld a, [_scroll_x]
+    ld [_current_col], a
+    ld a, [_scroll_x + 1]
+    ld hl, _current_col + 1
     ld [hl], a
     sra [hl]
     dec hl
@@ -222,10 +223,10 @@ jr_005_4124:
     sra [hl]
     dec hl
     rr [hl]
-    ld a, [$c7d6]
-    ld [$c7e8], a
-    ld a, [$c7d7]
-    ld hl, $c7e9
+    ld a, [_scroll_y]
+    ld [_current_row], a
+    ld a, [_scroll_y + 1]
+    ld hl, _current_row + 1
     ld [hl], a
     sra [hl]
     dec hl
@@ -238,7 +239,7 @@ jr_005_4124:
     sra [hl]
     dec hl
     rr [hl]
-    ld hl, $c7ee
+    ld hl, _new_col
     ld a, c
     ld [hl+], a
     ld [hl], b
@@ -253,7 +254,7 @@ jr_005_4124:
     sra [hl]
     dec hl
     rr [hl]
-    ld hl, $c7ea
+    ld hl, _new_row
     ld a, e
     ld [hl+], a
     ld [hl], d
@@ -268,15 +269,15 @@ jr_005_4124:
     sra [hl]
     dec hl
     rr [hl]
-    ld hl, $c7d4
+    ld hl, _scroll_x
     ld a, c
     ld [hl+], a
     ld [hl], b
-    ld hl, $c7d6
+    ld hl, _scroll_y
     ld a, e
     ld [hl+], a
     ld [hl], d
-    ld a, [$c7e0]
+    ld a, [_SCROLL_OFFSET_X]
     ld hl, sp+$00
     ld [hl+], a
     rlca
@@ -286,24 +287,24 @@ jr_005_4124:
     push hl
     add hl, bc
     ld a, l
-    ld [$c7d8], a
+    ld [_DRAW_SCROLL_X], a
     ld a, h
-    ld [$c7d9], a
-    ld a, [$c7e1]
+    ld [_DRAW_SCROLL_X + 1], a
+    ld a, [_SCROLL_OFFSET_Y]
     ld c, a
     rlca
     sbc a
     ld b, a
     ld a, c
     add e
-    ld hl, $c7da
+    ld hl, _DRAW_SCROLL_Y
     ld [hl+], a
     ld a, b
     adc d
     ld [hl], a
-    ld de, $c68b
+    ld de, _PARALLAX_ROWS
     push de
-    call Call_005_41e1
+    call _scroll_viewport
     pop hl
     ld a, e
     or a
@@ -311,7 +312,7 @@ jr_005_4124:
 
     ld de, $c691
     push de
-    call Call_005_41e1
+    call _scroll_viewport
     pop hl
     ld a, e
     or a
@@ -319,7 +320,7 @@ jr_005_4124:
 
     ld de, $c697
     push de
-    call Call_005_41e1
+    call _scroll_viewport
     pop hl
 
 jr_005_41de:
@@ -328,7 +329,7 @@ jr_005_41de:
     ret
 
 
-Call_005_41e1:
+_scroll_viewport:
     add sp, -$0d
     ld hl, sp+$0f
     ld a, [hl]
@@ -396,7 +397,7 @@ jr_005_422f:
     xor a
     sub c
     ld b, a
-    ld hl, $c7d8
+    ld hl, _DRAW_SCROLL_X
     ld a, [hl+]
     ld c, [hl]
     inc b
@@ -416,7 +417,7 @@ jr_005_4241:
     jr jr_005_425f
 
 jr_005_424a:
-    ld hl, $c7d8
+    ld hl, _DRAW_SCROLL_X
     ld a, [hl+]
     ld b, a
     ld e, [hl]
@@ -456,7 +457,7 @@ jr_005_425f:
     srl b
     rr c
     ld [hl], c
-    ld hl, $c7ee
+    ld hl, _new_col
     ld a, [hl+]
     ld c, a
     ld b, [hl]
@@ -478,7 +479,7 @@ jr_005_425f:
     ld a, h
     ld hl, sp+$0a
     ld [hl], a
-    ld hl, $c7ec
+    ld hl, _current_col
     ld a, [hl]
     sub c
     jr nz, jr_005_42bf
@@ -510,7 +511,7 @@ jr_005_425f:
 
 
 jr_005_42bf:
-    ld hl, $c7ee
+    ld hl, _new_col
     ld a, [hl+]
     ld e, a
     ld d, [hl]
@@ -525,7 +526,7 @@ jr_005_42bf:
     ld a, h
     ld hl, sp+$0c
     ld [hl], a
-    ld a, [$c7ec]
+    ld a, [_current_col]
     ld hl, sp+$0b
     sub [hl]
     jr nz, jr_005_4329
@@ -597,13 +598,13 @@ jr_005_4311:
     jr jr_005_4358
 
 jr_005_4329:
-    ld a, [$c7ec]
-    ld hl, $c7ee
+    ld a, [_current_col]
+    ld hl, _new_col
     sub [hl]
     jr nz, jr_005_433b
 
-    ld a, [$c7ed]
-    ld hl, $c7ef
+    ld a, [_current_col + 1]
+    ld hl, _new_col + 1
     sub [hl]
     jr z, jr_005_4358
 
@@ -628,7 +629,7 @@ jr_005_433b:
     ld e, a
     ld d, [hl]
     push de
-    call Call_005_469f
+    call _scroll_render_rows
     add sp, $06
 
 Jump_005_4358:
@@ -638,14 +639,14 @@ jr_005_4358:
 
 
 Jump_005_435d:
-    ld hl, $c7d8
+    ld hl, _DRAW_SCROLL_X
     ld c, [hl]
     ld hl, sp+$09
     ld a, [hl+]
     ld h, [hl]
     ld l, a
     ld [hl], c
-    ld hl, $c7ee
+    ld hl, _new_col
     ld a, [hl+]
     ld e, a
     ld d, [hl]
@@ -658,10 +659,10 @@ Jump_005_435d:
     ld hl, sp+$0b
     ld [hl-], a
     ld [hl], e
-    ld a, [$c7ee]
+    ld a, [_new_col]
     ld hl, sp+$0c
     ld [hl], a
-    ld hl, $c7ea
+    ld hl, _new_row
     ld a, [hl+]
     ld e, a
     ld d, [hl]
@@ -674,7 +675,7 @@ Jump_005_435d:
     ld hl, sp+$03
     ld [hl-], a
     ld [hl], e
-    ld a, [$c7ea]
+    ld a, [_new_row]
     dec a
     ld hl, sp+$04
     ld [hl-], a
@@ -689,7 +690,7 @@ Jump_005_435d:
     rlca
     sbc a
     ld [hl], a
-    ld a, [$c7ec]
+    ld a, [_current_col]
     ld hl, sp+$0a
     sub [hl]
     jp nz, Jump_005_4453
@@ -819,7 +820,7 @@ jr_005_4433:
     ld a, [hl]
     push af
     inc sp
-    call Call_005_474c
+    call _scroll_queue_col
     pop hl
     inc sp
     ld hl, sp+$09
@@ -827,19 +828,19 @@ jr_005_4433:
     push af
     inc sp
     ld e, $01
-    ld hl, $4411
+    ld hl, _activate_actors_in_col
     call RST_08
     pop hl
     jp Jump_005_4559
 
 
 Jump_005_4453:
-    ld hl, $c7ee
+    ld hl, _new_col
     ld a, [hl+]
     ld c, a
     ld b, [hl]
     inc bc
-    ld hl, $c7ec
+    ld hl, _current_col
     ld a, [hl]
     sub c
     jp nz, Jump_005_451b
@@ -988,7 +989,7 @@ jr_005_44f6:
     ld a, [hl]
     push af
     inc sp
-    call Call_005_474c
+    call _scroll_queue_col
     pop hl
     ld hl, sp+$0b
     ld a, [hl]
@@ -1005,8 +1006,8 @@ jr_005_44f6:
     jr jr_005_4559
 
 Jump_005_451b:
-    ld a, [$c7ec]
-    ld hl, $c7ee
+    ld a, [_current_col]
+    ld hl, _new_col
     sub [hl]
     jr nz, jr_005_452d
 
@@ -1035,17 +1036,17 @@ jr_005_453b:
     inc sp
     push af
     inc sp
-    ld hl, $c7da
+    ld hl, _DRAW_SCROLL_Y
     ld a, [hl+]
     ld e, a
     ld d, [hl]
     push de
-    ld hl, $c7d8
+    ld hl, _DRAW_SCROLL_X
     ld a, [hl+]
     ld e, a
     ld d, [hl]
     push de
-    call Call_005_469f
+    call _scroll_render_rows
     add sp, $06
     ld e, $01
     jp Jump_005_468c
@@ -1053,7 +1054,7 @@ jr_005_453b:
 
 Jump_005_4559:
 jr_005_4559:
-    ld hl, $c7ea
+    ld hl, _new_row
     ld a, [hl+]
     ld e, a
     ld d, [hl]
@@ -1066,14 +1067,14 @@ jr_005_4559:
     ld hl, sp+$08
     ld [hl-], a
     ld [hl], e
-    ld hl, $c7ee
+    ld hl, _new_col
     ld a, [hl+]
     ld c, a
     ld a, [hl-]
     ld b, a
     dec bc
     ld e, [hl]
-    ld a, [$c7ea]
+    ld a, [_new_row]
     ld hl, sp+$09
     ld [hl], a
     ld a, e
@@ -1123,7 +1124,7 @@ jr_005_45a5:
     ld d, a
     ld e, [hl]
     push de
-    call Call_005_4727
+    call _scroll_queue_row
     pop hl
     ld hl, sp+$0b
     ld a, [hl+]
@@ -1138,7 +1139,7 @@ jr_005_45a5:
 
 
 jr_005_45c9:
-    ld hl, $c7ea
+    ld hl, _new_row
     ld a, [hl+]
     ld c, a
     ld b, [hl]
@@ -1217,7 +1218,7 @@ jr_005_4619:
     push bc
     ld c, [hl]
     push bc
-    call Call_005_4727
+    call _scroll_queue_row
     pop hl
     inc sp
     ld hl, sp+$0d
@@ -1231,18 +1232,18 @@ jr_005_4619:
     jr jr_005_4672
 
 jr_005_4635:
-    ld a, [$c7e8]
-    ld hl, $c7ea
+    ld a, [_current_row]
+    ld hl, _new_row
     sub [hl]
     jr nz, jr_005_4647
 
-    ld a, [$c7e9]
-    ld hl, $c7eb
+    ld a, [_current_row + 1]
+    ld hl, _new_row + 1
     sub [hl]
     jr z, jr_005_4672
 
 jr_005_4647:
-    ld hl, $c53d
+    ld hl, _scene_LCD_type
     ld a, [hl]
     dec a
     jr nz, jr_005_4653
@@ -1261,39 +1262,39 @@ jr_005_4655:
     inc sp
     push af
     inc sp
-    ld hl, $c7da
+    ld hl, _DRAW_SCROLL_Y
     ld a, [hl+]
     ld e, a
     ld d, [hl]
     push de
-    ld hl, $c7d8
+    ld hl, _DRAW_SCROLL_X
     ld a, [hl+]
     ld e, a
     ld d, [hl]
     push de
-    call Call_005_469f
+    call _scroll_render_rows
     add sp, $06
     ld e, $01
     jr jr_005_468c
 
 Jump_005_4672:
 jr_005_4672:
-    ld a, [$da1f]
+    ld a, [_GAME_TIME]
     rrca
     jr c, jr_005_468a
 
-    ld a, [$c7e4]
+    ld a, [_pending_h_i]
     or a
     jr z, jr_005_4681
 
-    call Call_000_223f
+    call _scroll_load_pending_col
 
 jr_005_4681:
-    ld a, [$c7e7]
+    ld a, [_pending_w_i]
     or a
     jr z, jr_005_468a
 
-    call Call_000_2173
+    call _scroll_load_pending_row
 
 jr_005_468a:
     ld e, $01
@@ -1312,11 +1313,11 @@ jr_005_468c:
     jp RST_08
 
 
-Call_005_469f:
+_scroll_render_rows:
     dec sp
-    ld hl, $c7e7
+    ld hl, _pending_w_i
     ld [hl], $00
-    ld hl, $c7e4
+    ld hl, _pending_h_i
     ld [hl], $00
     ld hl, sp+$03
     ld a, [hl+]
@@ -1386,7 +1387,7 @@ jr_005_46f6:
     sub c
     jr z, jr_005_4725
 
-    ld a, [$c533]
+    ld a, [_image_tile_height]
     sub b
     jr z, jr_005_4725
 
@@ -1421,51 +1422,51 @@ jr_005_4725:
     ret
 
 
-Call_005_4727:
+_scroll_queue_row:
 jr_005_4727:
-    ld a, [$c7e7]
+    ld a, [_pending_w_i]
     or a
     jr z, jr_005_4732
 
-    call Call_000_2173
+    call _scroll_load_pending_row
     jr jr_005_4727
 
 jr_005_4732:
     ld hl, sp+$03
     ld a, [hl]
-    ld hl, $c533
+    ld hl, _image_tile_height
     sub [hl]
     ret nc
 
     ld hl, sp+$02
     ld a, [hl]
-    ld [$c7e5], a
+    ld [_pending_w_x], a
     ld hl, sp+$03
     ld a, [hl]
-    ld [$c7e6], a
-    ld hl, $c7e7
+    ld [_pending_w_y], a
+    ld hl, _pending_w_i
     ld [hl], $17
     ret
 
 
-Call_005_474c:
+_scroll_queue_col:
 jr_005_474c:
-    ld a, [$c7e4]
+    ld a, [_pending_h_i]
     or a
     jr z, jr_005_4757
 
-    call Call_000_223f
+    call _scroll_load_pending_col
     jr jr_005_474c
 
 jr_005_4757:
     ld hl, sp+$02
     ld a, [hl]
-    ld [$c7e2], a
+    ld [_pending_h_x], a
     ld hl, sp+$03
     ld c, [hl]
-    ld hl, $c7e3
+    ld hl, _pending_h_y
     ld [hl], c
-    ld a, [$c533]
+    ld a, [_image_tile_height]
     ld b, $00
     ld e, c
     ld d, $00
@@ -1502,24 +1503,24 @@ jr_005_478a:
     jr jr_005_4794
 
 jr_005_4790:
-    ld a, [$c533]
+    ld a, [_image_tile_height]
     sub c
 
 jr_005_4794:
-    ld [$c7e4], a
+    ld [_pending_h_i], a
     ret
 
-
-    ld a, [$c61b]
-    ld [$c61c], a
+_vm_display_text:
+    ld a, [_FRAME_JOY]
+    ld [_LAST_JOY], a
     ld hl, sp+$08
     ld a, [hl]
-    ld [$c924], a
+    ld [_TEXT_OPTIONS], a
     ld hl, $c929
     ld [hl], $00
     ld hl, $c923
     ld [hl], $00
-    ld hl, $c921
+    ld hl, _TEXT_DRAWN
     ld [hl], $00
     ld hl, sp+$09
     ld a, [hl]
@@ -1538,14 +1539,14 @@ jr_005_4794:
     pop hl
     ret
 
-
+_vm_switch_text_layer:
     ld hl, sp+$08
     ld a, [hl]
     or a
     jr z, jr_005_47db
 
-    call Call_000_0265
-    ld hl, $ca43
+    call _GetWinAddr
+    ld hl, _TEXT_RENDER_BASE_ADDR
     ld a, e
     ld [hl+], a
     ld [hl], d
@@ -1553,14 +1554,14 @@ jr_005_4794:
 
 
 jr_005_47db:
-    call Call_000_026d
-    ld hl, $ca43
+    call _GetBkgAddr
+    ld hl, _TEXT_RENDER_BASE_ADDR
     ld a, e
     ld [hl+], a
     ld [hl], d
     ret
 
-
+_vm_overlay_setpos:
     ld hl, sp+$09
     ld a, [hl-]
     add a
@@ -1571,15 +1572,15 @@ jr_005_47db:
     add a
     add a
     add a
-    ld hl, $c91f
+    ld hl, _WIN_DEST_POS_Y
     ld [hl], c
-    ld hl, $c91e
+    ld hl, _WIN_POS_Y
     ld [hl], c
-    ld [$c91d], a
-    ld [$c91c], a
+    ld [_WIN_DEST_POS_X], a
+    ld [_WIN_POS_X], a
     ret
 
-
+_vm_overlay_wait:
     ld hl, sp+$08
     ld a, [hl]
     or a
@@ -1603,13 +1604,13 @@ jr_005_4813:
     bit 0, b
     jr z, jr_005_4830
 
-    ld a, [$c91c]
-    ld hl, $c91d
+    ld a, [_WIN_POS_X]
+    ld hl, _WIN_DEST_POS_X
     sub [hl]
     jr nz, jr_005_482e
 
-    ld a, [$c91e]
-    ld hl, $c91f
+    ld a, [_WIN_POS_Y]
+    ld hl, _WIN_DEST_POS_Y
     sub [hl]
     jr z, jr_005_4830
 
@@ -1620,15 +1621,15 @@ jr_005_4830:
     bit 1, b
     jr z, jr_005_483c
 
-    ld a, [$c921]
+    ld a, [_TEXT_DRAWN]
     or a
     jr nz, jr_005_483c
 
     ld c, $01
 
 jr_005_483c:
-    ld a, [$c61b]
-    ld hl, $c61c
+    ld a, [_FRAME_JOY]
+    ld hl, _LAST_JOY
     ld e, [hl]
     bit 2, b
     jr z, jr_005_4851
@@ -1659,11 +1660,11 @@ jr_005_485f:
     bit 4, b
     jr z, jr_005_4871
 
-    ld a, [$c61b]
+    ld a, [_FRAME_JOY]
     or a
     jr z, jr_005_486f
 
-    ld a, [$c61c]
+    ld a, [_LAST_JOY]
     or a
     jr z, jr_005_4871
 
@@ -1698,13 +1699,13 @@ jr_005_4871:
     ld [bc], a
     ret
 
-
+_vm_overlay_move_to:
     ld hl, sp+$0a
     ld a, [hl]
     inc a
     jr nz, jr_005_489e
 
-    ld a, [$c925]
+    ld a, [_TEXT_IN_SPEED]
     ld hl, sp+$0a
     ld [hl], a
     jr jr_005_48ab
@@ -1715,7 +1716,7 @@ jr_005_489e:
     sub $fe
     jr nz, jr_005_48ab
 
-    ld a, [$c926]
+    ld a, [_TEXT_OUT_SPEED]
     ld hl, sp+$0a
     ld [hl], a
 
@@ -1733,28 +1734,28 @@ jr_005_48ab:
     add a
     add a
     ld e, a
-    ld hl, $c91f
+    ld hl, _WIN_DEST_POS_Y
     ld [hl], b
-    ld hl, $c91d
+    ld hl, _WIN_DEST_POS_X
     ld [hl], e
     ld a, c
     sub $fd
     jr nz, jr_005_48cf
 
-    ld hl, $c91e
+    ld hl, _WIN_POS_Y
     ld [hl], b
-    ld hl, $c91c
+    ld hl, _WIN_POS_X
     ld [hl], e
     ret
 
 
 jr_005_48cf:
-    ld hl, $c920
+    ld hl, _WIN_SPEED
     ld [hl], c
     ret
 
-
-    call Call_000_0265
+_vm_overlay_set_scroll:
+    call _GetWinAddr
     ld hl, sp+$09
     ld l, [hl]
     ld h, $00
@@ -1772,16 +1773,16 @@ jr_005_48cf:
     add hl, bc
     ld e, l
     ld d, h
-    ld hl, $ca45
+    ld hl, _TEXT_SCROLL_ADDR
     ld a, e
     ld [hl+], a
     ld [hl], d
     ld hl, sp+$0a
     ld a, [hl]
-    ld [$ca47], a
+    ld [_TEXT_SCROLL_WIDTH], a
     ld hl, sp+$0b
     ld a, [hl]
-    ld [$ca48], a
+    ld [_TEXT_SCROLL_HEIGHT], a
     ld hl, sp+$0c
     ld a, [hl]
     or a
@@ -1794,11 +1795,11 @@ jr_005_4909:
     ld bc, $00ca
 
 jr_005_490c:
-    ld hl, $ca49
+    ld hl, _TEXT_SCROLL_FILL
     ld [hl], c
     ret
 
-
+_vm_overlay_clear:
     ld hl, sp+$0c
     ld a, [hl]
     or a
@@ -1813,7 +1814,7 @@ jr_005_491b:
     ld l, $00
 
 jr_005_491f:
-    ld [$c92a], a
+    ld [_TEXT_BKG_FILL], a
     ld hl, sp+$0d
     ld a, [hl]
     push af
@@ -1876,7 +1877,7 @@ jr_005_491f:
     ld d, [hl]
     push de
     ld e, $05
-    ld hl, $48d4
+    ld hl, _vm_overlay_set_scroll ; bank 5
     call RST_08
     add sp, $07
     ret
@@ -1908,7 +1909,7 @@ jr_005_4984:
     ld d, a
     ld e, [hl]
     push de
-    call Call_000_3472
+    call _fill_win_rect
     add sp, $05
     ld a, b
     or c
@@ -1934,12 +1935,12 @@ jr_005_4984:
     ld d, [hl]
     push de
     ld e, $05
-    ld hl, $48d4
+    ld hl, _vm_overlay_set_scroll
     call RST_08
     add sp, $07
     ret
 
-
+_vm_overlay_show:
     ld hl, sp+$08
     ld a, [hl]
     sub $14
@@ -1975,7 +1976,7 @@ jr_005_4984:
     ld d, [hl]
     push de
     ld e, $05
-    ld hl, $4911
+    ld hl, _vm_overlay_clear
     call RST_08
     add sp, $08
 
@@ -1990,15 +1991,15 @@ jr_005_49ed:
     add a
     add a
     add a
-    ld hl, $c91f
+    ld hl, _WIN_DEST_POS_Y
     ld [hl], c
-    ld hl, $c91e
+    ld hl, _WIN_POS_Y
     ld [hl], c
-    ld [$c91d], a
-    ld [$c91c], a
+    ld [_WIN_DEST_POS_X], a
+    ld [_WIN_POS_X], a
     ret
 
-
+_vm_choice:
     add sp, -$09
     ld hl, sp+$0f
     ld a, [hl]
@@ -2041,7 +2042,7 @@ jr_005_49ed:
     jr jr_005_4a41
 
 jr_005_4a3d:
-    ld hl, $cb98
+    ld hl, _SCRIPT_MEMORY
     add hl, bc
 
 jr_005_4a41:
@@ -2239,10 +2240,10 @@ jr_005_4af5:
     add sp, $09
     ret
 
-
+_vm_set_font:
     ld hl, sp+$08
     ld c, [hl]
-    ld hl, $ca42
+    ld hl, _VWF_CURRENT_FONT_IDX
     ld [hl], c
     ld b, $00
     ld l, c
@@ -2254,27 +2255,27 @@ jr_005_4af5:
     ld c, l
     ld b, h
     ld a, [bc]
-    ld [$ca41], a
+    ld [_VWF_CURRENT_FONT_BANK], a
     ld l, c
     ld h, b
     inc hl
     ld a, [hl+]
     ld c, a
     ld b, [hl]
-    ld a, [$ca41]
+    ld a, [_VWF_CURRENT_FONT_BANK]
     push af
     inc sp
     ld de, $0008
     push de
     push bc
-    ld de, $ca39
+    ld de, _VWF_CURRENT_FONT_DESC
     push de
-    call Call_000_1323
+    call _MemcpyBanked
     add sp, $07
     ret
 
-
-    call Call_000_0265
+_vm_overlay_scroll:
+    call _GetWinAddr
     ld hl, sp+$09
     ld l, [hl]
     ld h, $00
@@ -2319,8 +2320,8 @@ jr_005_4b79:
     add sp, $05
     ret
 
-
-    ld a, [$c532]
+_vm_overlay_set_submap:
+    ld a, [_image_tile_width]
     push af
     inc sp
     ld hl, sp+$0e
@@ -2338,7 +2339,7 @@ jr_005_4b79:
     adc d
     ld b, a
     ld a, c
-    ld hl, $c52a
+    ld hl, _image_ptr
     add [hl]
     inc hl
     ld c, a
@@ -2355,9 +2356,9 @@ jr_005_4b79:
     ld d, a
     ld e, [hl]
     push de
-    ld a, [$c532]
+    ld a, [_image_tile_width]
     ld h, a
-    ld a, [$c529]
+    ld a, [_image_bank]
     ld l, a
     push hl
     push bc
@@ -2365,7 +2366,7 @@ jr_005_4b79:
     add sp, $08
     ret
 
-
+_vm_overlay_set_submap_ex:
     add sp, -$03
     ld hl, sp+$0b
     ld a, [hl+]
@@ -2389,7 +2390,7 @@ jr_005_4b79:
     jr jr_005_4bed
 
 jr_005_4be9:
-    ld hl, $cb98
+    ld hl, _SCRIPT_MEMORY
     add hl, bc
 
 jr_005_4bed:
@@ -2399,7 +2400,7 @@ jr_005_4bed:
     add hl, bc
     ld a, [hl]
     push bc
-    ld hl, $c532
+    ld hl, _image_tile_width
     ld h, [hl]
     push hl
     inc sp
@@ -2434,7 +2435,7 @@ jr_005_4bed:
     ld [hl], a
     ld a, [bc]
     ld c, a
-    ld hl, $c52a
+    ld hl, _image_ptr
     ld a, [hl+]
     add e
     ld e, a
@@ -2450,9 +2451,9 @@ jr_005_4bed:
     inc sp
     ld b, [hl]
     push bc
-    ld a, [$c532]
+    ld a, [_image_tile_width]
     ld h, a
-    ld a, [$c529]
+    ld a, [_image_bank]
     ld l, a
     push hl
     push de
@@ -2460,7 +2461,7 @@ jr_005_4bed:
     add sp, $0b
     ret
 
-
+_vm_overlay_set_map:
     add sp, -$0c
     ld hl, sp+$12
     ld a, [hl+]
@@ -2550,7 +2551,7 @@ jr_005_4ca0:
     push af
     inc sp
     push de
-    call Call_000_1307
+    call _ReadBankedUWORD
     add sp, $03
     ld hl, sp+$06
     ld a, e
@@ -2562,7 +2563,7 @@ jr_005_4ca0:
     push af
     inc sp
     push de
-    call Call_000_1307
+    call _ReadBankedUWORD
     add sp, $03
     ld hl, sp+$07
     ld [hl], e
@@ -2615,7 +2616,7 @@ jr_005_4cfe:
 
 jr_005_4d09:
     ld a, [de]
-    ld [$da36], a
+    ld [_MAP_TILE_OFFSET], a
     ld hl, $0008
     add hl, bc
     ld e, l
@@ -2637,7 +2638,7 @@ jr_005_4d09:
     ld e, a
     ld d, [hl]
     push de
-    call Call_000_12e0
+    call _ReadBankedFarPtr
     add sp, $05
     ld a, [bc]
     ld l, c
@@ -2660,26 +2661,26 @@ jr_005_4d09:
     ld d, a
     ld e, [hl]
     push de
-    call Call_000_12c4
+    call _SetBankedWinTiles
     add sp, $07
-    ld hl, $da36
+    ld hl, _MAP_TILE_OFFSET
     ld [hl], $00
     add sp, $0c
     ret
 
-
+_vm_set_text_sound:
     ld hl, sp+$08
     ld a, [hl]
-    ld [$ca4b], a
+    ld [_TEXT_SOUND_BANK], a
     ld hl, sp+$09
     ld a, [hl]
-    ld [$ca4c], a
+    ld [_TEXT_SOUND_DATA], a
     ld hl, sp+$0a
     ld a, [hl]
-    ld [$ca4d], a
+    ld [_TEXT_SOUND_DATA + 1], a
     ld hl, sp+$0b
     ld a, [hl]
-    ld [$ca4a], a
+    ld [_TEXT_SOUND_MASK], a
     ret
 
 OutsideShopTileImage::
@@ -2714,11 +2715,11 @@ TempleLightOutsideTileImage::
     xor a
     ld [hl+], a
     ld [hl], $04
-    ld hl, $c507
+    ld hl, _PLAYER_MOVING
     ld [hl], $00
-    ld hl, $c61d
+    ld hl, _RECENT_JOY
     ld e, [hl]
-    ld hl, $c61b
+    ld hl, _FRAME_JOY
     ld d, [hl]
     ld a, d
     and $02
@@ -2742,7 +2743,7 @@ TempleLightOutsideTileImage::
     bit 1, e
     jr nz, jr_005_6b03
 
-    ld a, [$c61d]
+    ld a, [_RECENT_JOY]
     or a
     jr nz, jr_005_6b09
 
@@ -2759,7 +2760,7 @@ jr_005_6b09:
     bit 0, e
     jr nz, jr_005_6b19
 
-    ld a, [$c61d]
+    ld a, [_RECENT_JOY]
     or a
     jr nz, jr_005_6b1f
 
@@ -2777,7 +2778,7 @@ jr_005_6b1f:
     bit 2, e
     jr nz, jr_005_6b2f
 
-    ld a, [$c61d]
+    ld a, [_RECENT_JOY]
     or a
     jr nz, jr_005_6b35
 
@@ -2795,7 +2796,7 @@ jr_005_6b35:
     bit 3, e
     jr nz, jr_005_6b45
 
-    ld a, [$c61d]
+    ld a, [_RECENT_JOY]
     or a
     jr nz, jr_005_6b49
 
@@ -2813,7 +2814,7 @@ jr_005_6b49:
     or c
     jr z, jr_005_6b70
 
-    ld hl, $c507
+    ld hl, _PLAYER_MOVING
     ld [hl], $01
     ld hl, sp+$0e
     ld a, [hl-]
@@ -2845,7 +2846,7 @@ jr_005_6b70:
     or [hl]
     jr z, jr_005_6b99
 
-    ld hl, $c507
+    ld hl, _PLAYER_MOVING
     ld [hl], $01
     ld hl, sp+$0e
     ld a, [hl-]
@@ -2877,7 +2878,7 @@ jr_005_6b99:
     or [hl]
     jr z, jr_005_6baa
 
-    ld hl, $c507
+    ld hl, _PLAYER_MOVING
     ld [hl], $01
     ld hl, sp+$04
     ld [hl], $00
@@ -2889,13 +2890,13 @@ jr_005_6baa:
     or [hl]
     jr z, jr_005_6bb9
 
-    ld hl, $c507
+    ld hl, _PLAYER_MOVING
     ld [hl], $01
     ld hl, sp+$04
     ld [hl], $80
 
 jr_005_6bb9:
-    ld a, [$c507]
+    ld a, [_PLAYER_MOVING]
     or a
     jp z, Jump_005_7115
 
@@ -3287,19 +3288,19 @@ Jump_005_6dc6:
 
     ld hl, sp+$0f
     ld a, [hl]
-    ld hl, $c532
+    ld hl, _image_tile_width
     sub [hl]
     jr nc, jr_005_6e16
 
     ld hl, sp+$10
     ld a, [hl]
-    ld hl, $c533
+    ld hl, _image_tile_height
     sub [hl]
     jr nc, jr_005_6e16
 
-    ld hl, $c52f
+    ld hl, _COLLISION_BANK
     ld b, [hl]
-    ld hl, $c532
+    ld hl, _image_tile_width
     ld e, [hl]
     ld d, $00
     ld hl, sp+$10
@@ -3314,7 +3315,7 @@ Jump_005_6dc6:
     add sp, $04
     pop bc
     ld a, e
-    ld hl, $c530
+    ld hl, _COLLISION_PTR
     add [hl]
     inc hl
     ld e, a
@@ -3330,7 +3331,7 @@ Jump_005_6dc6:
     push bc
     inc sp
     push de
-    call Call_000_1307
+    call _ReadBankedUWORD
     add sp, $03
     jr jr_005_6e18
 
@@ -3472,19 +3473,19 @@ jr_005_6eb7:
     jr z, jr_005_6f30
 
     ld a, c
-    ld hl, $c532
+    ld hl, _image_tile_width
     sub [hl]
     jr nc, jr_005_6f00
 
     ld a, b
-    ld hl, $c533
+    ld hl, _image_tile_height
     sub [hl]
     jr nc, jr_005_6f00
 
-    ld a, [$c52f]
+    ld a, [_COLLISION_BANK]
     ld hl, sp+$10
     ld [hl], a
-    ld hl, $c532
+    ld hl, _image_tile_width
     ld e, [hl]
     ld d, $00
     ld l, b
@@ -3496,7 +3497,7 @@ jr_005_6eb7:
     add sp, $04
     pop bc
     ld a, e
-    ld hl, $c530
+    ld hl, _COLLISION_PTR
     add [hl]
     inc hl
     ld e, a
@@ -3513,7 +3514,7 @@ jr_005_6eb7:
     push af
     inc sp
     push de
-    call Call_000_1307
+    call _ReadBankedUWORD
     add sp, $03
     jr jr_005_6f02
 
@@ -3690,19 +3691,19 @@ Jump_005_6fda:
 
     ld hl, sp+$10
     ld a, [hl]
-    ld hl, $c532
+    ld hl, _image_tile_width
     sub [hl]
     jr nc, jr_005_702a
 
     ld hl, sp+$0e
     ld a, [hl]
-    ld hl, $c533
+    ld hl, _image_tile_height
     sub [hl]
     jr nc, jr_005_702a
 
-    ld hl, $c52f
+    ld hl, _COLLISION_BANK
     ld b, [hl]
-    ld hl, $c532
+    ld hl, _image_tile_width
     ld e, [hl]
     ld d, $00
     ld hl, sp+$0e
@@ -3717,7 +3718,7 @@ Jump_005_6fda:
     add sp, $04
     pop bc
     ld a, e
-    ld hl, $c530
+    ld hl, _COLLISION_PTR
     add [hl]
     inc hl
     ld e, a
@@ -3733,7 +3734,7 @@ Jump_005_6fda:
     push bc
     inc sp
     push de
-    call Call_000_1307
+    call _ReadBankedUWORD
     add sp, $03
     ld a, e
     jr jr_005_702c
@@ -3830,18 +3831,18 @@ jr_005_708b:
 
     ld hl, sp+$10
     ld a, [hl]
-    ld hl, $c532
+    ld hl, _image_tile_width
     sub [hl]
     jr nc, jr_005_70d3
 
     ld a, c
-    ld hl, $c533
+    ld hl, _image_tile_height
     sub [hl]
     jr nc, jr_005_70d3
 
-    ld hl, $c52f
+    ld hl, _COLLISION_BANK
     ld b, [hl]
-    ld hl, $c532
+    ld hl, _image_tile_width
     ld e, [hl]
     ld d, $00
     ld l, c
@@ -3853,7 +3854,7 @@ jr_005_708b:
     add sp, $04
     pop bc
     ld a, e
-    ld hl, $c530
+    ld hl, _COLLISION_PTR
     add [hl]
     inc hl
     ld e, a
@@ -3869,7 +3870,7 @@ jr_005_708b:
     push bc
     inc sp
     push de
-    call Call_000_1307
+    call _ReadBankedUWORD
     add sp, $03
     jr jr_005_70d5
 
@@ -3941,7 +3942,7 @@ Jump_005_7115:
     sub $04
     jr z, jr_005_7136
 
-    ld a, [$c507]
+    ld a, [_PLAYER_MOVING]
     push af
     inc sp
     ld hl, sp+$06
@@ -3966,7 +3967,7 @@ jr_005_7136:
 
 jr_005_7143:
     ld de, $0000
-    ld a, [$da1f]
+    ld a, [_GAME_TIME]
     and $01
     ld b, a
     ld c, $00
@@ -4013,11 +4014,11 @@ jr_005_7143:
     ld [hl], d
 
 jr_005_718a:
-    ld a, [$c61b]
+    ld a, [_FRAME_JOY]
     bit 4, a
     jr z, jr_005_71da
 
-    ld a, [$c61c]
+    ld a, [_LAST_JOY]
     bit 4, a
     jr nz, jr_005_71da
 
@@ -4165,18 +4166,18 @@ jr_005_7273:
 
 
     add sp, -$0d
-    ld hl, $c507
+    ld hl, _PLAYER_MOVING
     ld [hl], $00
     ld hl, $d9bd
     ld b, [hl]
-    ld a, [$c61b]
+    ld a, [_FRAME_JOY]
     bit 0, b
     jr z, jr_005_72a5
 
     bit 2, a
     jr z, jr_005_7298
 
-    ld hl, $c507
+    ld hl, _PLAYER_MOVING
     ld [hl], $01
     ld b, $02
     jr jr_005_72bb
@@ -4185,7 +4186,7 @@ jr_005_7298:
     bit 3, a
     jr z, jr_005_72bb
 
-    ld hl, $c507
+    ld hl, _PLAYER_MOVING
     ld [hl], $01
     ld b, $00
     jr jr_005_72bb
@@ -4194,7 +4195,7 @@ jr_005_72a5:
     bit 1, a
     jr z, jr_005_72b2
 
-    ld hl, $c507
+    ld hl, _PLAYER_MOVING
     ld [hl], $01
     ld b, $03
     jr jr_005_72bb
@@ -4203,7 +4204,7 @@ jr_005_72b2:
     rrca
     jr nc, jr_005_72bb
 
-    ld hl, $c507
+    ld hl, _PLAYER_MOVING
     ld [hl], $01
     ld b, [hl]
 
@@ -4212,7 +4213,7 @@ jr_005_72bb:
     sub b
     jr z, jr_005_72d6
 
-    ld a, [$c507]
+    ld a, [_PLAYER_MOVING]
     push af
     inc sp
     push bc
@@ -4225,7 +4226,7 @@ jr_005_72bb:
     add sp, $04
 
 jr_005_72d6:
-    ld a, [$c507]
+    ld a, [_PLAYER_MOVING]
     or a
     jp z, Jump_005_7764
 
@@ -4474,19 +4475,19 @@ Jump_005_7424:
 
     ld hl, sp+$0c
     ld a, [hl]
-    ld hl, $c532
+    ld hl, _image_tile_width
     sub [hl]
     jr nc, jr_005_7475
 
     ld hl, sp+$0b
     ld a, [hl]
-    ld hl, $c533
+    ld hl, _image_tile_height
     sub [hl]
     jr nc, jr_005_7475
 
-    ld hl, $c52f
+    ld hl, _COLLISION_BANK
     ld b, [hl]
-    ld hl, $c532
+    ld hl, _image_tile_width
     ld e, [hl]
     ld d, $00
     ld hl, sp+$0b
@@ -4501,7 +4502,7 @@ Jump_005_7424:
     add sp, $04
     pop bc
     ld a, e
-    ld hl, $c530
+    ld hl, _COLLISION_PTR
     add [hl]
     inc hl
     ld e, a
@@ -4517,7 +4518,7 @@ Jump_005_7424:
     push bc
     inc sp
     push de
-    call Call_000_1307
+    call _ReadBankedUWORD
     add sp, $03
     ld a, e
     jr jr_005_7477
@@ -4620,19 +4621,19 @@ jr_005_74df:
     jr z, jr_005_7558
 
     ld a, b
-    ld hl, $c532
+    ld hl, _image_tile_width
     sub [hl]
     jr nc, jr_005_7528
 
     ld a, c
-    ld hl, $c533
+    ld hl, _image_tile_height
     sub [hl]
     jr nc, jr_005_7528
 
-    ld a, [$c52f]
+    ld a, [_COLLISION_BANK]
     ld hl, sp+$0c
     ld [hl], a
-    ld hl, $c532
+    ld hl, _image_tile_width
     ld l, [hl]
     ld h, $00
     ld e, c
@@ -4644,7 +4645,7 @@ jr_005_74df:
     add sp, $04
     pop bc
     ld a, e
-    ld hl, $c530
+    ld hl, _COLLISION_PTR
     add [hl]
     inc hl
     ld e, a
@@ -4661,7 +4662,7 @@ jr_005_74df:
     push af
     inc sp
     push de
-    call Call_000_1307
+    call _ReadBankedUWORD
     add sp, $03
     jr jr_005_752a
 
@@ -4818,19 +4819,19 @@ jr_005_75ec:
     jr z, jr_005_7664
 
     ld a, c
-    ld hl, $c532
+    ld hl, _image_tile_width
     sub [hl]
     jr nc, jr_005_7635
 
     ld a, b
-    ld hl, $c533
+    ld hl, _image_tile_height
     sub [hl]
     jr nc, jr_005_7635
 
-    ld a, [$c52f]
+    ld a, [_COLLISION_BANK]
     ld hl, sp+$0b
     ld [hl], a
-    ld hl, $c532
+    ld hl, _image_tile_width
     ld l, [hl]
     ld h, $00
     ld e, b
@@ -4842,7 +4843,7 @@ jr_005_75ec:
     add sp, $04
     pop bc
     ld a, e
-    ld hl, $c530
+    ld hl, _COLLISION_PTR
     add [hl]
     inc hl
     ld e, a
@@ -4859,7 +4860,7 @@ jr_005_75ec:
     push af
     inc sp
     push de
-    call Call_000_1307
+    call _ReadBankedUWORD
     add sp, $03
     jr jr_005_7637
 
@@ -4994,19 +4995,19 @@ jr_005_76ce:
     jr z, jr_005_7747
 
     ld a, c
-    ld hl, $c532
+    ld hl, _image_tile_width
     sub [hl]
     jr nc, jr_005_7717
 
     ld a, b
-    ld hl, $c533
+    ld hl, _image_tile_height
     sub [hl]
     jr nc, jr_005_7717
 
-    ld a, [$c52f]
+    ld a, [_COLLISION_BANK]
     ld hl, sp+$0b
     ld [hl], a
-    ld hl, $c532
+    ld hl, _image_tile_width
     ld e, [hl]
     ld d, $00
     ld l, b
@@ -5018,7 +5019,7 @@ jr_005_76ce:
     add sp, $04
     pop bc
     ld a, e
-    ld hl, $c530
+    ld hl, _COLLISION_PTR
     add [hl]
     inc hl
     ld e, a
@@ -5035,7 +5036,7 @@ jr_005_76ce:
     push af
     inc sp
     push de
-    call Call_000_1307
+    call _ReadBankedUWORD
     add sp, $03
     jr jr_005_7719
 
@@ -5291,7 +5292,7 @@ jr_005_783c:
 
 Jump_005_785e:
 jr_005_785e:
-    ld a, [$da1f]
+    ld a, [_GAME_TIME]
     and $01
     ld b, a
     ld c, $00
@@ -5339,11 +5340,11 @@ jr_005_785e:
     jr jr_005_78f5
 
 jr_005_78a5:
-    ld a, [$c61b]
+    ld a, [_FRAME_JOY]
     bit 4, a
     jr z, jr_005_78f5
 
-    ld a, [$c61c]
+    ld a, [_LAST_JOY]
     bit 4, a
     jr nz, jr_005_78f5
 
@@ -5399,27 +5400,27 @@ jr_005_78f5:
     add sp, $0d
     ret
 
-
-    ld hl, $c51e
+_topdown_init:
+    ld hl, _camera_offset_x
     ld [hl], $00
-    ld hl, $c51f
+    ld hl, _camera_offset_y
     ld [hl], $00
-    ld hl, $c520
+    ld hl, _camera_deadzone_x
     ld [hl], $00
-    ld hl, $c521
+    ld hl, _camera_deadzone_y
     ld [hl], $00
-    ld a, [$d9be]
+    ld a, [_TOPDOWN_GRID]
     sub $10
     jr nz, jr_005_7932
 
-    ld hl, $c0ba
+    ld hl, _ACTORS + 1
     ld a, [hl+]
     ld b, [hl]
     xor a
-    ld hl, $c0ba
+    ld hl, _ACTORS + 1
     ld [hl+], a
     ld [hl], b
-    ld hl, $c0bc
+    ld hl, _ACTORS + 3
     ld a, [hl+]
     ld b, [hl]
     ld c, $00
@@ -5427,7 +5428,7 @@ jr_005_78f5:
     add hl, bc
     ld c, l
     ld b, h
-    ld hl, $c0bc
+    ld hl, _ACTORS + 3
     ld a, c
     ld [hl+], a
     ld [hl], b
@@ -5435,7 +5436,7 @@ jr_005_78f5:
 
 
 jr_005_7932:
-    ld hl, $c0ba
+    ld hl, _ACTORS + 1
     ld a, [hl+]
     ld c, a
     ld b, [hl]
@@ -5458,10 +5459,10 @@ jr_005_7932:
     ld b, c
     rr b
     rra
-    ld hl, $c0ba
+    ld hl, _ACTORS + 1
     ld [hl+], a
     ld [hl], b
-    ld hl, $c0bc
+    ld hl, _ACTORS + 3
     ld a, [hl+]
     ld c, a
     ld b, [hl]
@@ -5484,20 +5485,20 @@ jr_005_7932:
     ld b, c
     rr b
     rra
-    ld hl, $c0bc
+    ld hl, _ACTORS + 3
     ld [hl+], a
     ld [hl], b
     ret
 
-
+_topdown_update:
     add sp, -$05
     ld hl, sp+$00
     ld [hl], $04
-    ld a, [$d9be]
+    ld a, [_TOPDOWN_GRID]
     sub $10
     jr nz, jr_005_79d9
 
-    ld hl, $c0ba
+    ld hl, _ACTORS + 1
     ld a, [hl+]
     ld c, a
     ld b, [hl]
@@ -5513,7 +5514,7 @@ jr_005_7932:
     and $0f
     jr nz, jr_005_79d9
 
-    ld hl, $c0bc
+    ld hl, _ACTORS + 3
     ld a, [hl+]
     ld c, a
     ld b, [hl]
@@ -5535,11 +5536,11 @@ jr_005_7932:
     jr z, jr_005_7a19
 
 jr_005_79d9:
-    ld a, [$d9be]
+    ld a, [_TOPDOWN_GRID]
     sub $08
     jp nz, Jump_005_7f8c
 
-    ld hl, $c0ba
+    ld hl, _ACTORS + 1
     ld a, [hl+]
     ld c, a
     ld b, [hl]
@@ -5555,7 +5556,7 @@ jr_005_79d9:
     and $07
     jp nz, Jump_005_7f8c
 
-    ld hl, $c0bc
+    ld hl, _ACTORS + 3
     ld a, [hl+]
     ld c, a
     ld b, [hl]
@@ -5572,24 +5573,24 @@ jr_005_79d9:
     jp nz, Jump_005_7f8c
 
 jr_005_7a19:
-    ld hl, $c507
+    ld hl, _PLAYER_MOVING
     ld [hl], $00
     xor a
     push af
     inc sp
-    ld de, $c0ba
+    ld de, _ACTORS + 1
     push de
     ld de, $c0bf
     push de
     ld e, $06
-    ld hl, $4d2e
+    ld hl, $4d2e ; jumps to bank 6: 0x4d2e
     call RST_08
     add sp, $05
     ld a, e
     or a
     jp nz, Jump_005_7ffc
 
-    ld a, [$c61d]
+    ld a, [_RECENT_JOY]
     ld hl, sp+$04
     ld [hl], a
     push hl
@@ -5597,9 +5598,9 @@ jr_005_7a19:
     pop hl
     jr nz, jr_005_7a55
 
-    ld hl, $c61b
+    ld hl, _FRAME_JOY
     ld c, [hl]
-    ld hl, $c61d
+    ld hl, _RECENT_JOY
     ld a, [hl]
     or a
     jp nz, Jump_005_7b4a
@@ -5608,11 +5609,11 @@ jr_005_7a19:
     jp z, Jump_005_7b4a
 
 jr_005_7a55:
-    ld hl, $c507
+    ld hl, _PLAYER_MOVING
     ld [hl], $01
     ld hl, sp+$00
     ld [hl], $03
-    ld hl, $c0bc
+    ld hl, _ACTORS + 3
     ld a, [hl+]
     ld c, a
     ld b, [hl]
@@ -5719,18 +5720,18 @@ jr_005_7aee:
     ld a, [hl+]
     dec a
     ld [hl], a
-    ld hl, $c532
+    ld hl, _image_tile_width
     sub [hl]
     jr nc, jr_005_7b39
 
     ld a, c
-    ld hl, $c533
+    ld hl, _image_tile_height
     sub [hl]
     jr nc, jr_005_7b39
 
-    ld hl, $c52f
+    ld hl, _COLLISION_BANK
     ld b, [hl]
-    ld hl, $c532
+    ld hl, _image_tile_width
     ld l, [hl]
     ld h, $00
     ld e, c
@@ -5742,7 +5743,7 @@ jr_005_7aee:
     add sp, $04
     pop bc
     ld a, e
-    ld hl, $c530
+    ld hl, _COLLISION_PTR
     add [hl]
     inc hl
     ld e, a
@@ -5758,7 +5759,7 @@ jr_005_7aee:
     push bc
     inc sp
     push de
-    call Call_000_1307
+    call _ReadBankedUWORD
     add sp, $03
     jr jr_005_7b3b
 
@@ -5769,7 +5770,7 @@ jr_005_7b3b:
     bit 3, e
     jr z, jr_005_7b47
 
-    ld hl, $c507
+    ld hl, _PLAYER_MOVING
     ld [hl], $00
     jp Jump_005_7e7b
 
@@ -5785,7 +5786,7 @@ Jump_005_7b4a:
     pop hl
     jr nz, jr_005_7b5f
 
-    ld hl, $c61d
+    ld hl, _RECENT_JOY
     ld a, [hl]
     or a
     jp nz, Jump_005_7c54
@@ -5794,11 +5795,11 @@ Jump_005_7b4a:
     jp z, Jump_005_7c54
 
 jr_005_7b5f:
-    ld hl, $c507
+    ld hl, _PLAYER_MOVING
     ld [hl], $01
     ld hl, sp+$00
     ld [hl], $01
-    ld hl, $c0bc
+    ld hl, _ACTORS + 3
     ld a, [hl+]
     ld c, a
     ld b, [hl]
@@ -5905,18 +5906,18 @@ jr_005_7bf8:
     ld a, [hl+]
     inc a
     ld [hl], a
-    ld hl, $c532
+    ld hl, _image_tile_width
     sub [hl]
     jr nc, jr_005_7c43
 
     ld a, c
-    ld hl, $c533
+    ld hl, _image_tile_height
     sub [hl]
     jr nc, jr_005_7c43
 
-    ld hl, $c52f
+    ld hl, _COLLISION_BANK
     ld b, [hl]
-    ld hl, $c532
+    ld hl, _image_tile_width
     ld l, [hl]
     ld h, $00
     ld e, c
@@ -5928,7 +5929,7 @@ jr_005_7bf8:
     add sp, $04
     pop bc
     ld a, e
-    ld hl, $c530
+    ld hl, _COLLISION_PTR
     add [hl]
     inc hl
     ld e, a
@@ -5944,7 +5945,7 @@ jr_005_7bf8:
     push bc
     inc sp
     push de
-    call Call_000_1307
+    call _ReadBankedUWORD
     add sp, $03
     jr jr_005_7c45
 
@@ -5955,7 +5956,7 @@ jr_005_7c45:
     bit 2, e
     jr z, jr_005_7c51
 
-    ld hl, $c507
+    ld hl, _PLAYER_MOVING
     ld [hl], $00
     jp Jump_005_7e7b
 
@@ -5971,7 +5972,7 @@ Jump_005_7c54:
     pop hl
     jr nz, jr_005_7c69
 
-    ld hl, $c61d
+    ld hl, _RECENT_JOY
     ld a, [hl]
     or a
     jp nz, Jump_005_7d69
@@ -5980,7 +5981,7 @@ Jump_005_7c54:
     jp z, Jump_005_7d69
 
 jr_005_7c69:
-    ld hl, $c507
+    ld hl, _PLAYER_MOVING
     ld [hl], $01
     ld hl, sp+$00
     ld [hl], $02
@@ -6093,20 +6094,20 @@ jr_005_7d03:
     dec a
     ld [hl], a
     ld a, c
-    ld hl, $c532
+    ld hl, _image_tile_width
     sub [hl]
     jr nc, jr_005_7d58
 
     ld hl, sp+$03
     ld a, [hl]
-    ld hl, $c533
+    ld hl, _image_tile_height
     sub [hl]
     jr nc, jr_005_7d58
 
-    ld a, [$c52f]
+    ld a, [_COLLISION_BANK]
     ld hl, sp+$04
     ld [hl], a
-    ld hl, $c532
+    ld hl, _image_tile_width
     ld e, [hl]
     ld d, $00
     ld hl, sp+$03
@@ -6121,7 +6122,7 @@ jr_005_7d03:
     add sp, $04
     pop bc
     ld a, e
-    ld hl, $c530
+    ld hl, _COLLISION_PTR
     add [hl]
     inc hl
     ld e, a
@@ -6138,7 +6139,7 @@ jr_005_7d03:
     push af
     inc sp
     push de
-    call Call_000_1307
+    call _ReadBankedUWORD
     add sp, $03
     jr jr_005_7d5a
 
@@ -6149,7 +6150,7 @@ jr_005_7d5a:
     bit 1, e
     jr z, jr_005_7d66
 
-    ld hl, $c507
+    ld hl, _PLAYER_MOVING
     ld [hl], $00
     jp Jump_005_7e7b
 
@@ -6165,7 +6166,7 @@ Jump_005_7d69:
     pop hl
     jr nz, jr_005_7d7d
 
-    ld a, [$c61d]
+    ld a, [_RECENT_JOY]
     or a
     jp nz, Jump_005_7e7b
 
@@ -6173,7 +6174,7 @@ Jump_005_7d69:
     jp z, Jump_005_7e7b
 
 jr_005_7d7d:
-    ld hl, $c507
+    ld hl, _PLAYER_MOVING
     ld [hl], $01
     ld hl, sp+$00
     ld [hl], $00
@@ -6286,20 +6287,20 @@ jr_005_7e17:
     inc a
     ld [hl], a
     ld a, c
-    ld hl, $c532
+    ld hl, _image_tile_width
     sub [hl]
     jr nc, jr_005_7e6c
 
     ld hl, sp+$03
     ld a, [hl]
-    ld hl, $c533
+    ld hl, _image_tile_height
     sub [hl]
     jr nc, jr_005_7e6c
 
-    ld a, [$c52f]
+    ld a, [_COLLISION_BANK]
     ld hl, sp+$04
     ld [hl], a
-    ld hl, $c532
+    ld hl, _image_tile_width
     ld e, [hl]
     ld d, $00
     ld hl, sp+$03
@@ -6314,7 +6315,7 @@ jr_005_7e17:
     add sp, $04
     pop bc
     ld a, e
-    ld hl, $c530
+    ld hl, _COLLISION_PTR
     add [hl]
     inc hl
     ld e, a
@@ -6331,7 +6332,7 @@ jr_005_7e17:
     push af
     inc sp
     push de
-    call Call_000_1307
+    call _ReadBankedUWORD
     add sp, $03
     ld a, e
     jr jr_005_7e6e
@@ -6343,7 +6344,7 @@ jr_005_7e6e:
     rrca
     jr nc, jr_005_7e78
 
-    ld hl, $c507
+    ld hl, _PLAYER_MOVING
     ld [hl], $00
     jr jr_005_7e7b
 
@@ -6358,7 +6359,7 @@ jr_005_7e7b:
     sub $04
     jr z, jr_005_7e9c
 
-    ld a, [$c507]
+    ld a, [_PLAYER_MOVING]
     push af
     inc sp
     ld hl, sp+$01
@@ -6382,7 +6383,7 @@ jr_005_7e9c:
     pop hl
 
 jr_005_7ea9:
-    ld a, [$da1f]
+    ld a, [_GAME_TIME]
     and $01
     ld b, a
     ld c, $00
@@ -6414,14 +6415,14 @@ jr_005_7ea9:
     ld [hl], d
 
 jr_005_7ed4:
-    ld a, [$c507]
+    ld a, [_PLAYER_MOVING]
     or a
     jr z, jr_005_7f08
 
     xor a
     push af
     inc sp
-    ld a, [$d9be]
+    ld a, [_TOPDOWN_GRID]
     push af
     inc sp
     ld e, $01
@@ -6444,11 +6445,11 @@ jr_005_7ed4:
     ld a, [de]
     inc a
     ld [bc], a
-    ld hl, $c507
+    ld hl, _PLAYER_MOVING
     ld [hl], $00
 
 jr_005_7f08:
-    ld a, [$c61b]
+    ld a, [_FRAME_JOY]
     ld c, $00
     push af
     and $10
@@ -6462,7 +6463,7 @@ jr_005_7f08:
     or l
     jr z, jr_005_7f8c
 
-    ld hl, $c61c
+    ld hl, _LAST_JOY
     ld c, [hl]
     ld b, $00
     ld a, c
@@ -6476,7 +6477,7 @@ jr_005_7f08:
     ld a, $01
     push af
     inc sp
-    ld a, [$d9be]
+    ld a, [_TOPDOWN_GRID]
     push af
     inc sp
     ld e, $01
@@ -6509,7 +6510,7 @@ jr_005_7f08:
     call RST_08
     add sp, $04
     pop de
-    ld hl, $c507
+    ld hl, _PLAYER_MOVING
     ld [hl], $00
     ld hl, $0025
     add hl, de
@@ -6538,7 +6539,7 @@ jr_005_7f08:
 
 Jump_005_7f8c:
 jr_005_7f8c:
-    ld a, [$c507]
+    ld a, [_PLAYER_MOVING]
     or a
     jr z, jr_005_7ffc
 

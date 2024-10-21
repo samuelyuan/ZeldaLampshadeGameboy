@@ -228,7 +228,7 @@ jr_009_40e5:
     push bc
     ld de, $a000
     push de
-    call Call_000_1323
+    call _MemcpyBanked
     add sp, $07
     ret
 
@@ -286,13 +286,13 @@ jr_009_416a:
     ld e, b
     ret
 
-bank009_4186:
-    ld hl, $c63d
+_music_init_driver:
+    ld hl, _MUSIC_CURRENT_TRACK_BANK
     ld [hl], $ff
-    ld hl, $c7f1
+    ld hl, _SFX_PLAY_BANK
     ld [hl], $ff
     xor a
-    ld hl, $c7f2
+    ld hl, _SFX_PLAY_SAMPLE
     ld [hl+], a
     ld [hl], a
     ld a, $80
@@ -331,7 +331,7 @@ bank009_4186:
     ld [hl], $00
     ret
 
-
+_music_init_events:
     ld hl, sp+$06
     ld a, [hl]
     or a
@@ -350,7 +350,7 @@ jr_009_41e5:
     add hl, hl
     add hl, hl
     add hl, bc
-    ld de, $c629
+    ld de, _MUSIC_EVENTS
     add hl, de
     xor a
     ld [hl+], a
@@ -363,28 +363,28 @@ jr_009_41fb:
     push de
     ld de, $0000
     push de
-    ld de, $c629
+    ld de, _MUSIC_EVENTS
     push de
-    call Call_000_37b0
+    call _memset2
     add sp, $06
 
 jr_009_420c:
     di
-    ld hl, $c628
+    ld hl, _ROUTINE_QUEUE_TAIL
     ld [hl], $00
-    ld hl, $c627
+    ld hl, _ROUTINE_QUEUE_HEAD
     ld [hl], $00
     ei
     ret
 
-
-    ld a, [$c627]
-    ld hl, $c628
+_music_events_poll:
+    ld a, [_ROUTINE_QUEUE_HEAD]
+    ld hl, _ROUTINE_QUEUE_TAIL
     sub [hl]
     jr z, jr_009_4240
 
     di
-    ld hl, $c628
+    ld hl, _ROUTINE_QUEUE_TAIL
     inc [hl]
     ld a, [hl]
     and $03
@@ -411,10 +411,10 @@ jr_009_4240:
     ld e, $00
     ret
 
-
+_music_pause:
     ld hl, sp+$02
     ld a, [hl]
-    ld [$c645], a
+    ld [_MUSIC_PLAY_ISR_PAUSE], a
     or a
     ret z
 
@@ -436,7 +436,7 @@ jr_009_4240:
     ldh [rNR51], a
     ret
 
-
+_scroll_rect:
     ld hl, sp+$09
     ld a, [hl-]
     or a
@@ -499,7 +499,7 @@ jr_009_4298:
     pop bc
     ret
 
-
+_vm_print_detect:
     dec sp
     ld hl, sp+$09
     ld a, [hl+]
@@ -523,7 +523,7 @@ jr_009_4298:
     jr jr_009_42c6
 
 jr_009_42c2:
-    ld hl, $cb98
+    ld hl, _SCRIPT_MEMORY
     add hl, bc
 
 jr_009_42c6:
@@ -536,7 +536,7 @@ jr_009_42c6:
     res 3, a
     push af
     inc sp
-    call Call_000_01bb
+    call _set_interrupts
     inc sp
     push bc
     ld hl, sp+$0d
@@ -544,7 +544,7 @@ jr_009_42c6:
     push af
     inc sp
     ld e, $06
-    ld hl, $4543
+    ld hl, _gbprinter_detect
     call RST_08
     inc sp
     pop bc
@@ -558,11 +558,11 @@ jr_009_42c6:
     ld a, [hl]
     push af
     inc sp
-    call Call_000_01bb
+    call _set_interrupts
     pop hl
     ret
 
-
+_vm_print_overlay:
     dec sp
     ld hl, sp+$09
     ld a, [hl+]
@@ -586,7 +586,7 @@ jr_009_42c6:
     jr jr_009_4318
 
 jr_009_4314:
-    ld hl, $cb98
+    ld hl, _SCRIPT_MEMORY
     add hl, bc
 
 jr_009_4318:
@@ -599,7 +599,7 @@ jr_009_4318:
     res 3, a
     push af
     inc sp
-    call Call_000_01bb
+    call _set_interrupts
     inc sp
     push bc
     ld hl, sp+$0f
@@ -612,7 +612,7 @@ jr_009_4318:
     push af
     inc sp
     ld e, $06
-    ld hl, $4565
+    ld hl, _gbprinter_print_overlay
     call RST_08
     add sp, $03
     pop bc
@@ -626,11 +626,11 @@ jr_009_4318:
     ld a, [hl]
     push af
     inc sp
-    call Call_000_01bb
+    call _set_interrupts
     pop hl
     ret
 
-
+_vm_save_clear:
     ld hl, sp+$08
     ld a, [hl]
     push af
@@ -641,7 +641,7 @@ jr_009_4318:
     inc sp
     ret
 
-
+_vm_save_peek:
     add sp, -$04
     ld hl, sp+$0a
     ld a, [hl+]
@@ -675,7 +675,7 @@ Jump_009_437c:
     jr jr_009_4388
 
 jr_009_4384:
-    ld hl, $cb98
+    ld hl, _SCRIPT_MEMORY
     add hl, bc
 
 jr_009_4388:
@@ -705,7 +705,7 @@ jr_009_4388:
     jr jr_009_43ab
 
 jr_009_43a6:
-    ld hl, $cb98
+    ld hl, _SCRIPT_MEMORY
     add hl, bc
     ld c, l
 
@@ -752,7 +752,7 @@ jr_009_43b6:
     add sp, $04
     ret
 
-
+_vm_sin_scale:
     add sp, -$04
     ld hl, sp+$0a
     ld a, [hl+]
@@ -791,7 +791,7 @@ jr_009_43b6:
     jr jr_009_4414
 
 jr_009_4410:
-    ld hl, $cb98
+    ld hl, _SCRIPT_MEMORY
     add hl, bc
 
 jr_009_4414:
@@ -823,7 +823,7 @@ jr_009_4414:
     jr jr_009_443a
 
 jr_009_4435:
-    ld hl, $cb98
+    ld hl, _SCRIPT_MEMORY
     add hl, bc
     ld c, l
 
@@ -839,7 +839,7 @@ jr_009_443a:
     ld [hl], a
     ld a, [bc]
     ld c, a
-    ld hl, $18c4
+    ld hl, _sine_wave
     ld b, $00
     add hl, bc
     ld c, [hl]
@@ -893,7 +893,7 @@ jr_009_4477:
     add sp, $04
     ret
 
-
+_vm_cos_scale:
     add sp, -$04
     ld hl, sp+$0a
     ld a, [hl+]
@@ -932,7 +932,7 @@ jr_009_4477:
     jr jr_009_44b6
 
 jr_009_44b2:
-    ld hl, $cb98
+    ld hl, _SCRIPT_MEMORY
     add hl, bc
 
 jr_009_44b6:
@@ -964,7 +964,7 @@ jr_009_44b6:
     jr jr_009_44dc
 
 jr_009_44d7:
-    ld hl, $cb98
+    ld hl, _SCRIPT_MEMORY
     add hl, bc
     ld c, l
 
@@ -981,7 +981,7 @@ jr_009_44dc:
     ld a, [bc]
     add $40
     ld c, a
-    ld hl, $18c4
+    ld hl, _sine_wave
     ld b, $00
     add hl, bc
     ld c, [hl]
@@ -1053,7 +1053,7 @@ jr_009_451b:
     ld d, b
     ld a, [hl+]
     ld [hl], a
-    ld a, [$c63d]
+    ld a, [_MUSIC_CURRENT_TRACK_BANK]
     ld hl, sp+$00
     sub [hl]
     jr nz, jr_009_4550
@@ -1069,7 +1069,7 @@ jr_009_451b:
     jr z, jr_009_4567
 
 jr_009_4550:
-    ld hl, $c63d
+    ld hl, _MUSIC_CURRENT_TRACK_BANK
     ld [hl], $ff
     ld hl, $c642
     ld a, e
@@ -1081,7 +1081,7 @@ jr_009_4550:
     ld [hl], d
     ld hl, sp+$01
     ld a, [hl]
-    ld [$c63d], a
+    ld [_MUSIC_CURRENT_TRACK_BANK], a
 
 jr_009_4567:
     inc sp
@@ -1089,7 +1089,7 @@ jr_009_4567:
     ret
 
 
-    ld hl, $c63d
+    ld hl, _MUSIC_CURRENT_TRACK_BANK
     ld [hl], $ff
     xor a
     ldh [rNR42], a
@@ -1226,7 +1226,7 @@ jr_009_45bd:
     sub [hl]
     jr c, jr_009_4669
 
-    ld hl, $c7f1
+    ld hl, _SFX_PLAY_BANK
     ld [hl], $ff
     ld hl, sp+$00
     ld a, [hl]
@@ -1272,15 +1272,15 @@ jr_009_464b:
     ld hl, sp+$01
     ld a, [hl]
     ld [$c63f], a
-    ld hl, $c7f1
+    ld hl, _SFX_PLAY_BANK
     ld [hl], $ff
     ld hl, $c7f4
     ld [hl], $00
-    ld hl, $c7f2
+    ld hl, _SFX_PLAY_SAMPLE
     ld a, e
     ld [hl+], a
     ld [hl], d
-    ld hl, $c7f1
+    ld hl, _SFX_PLAY_BANK
     ld [hl], c
 
 jr_009_4669:
@@ -1311,7 +1311,7 @@ jr_009_4669:
     jr jr_009_468c
 
 jr_009_4688:
-    ld hl, $cb98
+    ld hl, _SCRIPT_MEMORY
     add hl, bc
 
 jr_009_468c:
@@ -1387,7 +1387,7 @@ jr_009_468c:
     push de
     ld b, a
     push bc
-    call Call_000_12e0
+    call _ReadBankedFarPtr
     add sp, $05
     ld hl, sp+$11
     ld a, [hl+]
@@ -1405,7 +1405,7 @@ jr_009_468c:
     push hl
     push de
     push bc
-    call Call_000_1323
+    call _MemcpyBanked
     add sp, $07
     ld hl, sp+$03
     ld a, [hl+]
@@ -1502,7 +1502,7 @@ jr_009_4754:
     jr jr_009_4782
 
 jr_009_477e:
-    ld hl, $cb98
+    ld hl, _SCRIPT_MEMORY
     add hl, bc
 
 jr_009_4782:
@@ -1582,7 +1582,7 @@ jr_009_47c1:
     jr jr_009_47ec
 
 jr_009_47e7:
-    ld hl, $cb98
+    ld hl, _SCRIPT_MEMORY
     add hl, bc
     ld c, l
 
@@ -1669,7 +1669,7 @@ jr_009_484c:
     push hl
     push de
     push bc
-    call Call_000_376d
+    call _memset1
     add sp, $06
     ld de, $c0ba
     ld hl, $c57e
@@ -1683,7 +1683,7 @@ jr_009_484c:
     push hl
     push de
     push bc
-    call Call_000_376d
+    call _memset1
     add sp, $06
     ld hl, $c57e
     ld a, [hl+]
@@ -1728,7 +1728,7 @@ Jump_009_489a:
     push de
     ld de, $c0ba
     push de
-    call Call_000_376d
+    call _memset1
     add sp, $06
     ld bc, $c0be
     ld hl, $c57e
@@ -1980,12 +1980,12 @@ bank009_49de:
     db $01, $45, $fe, $12, $00, $44, $03, $01, $21, $01, $c6, $0d, $57, $01, $14, $00
     db $00, $ff, $fc, $14, $06, $00, $ff, $fd, $14, $07, $00, $ff, $fe, $35, $ff, $fc
     db $32, $02, $ff, $fc, $27, $03, $02
-    
+
     db $09, $f0, $5c, $00 ; bank 9 0x5cf0 DefeatedLampshadeBossScreen
-    
+
 bank009_4a35:
     db $25, $40, $00
-    
+
     db "A sinister looking\n"
     db "well..."
 
@@ -2015,7 +2015,7 @@ jr_009_4a63:
     ld bc, $2500
     ld b, b
     nop
-    
+
     db "Wow, that was\n"
     db "easy..."
 
@@ -2046,7 +2046,7 @@ jr_009_4a63:
 
     db "You got the\n"
     db "Mystical Lampshade!"
-    
+
     nop
     ld b, a
     inc bc
@@ -2062,7 +2062,7 @@ jr_009_4a63:
     ld b, h
     rlca
     ld bc, $0040
-    
+
     db "You'll need to\n" ; 0x4ad6
     db "take it to the"
 
@@ -2165,7 +2165,7 @@ jr_009_4b69:
     db "We might be\n"
     db "stamping down on\n"
     db "prices,"
-    
+
     nop
     ld b, a
     inc bc
@@ -2208,7 +2208,7 @@ jr_009_4bdc:
 
     ; 0x4be0
     db $25, $40, $00
-    
+
     db "I'm not a plot\n"
     db "character, but I'm\n"
     db "still in the game!"
@@ -2231,7 +2231,7 @@ jr_009_4c24:
     ld b, h
     rlca
     db $01, $40, $00
-    
+
     db "Power to the NPC!"
 
     nop
@@ -2252,12 +2252,12 @@ jr_009_4c4d:
     nop
     ld b, h
     inc bc
-    
+
     db $01, $00
 
     ; bank 9: 0x4c52
     db $25, $40, $00
-    
+
     db "Enjoy the movie!"
 
     nop
@@ -2277,7 +2277,7 @@ jr_009_4c4d:
 jr_009_4c75:
     rlca
     ld bc, $0040
-    
+
     db "... mmmm popcorn"
 
     nop
@@ -2339,10 +2339,10 @@ jr_009_4c75:
     ld b, h
     inc bc
     db $01, $00
-    
+
     ; bank 9 0x4cf1
     db $25, $40, $00
-    
+
     db "I'm Gerkinman."
 
     nop
@@ -2360,10 +2360,10 @@ jr_009_4c75:
     ld b, h
     rlca
     ld bc, $0040
-    
+
     db "Revel in my\n"
     db "weirdery."
-    
+
     nop
     ld b, a
     inc bc
@@ -2388,7 +2388,7 @@ jr_009_4c75:
     db "There used to be\n"
     db "a FROG in this\n"
     db "pond..."
-    
+
     nop
     ld b, a
     inc bc
@@ -2428,10 +2428,10 @@ jr_009_4c75:
 
     ; bank 9 0x4da5
     db $25, $40, $00
-    
+
     db "Hi, I'm Richie\n"
     db "Zirbes."
-    
+
     nop
     ld b, a
 
@@ -2454,7 +2454,7 @@ jr_009_4dc6:
     ld b, h
     rlca
     ld bc, $0040
-    
+
     db "I'm working really\n"
     db "hard on PK4 and\n"
     db "the PK: Game."
@@ -2479,10 +2479,10 @@ jr_009_4dc6:
 
     ; bank 9 0x4e18
     db $25, $12, $05, $1a, $00, $4e, $27, $00, $07, $00, $00, $02, $09, $4e, $57, $40, $00
-    
+
     db "Aww...\n"
     db "he's asleep..."
-    
+
     nop
     ld b, a
     inc bc
@@ -2523,7 +2523,7 @@ jr_009_4e5a:
     adc b
     ld b, b
     nop
-    
+
     db "Oh dear..."
 
     nop
@@ -2556,7 +2556,7 @@ jr_009_4e5a:
     ld b, h
     ld b, b
     nop
-    
+
     db "Maybe this taser\n"
     db "will wake him up..."
 
@@ -2683,10 +2683,10 @@ jr_009_4f2b:
     nop
     ld [$0000], sp
     nop
-    
+
     ; bank 9 0x4f45
     db $25, $40, $00
-    
+
     db "Welcome to the top\n"
     db "secret NG\n"
     db "headquarters."
@@ -2707,7 +2707,7 @@ jr_009_4f2b:
     ld b, h
     rlca
     ld bc, $0040
-    
+
     db "We finally set up\n"
     db "an office."
 
@@ -2749,10 +2749,10 @@ jr_009_4fc8:
 
 jr_009_4fcc:
     db $01, $00
-    
+
     ; bank 9 0x4fce
     db $25, $40, $00
-    
+
     db "Mmm, that burger\n"
     db "was dead tasty!"
 
@@ -2797,7 +2797,7 @@ jr_009_5011:
     add b
     ld b, b
     nop
-    
+
     db "That water didn't\n"
     db "wake him up,"
 
@@ -2818,7 +2818,7 @@ jr_009_503e:
     ld b, h
     rlca
     ld bc, $0040
-    
+
     db "he needs to be\n"
     db "shocked awake..."
 
@@ -2841,7 +2841,7 @@ jr_009_503e:
     ld bc, $2500
     ld b, b
     nop
-    
+
     db "North:\n"
     db "Temple of Light"
 
@@ -2863,7 +2863,7 @@ jr_009_509a:
 
 jr_009_50ab:
     ld bc, $0040
-    
+
     db "South:\n"
     db "Town"
 
@@ -3044,7 +3044,7 @@ jr_009_51bf:
     ld b, h
     rlca
     ld bc, $0040
-    
+
     db "with pull out\n"
     db "secret section'"
 
@@ -3106,7 +3106,7 @@ jr_009_5239:
 
 jr_009_524e:
     nop
-    
+
     db "Good night!"
 
     nop
@@ -3156,75 +3156,76 @@ jr_009_527f:
     ld [bc], a
     add hl, bc
     add hl, hl
-    
+
     ld e, c
     nop
 
 bank009_5296:
     INCBIN "gfx/bank009_5296.2bpp"
-    
+
 Palette1::
     db $ff, $d0, $e0
-    
+
 GraveyardDialogue:: ; 0x5329
     db $20, $00, $04, $00, $04, $00, $00, $0f, $f8, $07, $00, $00, $00, $00, $0f, $10
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
     db $00, $00
-    
+
     db $09, $0e, $6f ; points to bank 9: 0x6f0e dante
     db $07, $a4, $4b ; points to bank 7: 0x4ba4 dialogue
-    
+
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
-    
+
     db $20, $00, $01, $80, $04, $00, $00, $0f, $f8, $07, $00, $00, $00, $00, $0f, $10
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
     db $00, $00
-    
+
     db $0a, $9b, $45 ; bank 0a: 0x459b
     db $0a, $37, $41 ; bank 0a: 0x4137 dialogue
-    
+
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
-    
+
     db $20, $00, $02, $00, $05, $00, $00, $0f, $f8, $07, $00, $00, $00, $00, $3f, $10
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
     db $00, $00
-    
+
     db $09, $fc, $73 ; points to bank 9: 0x73fc heihachi
     db $07, $ec, $4d ; points to bank 7: 0x4dec dialogue
-    
+
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
-    
+
     db $20, $00, $05, $80, $07, $00, $00, $0f, $f8, $07, $00, $00, $00, $00, $0f, $10
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
     db $00, $00
-    
+
     db $09, $a9, $72 ; bank 9: 0x72a9 Grave cover
     db $00, $00, $00
-    
+
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
-    
+
     db $20, $80, $08, $00, $03, $00, $00, $0f, $f8, $07, $00, $00, $00, $00, $ff, $10
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
     db $00, $00
-    
+
     db $08, $29, $7d
     db $00, $00, $00
-    
+
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
-    
+
     db $20, $80, $08, $00, $05, $00, $00, $0f, $f8, $07, $00, $00, $00, $00, $ff, $10
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
     db $00, $00
-    
+
     db $08, $29, $7d
     db $00, $00, $00
 
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
 
-GraveyardEntry::    ; bank 9 0x5461 
+GraveyardEntry::    ; bank 9 0x5461
     db $14, $12, $00
     db $06, $03, $00, $05
-    db $00, $09, $0a, $78
+    db $00
+    db $09, $0a, $78 ; bank 9 0x780a actor link
     db $0a, $97, $41 ; bank 0a: 0x4197 tiles
     db $08, $79, $5d ; bank 8 0x5d79 collision
     db $04, $b4, $7f ; bank 4 0x7fb4 palette 0
@@ -3238,57 +3239,58 @@ GraveyardEntry::    ; bank 9 0x5461
     db $00, $00, $14, $00
 
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
-    
-PCWorldDialogue:: 
+
+PCWorldDialogue::
     db $20, $00, $04, $80, $03, $00, $00, $0f, $f8, $07, $00, $00, $00, $00, $0f, $10
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
     db $00, $00
-    
+
     db $0a, $9b, $45 ; bank 0a 0x459b
     db $0a, $67, $41 ; bank 0a 0x4167
 
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
-    
+
     db $20, $00, $05, $80, $01, $00, $00, $0f, $f8, $07, $00, $00, $00, $00, $1f, $10
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
     db $00, $00
-    
+
     db $09, $6d, $79 ; points to bank 9: 0x796d rubberninja
     db $09, $6d, $4b ; points to bank 9: 0x4b6d dialogue
-    
+
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
-    
+
     db $20, $00, $02, $00, $01, $00, $00, $0f, $f8, $07, $00, $00, $00, $00, $0f, $10
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
     db $00, $00
-    
+
     db $09, $02, $75 ; points to bank 9: 0x7502 jen
     db $09, $e0, $4b ; points to bank 9: 0x4be0 dialogue
-    
+
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
-    
+
     db $20, $80, $08, $00, $03, $00, $00, $0f, $f8, $07, $00, $00, $00, $00, $ff, $10
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
     db $00, $00
-    
+
     db $08, $29, $7d
     db $00, $00, $00
-    
+
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
-    
+
     db $20, $80, $08, $00, $05, $00, $00, $0f, $f8, $07, $00, $00, $00, $00, $ff, $10
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
     db $00, $00
-    
+
     db $08, $29, $7d
     db $00, $00, $00
-    
+
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
-    
-PCWorldEntry::    ; bank 9 0x55a0 
+
+PCWorldEntry::    ; bank 9 0x55a0
     db $14, $12, $00
     db $05, $02, $00, $04
-    db $00, $09, $0a, $78
+    db $00
+    db $09, $0a, $78 ; bank 9 0x780a actor link
     db $0a, $07, $42  ; bank 0a: 0x4207 tiles
     db $08, $e1, $5e ; bank 8: 0x5ee1 collision
     db $04, $b4, $7f ; bank 4 0x7fb4 palette 0
@@ -3300,44 +3302,45 @@ PCWorldEntry::    ; bank 9 0x55a0
     db $0a, $f1, $42, $00 ; 0x42f1 transition
     db $00, $00, $00, $00
     db $00, $00, $14, $00
-    
+
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
 
 McdonaldsDialogue::  ; 0x55db
     db $20, $00, $05, $80
     db $01, $00, $00, $0f, $f8, $07, $00, $00, $00, $00, $1f, $10, $00, $00, $00, $00
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
-    
+
     db $09, $94, $7e ; bank 9: 0x7e94 mcdonald's worker
     db $00, $00, $00
-    
+
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $20, $00, $01, $80
     db $01, $00, $00, $0f, $f8, $07, $00, $00, $00, $00, $0f, $10, $00, $00, $00, $00
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
-    
+
     db $09, $f0, $79 ; bank 9: 0x79f0 samus
     db $07, $e0, $56 ; bank 7: 0x56e0
-    
+
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $20, $80, $08, $00
     db $03, $00, $00, $0f, $f8, $07, $00, $00, $00, $00, $ff, $10, $00, $00, $00, $00
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
-    
+
     db $08, $29, $7d
     db $00, $00, $00
-    
+
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $20, $80, $08, $00
     db $05, $00, $00, $0f, $f8, $07, $00, $00, $00, $00, $ff, $10, $00, $00, $00, $00
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
-    
+
     db $08, $29, $7d
     db $00, $00, $00
-    
+
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
-    
-McdonaldsEntry::    ; bank 9 0x56ab 
+
+McdonaldsEntry::    ; bank 9 0x56ab
     db $14, $12, $00
     db $04, $02, $00, $03
-    db $00, $09, $0a, $78
+    db $00
+    db $09, $0a, $78 ; bank 9 0x780a actor link
     db $0a, $15, $42  ; bank 0a: 0x4215 tiles
     db $08, $49, $60 ; bank 8 0x6049 collision
     db $04, $b4, $7f ; bank 4 0x7fb4 palette 0
@@ -3356,37 +3359,38 @@ JRInsideDialogue:: ; 0x56e6
     db $20, $00, $03, $80
     db $02, $00, $00, $0f, $f8, $07, $00, $00, $00, $00, $1f, $10, $00, $00, $00, $00
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
-    
+
     db $09, $ea, $78 ; points to bank 9: 0x78ea richie
     db $09, $a5, $4d ; points to bank 9: 0x4da5 dialogue
-    
+
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $20, $00, $02, $00
     db $06, $00, $00, $0f, $f8, $07, $00, $00, $00, $00, $0f, $10, $00, $00, $00, $00
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
-    
+
     db $09, $17, $77 ; points to bank 9: 0x7717 kirby
     db $07, $e6, $49 ; points to bank 7: 0x49e6 dialogue
-    
+
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $20, $80, $08, $00
     db $03, $00, $00, $0f, $f8, $07, $00, $00, $00, $00, $ff, $10, $00, $00, $00, $00
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
-    
+
     db $08, $29, $7d
     db $00, $00, $00
 
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $20, $80, $08, $00
     db $05, $00, $00, $0f, $f8, $07, $00, $00, $00, $00, $ff, $10, $00, $00, $00, $00
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
-    
+
     db $08, $29, $7d
     db $00, $00, $00
 
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
-    
-JRInsideEntry::    ; 0x57b6 
+
+JRInsideEntry::    ; 0x57b6
     db $14, $12, $00
     db $04, $01, $00, $03
-    db $00, $09, $0a, $78
+    db $00
+    db $09, $0a, $78 ; bank 9 0x780a actor link
     db $0a, $31, $42  ; bank 0a: 0x4231 tiles
     db $08, $b1, $61 ; bank 8 0x61b1 collision
     db $04, $b4, $7f ; bank 4 0x7fb4 palette 0
@@ -3398,58 +3402,59 @@ JRInsideEntry::    ; 0x57b6
     db $0a, $23, $43, $00 ; bank 0a 0x4323 transition
     db $00, $00, $00, $00
     db $00, $00, $14, $00
-    
+
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
-    
+
 JTHouseInsideDialogue:: ; 0x57f1
     db $20, $00, $01, $80
     db $07, $00, $00, $0f, $f8, $07, $00, $00, $00, $00, $ff, $10, $00, $00, $00, $00
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
-    
+
     db $09, $d6, $6c ; bank 9: 0x6cd6
     db $09, $cf, $50 ; bank 9: 0x50cf
-    
+
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $20, $00, $01, $80
     db $02, $00, $00, $0f, $f8, $07, $00, $00, $00, $00, $ff, $10, $00, $00, $00, $00
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
-    
+
     db $09, $d6, $6c ; bank 9: 0x6cd6
     db $09, $29, $52 ; bank 9: 0x5229
-    
+
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $20, $00, $04, $80
     db $02, $00, $00, $0f, $f8, $07, $00, $00, $00, $00, $0f, $10, $00, $00, $00, $00
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
-    
+
     db $09, $ad, $6e ; points to bank 9: 0x6ead dan
     db $07, $d3, $55 ; points to bank 7: 0x55d3 dialogue (JT's house)
-    
+
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $20, $80, $08, $00
     db $03, $00, $00, $0f, $f8, $07, $00, $00, $00, $00, $ff, $10, $00, $00, $00, $00
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
-    
+
     db $08, $29, $7d
     db $00, $00, $00
-    
+
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $20, $80, $08, $00
     db $05, $00, $00, $0f, $f8, $07, $00, $00, $00, $00, $ff, $10, $00, $00, $00, $00
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
-    
+
     db $08, $29, $7d
     db $00, $00, $00
-    
+
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $20, $00, $04, $00
     db $06, $00, $00, $0f, $f8, $07, $00, $00, $00, $00, $0f, $10, $00, $00, $00, $00
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
-    
+
     db $0a, $9b, $45 ; bank 0a; 0x459b
     db $09, $8a, $51 ; bank 9: 0x518a
-    
+
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
-    
-JTHouseInsideEntry::    ; 0x5929 
+
+JTHouseInsideEntry::    ; 0x5929
     db $14, $12, $00
     db $06, $01, $00, $04
-    db $00, $09, $0a, $78
+    db $00
+    db $09, $0a, $78 ; bank 9 0x780a actor link
     db $0a, $a5, $41  ; bank 0a: 0x41a5 tiles
     db $08, $19, $63 ; bank 8 0x6319 collision
     db $04, $b4, $7f ; bank 4 0x7fb4 palette 0
@@ -3461,50 +3466,51 @@ JTHouseInsideEntry::    ; 0x5929
     db $0a, $37, $43, $00 ; bank 0a 0x4337 transition
     db $00, $00, $00, $00
     db $00, $00, $14, $00
-    
+
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
-    
+
 DimHouseInsideDialogue:: ; 0x5964
     db $20, $00, $03, $80, $02, $00, $00, $0f, $f8, $07, $00, $00, $00, $00, $0f, $10
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
     db $00, $00
-    
+
     db $09, $d1, $6f ; points to bank 9: 0x6fd1 dim
     db $06, $9f, $57 ; points to bank 9: 0x579f
-    
+
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
-    
+
     db $20, $80, $08, $00, $03, $00, $00, $0f, $f8, $07, $00, $00, $00, $00, $ff, $10
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
     db $00, $00
-    
+
     db $08, $29, $7d
     db $00, $00, $00
-    
+
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
-    
+
     db $20, $80, $08, $00, $05, $00, $00, $0f, $f8, $07, $00, $00, $00, $00, $ff, $10
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
     db $00, $00
-    
+
     db $08, $29, $7d
     db $00, $00, $00
-    
+
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
-    
+
     db $20, $00, $04, $00, $01, $00, $00, $0f, $f8, $07, $00, $00, $00, $00, $0f, $10
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
     db $00, $00
-    
+
     db $0a, $9b, $45 ; bank 0a: 0x459b sign
     db $09, $3c, $51 ; bank 9: 0x513c message on the sign
- 
+
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
-    
-DimHouseInsideEntry::    ; bank 9 0x5a34 
+
+DimHouseInsideEntry::    ; bank 9 0x5a34
     db $14, $12, $00
     db $04, $01, $00, $03
-    db $00, $09, $0a, $78
+    db $00
+    db $09, $0a, $78 ; bank 9 0x780a actor link
     db $0a, $cf, $41  ; points to bank 0a: 0x41cf tiles
     db $08, $81, $64 ; bank 8 0x6481 collision
     db $04, $b4, $7f ; bank 4 0x7fb4 palette 0
@@ -3516,54 +3522,55 @@ DimHouseInsideEntry::    ; bank 9 0x5a34
     db $0a, $48, $43, $00 ; bank 0a 0x4348 transition
     db $00, $00, $00, $00
     db $00, $00, $14, $00
-    
+
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
-    
-RoomBeforeLampshadeBossEntry::    ; bank 9 0x5a6f 
+
+RoomBeforeLampshadeBossEntry::    ; bank 9 0x5a6f
     db $14, $12, $00
     db $00, $01, $00, $00
-    db $00, $09, $0a, $78
+    db $00
+    db $09, $0a, $78 ; bank 9 0x780a actor link
     db $0a, $77, $42  ; points to bank 0a: 0x4277 tiles
     db $08, $e9, $65 ; bank 8 0x65e9 collision
     db $04, $b4, $7f ; bank 4 0x7fb4 palette 0
     db $09, $26, $53 ; bank 9 0x5326 palette 1
-    db $03, $e1, $7f
+    db $03, $e1, $7f ; bank 3 0x7fe1 scene init
     db $00, $00, $00
     db $00, $00, $00 ; no sprites
     db $00, $00, $00 ; no dialogue match
     db $0a, $50, $43, $00 ; bank 0a 0x4350 transition
     db $00, $00, $00, $00
     db $00, $00, $14, $00
-    
+
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
-    
+
 LampshadeBossRoomDialogue:: ; 0x5aaa
     db $20, $00, $06, $80
     db $06, $00, $00, $0f, $f8, $07, $00, $00, $00, $00, $0f, $10, $00, $00, $00, $00
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
-    
+
     db $0a, $9b, $45 ; bank 0a: 0x459b sign
     db $09, $de, $49 ; bank 9 0x49de message "You pulled the plug"
-    
+
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $20, $80, $02, $80
     db $02, $00, $00, $0f, $f8, $07, $00, $00, $00, $00, $ff, $10, $00, $00, $00, $00
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
-        
+
     db $09, $94, $70 ; points to bank 9 0x7094 lampshade boss
     db $00, $00, $00
 
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $20, $80, $03, $80
     db $06, $00, $00, $0f, $f8, $07, $00, $00, $00, $00, $0f, $10, $00, $00, $00, $00
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
-    
+
     db $0a, $9b, $45 ; bank 0a: 0x459b sign
     db $06, $ef, $59 ; bank 6 0x59ef
-    
+
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
 
 LampshadeBossRoomSceneInit:: ; 0x5b46
     db $25, $12, $01, $58, $45, $0d, $0a, $01, $59, $0f, $01
-    
+
     db $60, $00, $7f, $9f, $04 ; bank 4 0x7f9f lampshade boss music
 
     db $14, $00, $01, $ff, $ff, $0d, $ff, $ff, $00, $55, $af, $02, $21, $0f, $c6, $0d
@@ -3580,10 +3587,11 @@ LampshadeBossRoomSceneInit:: ; 0x5b46
     db $00, $47, $03, $01, $04, $14, $00, $00, $41, $ff, $00, $44, $07, $01, $45, $fe
     db $12, $00, $44, $03, $01, $00
 
-LampshadeBossRoomEntry::    ; 0x5bbc 
+LampshadeBossRoomEntry::    ; 0x5bbc
     db $14, $12, $00
     db $03, $00, $00, $02
-    db $00, $09, $0a, $78
+    db $00
+    db $09, $0a, $78 ; bank 9 0x780a actor link
     db $0a, $69, $42  ; points to bank 0a: 0x4269 tiles
     db $08, $51, $67 ; bank 8 0x6751 collision
     db $04, $b4, $7f ; bank 4 0x7fb4 palette 0
@@ -3595,33 +3603,33 @@ LampshadeBossRoomEntry::    ; 0x5bbc
     db $00, $00, $00, $00 ; no transition
     db $00, $00, $00, $00
     db $00, $00, $14, $00
-    
+
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
-    
+
 DefeatedLampshadeBossDialogue:: ; 0x5bf7
     db $20, $00, $06, $80
     db $06, $00, $00, $0f, $f8, $07, $00, $00, $00, $00, $0f, $10, $00, $00, $00, $00
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
-    
+
     db $0a, $9b, $45 ; bank 0a: 0x459b sign
     db $09, $6c, $4a ; bank 9 0x4a6c dialogue
-    
+
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $20, $80, $03, $00
     db $00, $00, $00, $0f, $f8, $07, $00, $00, $00, $00, $ff, $10, $00, $00, $00, $00
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
-    
+
     db $08, $29, $7d ; bank 8: 0x7d29 item
     db $09, $9e, $4a ; bank 9 0x4a9e message to receive mystical lampshade
-    
+
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $20, $80, $08, $00
     db $03, $00, $00, $0f, $f8, $07, $00, $00, $00, $00, $ff, $10, $00, $00, $00, $00
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
-    
+
     db $08, $29, $7d
     db $00, $00, $00
-    
+
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
-    
+
 bank009_5c93: ; related to DefeatedLampshadeBossScreen
     db $25, $12, $05, $14, $00, $02, $ff, $fc, $14, $00, $0c, $ff, $fd, $75, $ff, $fc
     db $14, $00, $03, $ff, $fc, $14, $00, $00, $ff, $fd, $75, $ff, $fc, $61, $14, $00
@@ -3629,11 +3637,12 @@ bank009_5c93: ; related to DefeatedLampshadeBossScreen
     db $55, $af, $02, $21, $01, $c6, $0d, $57, $03, $14, $00, $1e, $ff, $fb, $0d, $ff
     db $fb, $00, $55, $af, $02, $14, $00, $02, $ff, $fc, $14, $03, $80, $ff, $fd, $14
     db $06, $00, $ff, $fe, $14, $00, $00, $ff, $ff, $30, $ff, $fc, $00
-    
-DefeatedLampshadeBossScreenEntry::    ; 0x5cf0 
+
+DefeatedLampshadeBossScreenEntry::    ; 0x5cf0
     db $14, $12, $00
     db $03, $00, $00, $02
-    db $00, $09, $0a, $78
+    db $00
+    db $09, $0a, $78 ; bank 9 0x780a actor link
     db $0a, $5b, $42  ; bank 0a: 0x425b tiles
     db $08, $bf, $68 ; bank 0x68bf collision
     db $04, $b4, $7f ; bank 4 0x7fb4 palette 0
@@ -3645,30 +3654,31 @@ DefeatedLampshadeBossScreenEntry::    ; 0x5cf0
     db $00, $00, $00, $00 ; no transition
     db $00, $00, $00, $00
     db $00, $00, $14, $00
-    
+
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
 
 TempleLightOutsideDialogue:: ; 0x5d2b
     db $20, $80, $08, $00
     db $03, $00, $00, $0f, $f8, $07, $00, $00, $00, $00, $ff, $10, $00, $00, $00, $00
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
-    
+
     db $08, $29, $7d
     db $00, $00, $00
-    
+
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $20, $80, $08, $00
     db $05, $00, $00, $0f, $f8, $07, $00, $00, $00, $00, $ff, $10, $00, $00, $00, $00
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
-    
+
     db $08, $29, $7d
     db $00, $00, $00
-    
+
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
-    
-TempleLightOutsideEntry::    ; 0x5d93 
+
+TempleLightOutsideEntry::    ; 0x5d93
     db $14, $12, $00
     db $02, $02, $00, $01
-    db $00, $09, $0a, $78
+    db $00
+    db $09, $0a, $78 ; bank 9 0x780a actor link
     db $0a, $93, $42 ; bank 0a: 0x4293 tiles
     db $08, $27, $6a ; bank 8 0x6a27 collision
     db $04, $b4, $7f ; bank 4 0x7fb4 palette 0
@@ -3680,9 +3690,9 @@ TempleLightOutsideEntry::    ; 0x5d93
     db $0a, $61, $43, $00 ; bank 0a 0x4361 transition
     db $00, $00, $00, $00
     db $00, $00, $14, $00
-    
+
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
-    
+
 TempleLightInsideDialogue:: ; 0x5dce
     db $20, $80, $08, $00
     db $03, $00, $00, $0f, $f8, $07, $00, $00, $00, $00, $ff, $10, $00, $00, $00, $00
@@ -3694,25 +3704,26 @@ TempleLightInsideDialogue:: ; 0x5dce
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $20, $80, $03, $00
     db $01, $00, $00, $0f, $f8, $07, $00, $00, $00, $00, $ff, $10, $00, $00, $00, $00
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
-    
+
     db $08, $29, $7d
     db $00, $00, $00
-    
+
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
-    
+
 TempleLightInsideSceneInit:: ; 0x5e36
     db $25, $12, $04, $14, $00, $01, $ff, $fc, $14, $00, $0c, $ff, $fd, $75, $ff, $fc
     db $14, $00, $02, $ff, $fc, $14, $00, $00, $ff, $fd, $75, $ff, $fc
-    
+
     db $60, $00, $6e, $b1, $02 ; bank 2 0x6eb1 intro music
-    
+
     db $14, $00, $01, $ff, $fc, $0d, $ff, $fc, $00, $55, $af, $02, $21, $01
     db $c6, $0d, $57, $03, $00
-    
-TempleLightInsideEntry::    ; 0x5e6b 
+
+TempleLightInsideEntry::    ; 0x5e6b
     db $14, $12, $00
     db $02, $02, $00, $01
-    db $00, $09, $0a, $78    
+    db $00
+    db $09, $0a, $78 ; bank 9 0x780a actor link
     db $0a, $85, $42 ; bank 0a: 0x4285 tiles
     db $08, $8f, $6b ; bank 8 0x6b8f collision
     db $04, $b4, $7f ; bank 4 0x7fb4 palette 0
@@ -3724,44 +3735,45 @@ TempleLightInsideEntry::    ; 0x5e6b
     db $0a, $74, $43, $00 ; bank 0a 0x4374 transition
     db $00, $00, $00, $00
     db $00, $00, $14, $00
-    
+
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
-    
+
 JTHouseOutsideDialogue:: ; 0x5ea6
     db $20, $00, $02, $80
     db $05, $00, $00, $0f, $f8, $07, $00, $00, $00, $00, $3f, $40, $00, $00, $00, $00
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
-    
+
     db $09, $13, $7b ; points to bank 9: 0x7b13 JT
     db $09, $18, $4e ; points to bank 9: 0x4e18 dialogue
-    
+
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $20, $00, $03, $80
     db $05, $00, $00, $0f, $f8, $07, $00, $00, $00, $00, $0f, $10, $00, $00, $00, $00
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
-    
+
     db $09, $ad, $6e ; points to bank 9: 0x6ead dan
     db $09, $0b, $50 ; points to bank 9: 0x500b dialogue (JT house Outside)
-    
+
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $20, $80, $08, $00
     db $03, $00, $00, $0f, $f8, $07, $00, $00, $00, $00, $ff, $10, $00, $00, $00, $00
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
-    
+
     db $08, $29, $7d ; points to bank 8: 0x7d29 items
     db $00, $00, $00
-    
+
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $20, $80, $08, $00
     db $05, $00, $00, $0f, $f8, $07, $00, $00, $00, $00, $ff, $10, $00, $00, $00, $00
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
-    
+
     db $08, $29, $7d ; points to bank 8: 0x7d29 items
     db $00, $00, $00
-    
+
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
 
-JTHouseOutsideEntry:: ; bank 9 0x5f76 
+JTHouseOutsideEntry:: ; bank 9 0x5f76
     db $14, $12, $00
     db $04, $04, $00, $03
-    db $00, $09, $0a, $78
+    db $00
+    db $09, $0a, $78 ; bank 9 0x780a actor link
     db $0a, $b3, $41  ; bank 0a: 0x41b3 tiles
     db $08, $f7, $6c ; bank 8 0x6cf7 collision
     db $04, $b4, $7f ; bank 4 0x7fb4 palette 0
@@ -3773,108 +3785,111 @@ JTHouseOutsideEntry:: ; bank 9 0x5f76
     db $0a, $8d, $43, $00 ; bank 0a 0x438d transition
     db $00, $00, $00, $00
     db $00, $00, $14, $00
-    
+
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
 
 TitleScreenSceneInit:: ; 0x5fb1
     db $25, $12, $04, $76, $00, $02, $00, $00, $00, $00
-    
+
     db $60, $00, $6e, $b1, $02 ; bank 2 0x6eb1 intro music
-    
+
     db $14, $00, $00, $ff, $fc, $33, $ff, $fc, $55
-    
+
     ; 0x5fc9
     db $44, $c3, $0a ; bank 0a 0x44c3
-    
+
     db $04, $53, $84, $10, $14
     db $00, $01, $ff, $fc, $0d, $ff, $fc, $00, $55, $af, $02, $21, $01, $c6, $0d, $57
     db $03, $00
-    
+
 TitleScreenEntry:: ; bank 09: 0x5fe3
     db $14, $12, $05
     db $00, $00, $00, $00
-    db $00, $09, $0a, $78
+    db $00
+    db $09, $0a, $78 ; bank 9 0x780a actor link
     db $0a, $af, $42  ; bank 0a: 0x42af tiles
     db $08, $5f, $6e ; bank 8 0x6e5f collision
     db $04, $b4, $7f ; bank 4 0x7fb4 palette 0
     db $09, $26, $53 ; bank 9 0x5326 palette 1
     db $09, $b1, $5f ; bank 9 0x5fb1 scene init
-    db $00, $00, $00 
+    db $00, $00, $00
     db $00, $00, $00 ; no sprites
     db $00, $00, $00 ; no dialogue match
     db $00, $00, $00, $00 ; no transition
     db $00, $00, $00, $00
     db $00, $00, $14, $00
-    
+
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
-    
+
 GameFinishedScreenEntry:: ; 0x601e
     db $14, $12, $00
     db $00, $00, $00, $00
-    db $00, $09, $0a, $78
+    db $00
+    db $09, $0a, $78 ; bank 9 0x780a actor link
     db $0a, $a1, $42  ; bank 0a: 0x42a1 tiles
     db $08, $c7, $6f ; bank 8 0x6fc7 collision
     db $04, $b4, $7f ; bank 4 0x7fb4 palette 0
     db $09, $26, $53 ; bank 9 0x5326 palette 1
-    db $0a, $ad, $43, $00
-    db $00, $00
+    db $0a, $ad, $43
+    db $00, $00, $00
     db $00, $00, $00
     db $00, $00, $00
     db $00, $00, $00, $00
     db $00, $00, $00, $00
     db $00, $00, $14, $00
-    
+
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
 
 WellDialogue:: ; 0x6059
     db $20, $00, $06, $80
     db $01, $00, $00, $0f, $f8, $07, $00, $00, $00, $00, $0f, $10, $00, $00, $00, $00
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
-    
+
     db $0a, $70, $45 ; points to bank 0a: 0x4570 sign
     db $01, $ad, $61 ; points to bank 1: 0x61ad dialogue "Welcome To Hyscule"
-    
+
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $20, $80, $03, $80
     db $06, $00, $f8, $17, $e8, $07, $00, $00, $00, $00, $0f, $10, $00, $00, $00, $00
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
-    
+
     db $0a, $c9, $45 ; points to bank 0a 0x45c9 well
     db $09, $35, $4a ; points to bank 9: 0x4a35 dialogue
-    
+
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $20, $00, $01, $80
     db $02, $00, $00, $0f, $f8, $07, $00, $00, $00, $00, $0f, $10, $00, $00, $00, $00
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
-    
+
     db $0a, $9b, $45 ; points to bank 0a: 0x459b sign
     db $09, $9f, $4c ; points to bank 9: 0x4c9f dialogue "North: Temple of Light"
-    
+
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $20, $00, $03, $80
     db $04, $00, $00, $0f, $f8, $07, $00, $00, $00, $00, $0f, $10, $00, $00, $00, $00
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
-    
+
     db $09, $ad, $6e ; points to bank 9: 0x6ead dan
     db $02, $a4, $63 ; points to bank 9: 0x63a4 dialogue (well)
-    
+
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $20, $80, $08, $00
     db $03, $00, $00, $0f, $f8, $07, $00, $00, $00, $00, $ff, $10, $00, $00, $00, $00
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
-    
+
     db $08, $29, $7d ; points to bank 8: 0x7d29 items
     db $00, $00, $00
-    
+
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $20, $80, $08, $00
     db $05, $00, $00, $0f, $f8, $07, $00, $00, $00, $00, $ff, $10, $00, $00, $00, $00
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
-    
+
     db $08, $29, $7d ; points to bank 8: 0x7d29 items
     db $00, $00, $00
- 
+
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
-    
+
 WellEntry:: ; bank 9 0x6191
     db $14, $12, $00
     db $06, $03, $00, $05
-    db $00, $09, $0a, $78
+    db $00
+    db $09, $0a, $78 ; bank 9 0x780a actor link
     db $0a, $c1, $41  ; bank 0a: 0x41c1 tiles
     db $08, $2f, $71 ; bank 8 0x712f collision
     db $04, $b4, $7f ; bank 4 0x7fb4 palette 0
@@ -3886,30 +3901,31 @@ WellEntry:: ; bank 9 0x6191
     db $0a, $e2, $43, $00 ; bank 0a: 0x43e2 transition
     db $00, $00, $00, $00
     db $00, $00, $14, $00
-    
+
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
-    
+
 DimHouseOutsideDialogue:: ; 0x61cc
     db $20, $80, $08, $00
     db $03, $00, $00, $0f, $f8, $07, $00, $00, $00, $00, $ff, $10, $00, $00, $00, $00
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
-    
+
     db $08, $29, $7d
     db $00, $00, $00
-    
+
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $20, $80, $08, $00
     db $05, $00, $00, $0f, $f8, $07, $00, $00, $00, $00, $ff, $10, $00, $00, $00, $00
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
-    
+
     db $08, $29, $7d
     db $00, $00, $00
-    
+
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
 
-DimHouseOutsideEntry:: ; 0x6234 
+DimHouseOutsideEntry:: ; 0x6234
     db $14, $12, $00
     db $02, $03, $00, $01
-    db $00, $09, $0a, $78
+    db $00
+    db $09, $0a, $78 ; bank 9 0x780a actor link
     db $0a, $dd, $41 ; bank 0a: 0x41dd tiles
     db $08, $97, $72 ; bank 8 0x7297 collision
     db $04, $b4, $7f ; bank 4 0x7fb4 palette 0
@@ -3921,10 +3937,10 @@ DimHouseOutsideEntry:: ; 0x6234
     db $0a, $fd, $43, $00 ; bank 0a 0x43fd transition
     db $00, $00, $00, $00
     db $00, $00, $14, $00
-    
+
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
 
-NgHeadquartersOutsideDialogue:: ; 0x626f    
+NgHeadquartersOutsideDialogue:: ; 0x626f
     db $20, $00, $02, $80, $03, $00, $00, $0f, $f8, $07, $00, $00, $00, $00, $0f, $10
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
     db $00, $00
@@ -3933,27 +3949,28 @@ NgHeadquartersOutsideDialogue:: ; 0x626f
     db $07, $05, $50 ; points to bank 7: 0x5005 dialogue
 
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
-    
+
     db $20, $80, $08, $00, $03, $00, $00, $0f, $f8, $07, $00, $00, $00, $00, $ff, $10
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
     db $00, $00
-    
+
     db $08, $29, $7d
     db $00, $00, $00
-    
+
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $20, $80, $08, $00
     db $05, $00, $00, $0f, $f8, $07, $00, $00, $00, $00, $ff, $10, $00, $00, $00, $00
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
-    
+
     db $08, $29, $7d
     db $00, $00, $00
-    
+
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
-    
-NgHeadquartersOutsideEntry:: ; 0x630b 
+
+NgHeadquartersOutsideEntry:: ; 0x630b
     db $14, $12, $00
     db $03, $03, $00, $02
-    db $00, $09, $0a, $78
+    db $00
+    db $09, $0a, $78 ; bank 9 0x780a actor link
     db $0a, $f9, $41  ; bank 0a: 0x41f9 tiles
     db $08, $ff, $73 ; bank 8 0x73ff collision
     db $04, $b4, $7f ; bank 4 0x7fb4 palette 0
@@ -3965,13 +3982,14 @@ NgHeadquartersOutsideEntry:: ; 0x630b
     db $0a, $1b, $44, $00 ; bank 0a: 0x441b transition
     db $00, $00, $00, $00
     db $00, $00, $14, $00
-    
+
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
-   
-OutsideShopEntry:: ; bank 9 0x6346 
+
+OutsideShopEntry:: ; bank 9 0x6346
     db $14, $12, $00
     db $09, $06, $00, $07
-    db $00, $09, $0a, $78
+    db $00
+    db $09, $0a, $78 ; bank 9 0x780a actor link
     db $0a, $23, $42  ; bank 0a: 0x4223 tiles
     db $08, $67, $75 ; bank 8 0x7567 collision
     db $04, $b4, $7f ; bank 4 0x7fb4 palette 0
@@ -3983,21 +4001,21 @@ OutsideShopEntry:: ; bank 9 0x6346
     db $0a, $48, $44, $00 ; bank 0a: 0x4448 transition
     db $00, $00, $00, $00
     db $00, $00, $14, $00
-    
+
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
-    
+
 JROutsideDialogue:: ; 0x6381
     db $20, $00, $03, $80
     db $05, $00, $00, $0f, $f8, $07, $00, $00, $00, $00, $0f, $10, $00, $00, $00, $00
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
-    
+
     db $09, $73, $7f ; points to bank 9: 0x7f73 pond
     db $00, $00, $00
-    
+
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $20, $00, $04, $80
     db $05, $00, $00, $0f, $f8, $07, $00, $00, $00, $00, $1f, $10, $00, $00, $00, $00
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
-   
+
     db $09, $85, $75 ; points to bank 9: 0x7585 joey
     db $09, $41, $4d ; points to bank 9: 0x4d41 dialogue
 
@@ -4007,27 +4025,28 @@ JROutsideDialogue:: ; 0x6381
 
     db $09, $48, $76 ; points to bank 9: 0x7648 john
     db $09, $ce, $4f ; points to bank 9: 0x4fce dialogue
-    
+
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $20, $80, $08, $00
     db $03, $00, $00, $0f, $f8, $07, $00, $00, $00, $00, $ff, $10, $00, $00, $00, $00
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
-    
+
     db $08, $29, $7d
     db $00, $00, $00
-    
+
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $20, $80, $08, $00
     db $05, $00, $00, $0f, $f8, $07, $00, $00, $00, $00, $ff, $10, $00, $00, $00, $00
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
-    
+
     db $08, $29, $7d
     db $00, $00, $00
-    
+
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
-    
-JROutsideEntry:: ; bank 9 0x6485 
+
+JROutsideEntry:: ; bank 9 0x6485
     db $14, $12, $00
     db $05, $03, $00, $04
-    db $00, $09, $0a, $78
+    db $00
+    db $09, $0a, $78 ; bank 9 0x780a actor link
     db $0a, $3f, $42  ; points to bank 0a: 0x423f tiles
     db $08, $cf, $76 ; bank 8 0x76cf collision
     db $04, $b4, $7f ; bank 4 0x7fb4 palette 0
@@ -4039,44 +4058,45 @@ JROutsideEntry:: ; bank 9 0x6485
     db $0a, $84, $44, $00
     db $00, $00, $00, $00
     db $00, $00, $14, $00
-    
+
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
-    
+
 BridgeDialogue:: ; 0x64c0
     db $20, $00, $05, $80
     db $06, $00, $00, $0f, $f8, $07, $00, $00, $00, $00, $0f, $10, $00, $00, $00, $00
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
-    
+
     db $0a, $9b, $45 ; points to bank 0a: 0x459b sign
     db $09, $81, $50 ; points to bank 9 0x5081 dialogue "North: Temple of Light"
-    
+
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $20, $80, $03, $80
     db $04, $00, $00, $0f, $f8, $07, $00, $00, $00, $00, $0f, $40, $00, $00, $00, $00
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
-    
+
     db $09, $67, $78 ; points to bank 9: 0x7867 randy
     db $07, $d2, $52 ; points to bank 7: 0x52d2 dialogue
-    
+
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $20, $80, $08, $00
     db $03, $00, $00, $0f, $f8, $07, $00, $00, $00, $00, $ff, $10, $00, $00, $00, $00
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
-    
+
     db $08, $29, $7d
     db $00, $00, $00
-    
+
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $20, $80, $08, $00
     db $05, $00, $00, $0f, $f8, $07, $00, $00, $00, $00, $ff, $10, $00, $00, $00, $00
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
-    
+
     db $08, $29, $7d
     db $00, $00, $00
-    
+
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
-    
-BridgeEntry:: ; bank 9 0x6590 
+
+BridgeEntry:: ; bank 9 0x6590
     db $14, $12, $00
     db $04, $02, $00, $03
-    db $00, $09, $0a, $78
+    db $00
+    db $09, $0a, $78 ; bank 9 0x780a actor link
     db $0a, $4d, $42 ; points to bank 0a: 0x424d tiles
     db $08, $37, $78 ; bank 8 0x7837 collision
     db $04, $b4, $7f ; bank 4 0x7fb4 palette 0
@@ -4088,37 +4108,38 @@ BridgeEntry:: ; bank 9 0x6590
     db $0a, $a5, $44, $00 ; bank 0a 0x44a5 transition
     db $00, $00, $00, $00
     db $00, $00, $14, $00
-    
+
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
-    
+
 NgHeadquartersInsideDialogue:: ; 0x65cb
     db $20, $80, $03, $00
     db $02, $00, $00, $0f, $f8, $07, $00, $00, $00, $00, $0f, $10, $00, $00, $00, $00
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
-    
+
     db $09, $f1, $7d ; points to bank 9: 0x7df1 tom fulp
     db $09, $45, $4f ; points to bank 9: 0x4f45 dialogue
-    
+
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $20, $80, $08, $00
     db $03, $00, $00, $0f, $f8, $07, $00, $00, $00, $00, $ff, $10, $00, $00, $00, $00
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
-    
+
     db $08, $29, $7d
     db $00, $00, $00
-    
+
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $20, $80, $08, $00
     db $05, $00, $00, $0f, $f8, $07, $00, $00, $00, $00, $ff, $10, $00, $00, $00, $00
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
-    
+
     db $08, $29, $7d
     db $00, $00, $00
-    
+
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
-    
-NgHeadquartersInsideEntry:: ; bank 9 0x6667 
+
+NgHeadquartersInsideEntry:: ; bank 9 0x6667
     db $14, $12, $00
     db $03, $01, $00, $02
-    db $00, $09, $0a, $78
+    db $00
+    db $09, $0a, $78 ; bank 9 0x780a actor link
     db $0a, $eb, $41 ; bank 0a: 0x41eb tiles
     db $08, $9f, $79 ; bank 8: 0x799f collision
     db $04, $b4, $7f ; bank 4 0x7fb4 palette 0
@@ -4130,12 +4151,12 @@ NgHeadquartersInsideEntry:: ; bank 9 0x6667
     db $0a, $bb, $44, $00 ; bank 0a 0x44bb transition
     db $00, $00, $00, $00
     db $00, $00, $14, $00
-    
+
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
 
 bank009_66a2_dialogue:
     db $40, $00
-    
+
     db "We might be\n" ; 0x66a4
     db "stamping down on\n"
     db "prices,", $00
@@ -4173,7 +4194,7 @@ bank009_66a2_dialogue:
 
     db $00, $47, $03, $01, $05, $14, $00, $00, $41, $ff, $00, $44, $07, $01, $45, $fe
     db $12, $00, $44, $03, $01, $00, $40, $00
-    
+
     db "Thanks for the\n"
     db "corpse."
 
@@ -4185,14 +4206,14 @@ bank009_66a2_dialogue:
 
     db $00, $47, $03, $01, $04, $14, $00, $00, $41, $ff, $00, $44, $07, $01, $45, $fe
     db $12, $00, $44, $03, $01, $00, $12, $04, $40, $00
-    
+
     db "Hey you've got\n"
     db "some meat! Good\n"
     db "quality too..."
 
     db $00, $47, $03, $01, $05, $14, $00, $00, $45, $ff, $0d, $00, $41, $ff, $00, $44, $07
     db $01, $40, $00
-    
+
     db "we'll make you a\n"
     db "burger right now\n"
     db "if you want."
@@ -4200,7 +4221,7 @@ bank009_66a2_dialogue:
     db $00, $47, $03, $01, $05, $14, $00, $00, $41, $ff, $00, $44, $07, $01, $45, $fe
     db $12, $00, $44, $03, $01, $14, $00, $0c, $00, $00, $14, $00, $04, $ff, $fc, $14
     db $00, $0b, $ff, $fd, $75, $ff, $fc, $40, $00
-    
+
     db "You got the Burger!"
 
     db $00, $47, $03, $01, $05, $14, $00, $00, $45, $ff, $0d, $00, $41, $ff, $00, $44, $07
@@ -4221,18 +4242,18 @@ bank009_66a2_dialogue:
 
     db $00, $47, $03, $01, $05, $14, $00, $00, $45, $ff, $0d, $00, $41, $ff, $00, $44, $07
     db $01, $40, $00
-    
+
     db "The Feng Shui of\n" ; 0x69ba
     db "the room was\n"
     db "perfected."
-    
+
     db $00, $47, $03, $01, $05, $14, $00, $00, $41, $ff, $00, $44, $07, $01, $45, $fe
     db $12, $00, $44, $03, $01, $21, $1f, $c6, $0d, $57, $01, $14, $00, $00, $ff, $fc
     db $14, $00, $00, $ff, $fd, $14, $00, $00, $ff, $fe, $35, $ff, $fc, $32, $00, $ff
     db $fc
-    
+
     db $27, $03, $02
-    
+
     db $09, $1e, $60 ; bank 9 0x601e GameFinishedScreen
     db $00
 
@@ -4263,13 +4284,13 @@ bank00_6b5c:
     db $74, $6b
     db $b0, $6b
     db $80, $6b
-    
+
     db $00, $00, $01, $01, $02, $02, $03, $03, $04, $05, $06, $07, $08, $09, $0a, $0b
     db $00, $00
-    
+
     ; bank 9 0x6be6
     db $0c, $00, $f0, $bc, $6b, $d4, $6b, $e4, $6b, $00, $0f, $00, $07
-    
+
     db $09, $1a, $6a, $00, $00, $00 ; bank 9 0x6a1a
 
 AlexlabbeSpriteImage:: ; 0x6bf9
@@ -4279,11 +4300,11 @@ AlexlabbeSpriteImage:: ; 0x6bf9
 AlexlabbeSpriteFrames::
     ; frame 1: 0x6c3b
     db $00, $08, $00, $00, $00, $f8, $02, $00
-    
+
     db $80, $00, $00, $00
 
     db $3b, $6c
-    
+
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
     db $00, $00
 
@@ -4302,7 +4323,7 @@ Bank009_6c70SpriteFrames::
 
     ; frame 2 0x6cb4
     db $f0, $08, $00, $00
-    
+
     db $00, $f8, $02, $00
     db $80, $00, $00, $00
 
@@ -4325,7 +4346,7 @@ DanSpriteImage:: ; 0x6ce9
 DanSpriteFrames::
     ; dan frame 1: 0x6e2b
     db $00, $09, $10, $00, $00, $f8, $12, $00, $80
-    
+
     db $00, $00, $00
 
     ; dan frame 2: 0x6e37
@@ -4340,11 +4361,11 @@ DanSpriteFrames::
     db $00, $08, $04, $00, $00, $f8, $06, $00, $80
 
     db $00, $00, $00
-    
+
     db $00, $08, $08, $00, $00, $f8, $0a, $00, $80
 
     db $00, $00, $00
-    
+
     db $00, $08, $0c, $00, $00, $f8, $0e, $00, $80
 
     db $00, $00, $00
@@ -4356,7 +4377,7 @@ DanSpriteFrames::
     db $00, $00, $04, $20, $00, $08, $06, $20, $80
 
     db $00, $00, $00
-    
+
     ; frames
     db $2b, $6e
     db $37, $6e
@@ -4391,7 +4412,7 @@ DanteSpriteFrames::
     ; frames
     db $c0, $6e
     db $dc, $6e
-    
+
     db $00, $01, $00, $01, $00, $01, $00, $01, $00, $01, $00, $01
     db $00, $01, $00, $01, $00, $00
 
@@ -4416,10 +4437,10 @@ DimSpriteFrames::
 
     db $00, $00, $00
 
-    ; frames   
+    ; frames
     db $a3, $6f ; 0x6fa3
     db $af, $6f ; 0x6faf
-    
+
     db $00, $01, $00, $01, $00, $01, $00, $01, $00, $01, $00, $01
     db $00, $01, $00, $01, $00, $00
 
@@ -4437,16 +4458,15 @@ LampshadeBossSpriteFrames::
     ; frame 1: 0x7066
     db $00, $08, $00, $00
     db $00, $f8, $02, $00
-    
-    db $80
-    db $00, $00, $00
-    
+
+    db $80, $00, $00, $00
+
     ; frame 2: 0x7072
     db $00, $08, $04, $00
     db $00, $f8, $06, $00
 
     db $80, $00, $00, $00
-    
+
     ; frames
     db $66, $70 ; 0x7066
     db $72, $70 ; 0x7072
@@ -4463,58 +4483,50 @@ LampshadeBossSpriteFrames::
 FlowerSpriteImage:: ; 0x70a7
     db $10, $00
     INCBIN "gfx/bank009_flower_70a9.2bpp"
-   
+
 FlowerSpriteFrames::
     ; frame 1: 0x71a9
-    db $00, $08, $00, $00, $00, $f8, $02, $00, $80
-    db $00, $00, $00
+    db $00, $08, $00, $00, $00, $f8, $02, $00, $80, $00, $00, $00
 
     ; frame 2: 0x71b5
-    db $00, $08, $04, $00, $00, $f8, $06, $00, $80
-    db $00, $00, $00
+    db $00, $08, $04, $00, $00, $f8, $06, $00, $80, $00, $00, $00
 
     ; frame 3: 0x71c1
-    db $00, $08, $08, $00, $00, $f8, $0a, $00, $80
-    db $00, $00, $00
-    
+    db $00, $08, $08, $00, $00, $f8, $0a, $00, $80, $00, $00, $00
+
     ; frame 4: 0x71cd
-    db $00, $08, $0c, $00, $00, $f8, $0e, $00, $80
-    db $00, $00, $00
+    db $00, $08, $0c, $00, $00, $f8, $0e, $00, $80, $00, $00, $00
 
     ; frames
     db $a9, $71
     db $b5, $71
     db $c1, $71
     db $cd, $71
-    
+
     db $00, $03, $00, $03, $00, $03, $00, $03, $00, $03, $00, $03, $00, $03, $00, $03
     db $00, $00
-    
+
     ; bank 9: 0x71f3
     db $04, $00, $f0, $d9, $71, $e1, $71, $f1, $71, $00, $0f, $f8, $07
 
     ; bank 9: 0x7200
     db $09, $a7, $70, $00, $00, $00 ; bank 9: 0x70a7 sprite
-   
+
 GerkinmanSpriteImage:: ; 0x7206
     db $04, $00
     INCBIN "gfx/bank009_gerkinman_7208.2bpp"
 
 GerkinmanSpriteFrames::
     ; frame 1: 0x7248
-    db $00, $08, $00, $00, $00, $f8, $02, $00, $80
-
-    db $00, $00, $00
+    db $00, $08, $00, $00, $00, $f8, $02, $00, $80, $00, $00, $00
 
     ; frame 1: 0x7254
-    db $00, $08, $02, $20, $00, $f8, $00, $20, $80
-
-    db $00, $00, $00
+    db $00, $08, $02, $20, $00, $f8, $00, $20, $80, $00, $00, $00
 
     ; frames
     db $48, $72
     db $54, $72
-    
+
     db $00, $01, $00, $01, $00, $01, $00, $01, $00, $01, $00, $01
     db $00, $01, $00, $01, $00, $00
 
@@ -4526,12 +4538,11 @@ GerkinmanSpriteFrames::
 
 GraveCoverSpriteFrames::
     ; grave cover frame 0x7289
-    db $00, $08, $00, $00, $00, $f8, $00, $00, $80
-    db $00, $00, $00
+    db $00, $08, $00, $00, $00, $f8, $00, $00, $80, $00, $00, $00
 
     ; frames
     db $89, $72
-    
+
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
     db $00, $00, $00, $00
 
@@ -4550,23 +4561,21 @@ HeihachiSpriteFrames::
     db $00, $f8, $02, $00
     db $08, $08, $04, $00
     db $00, $f8, $06, $00
-    
-    db $80
-    db $00, $00, $00
+
+    db $80, $00, $00, $00
 
     ; frame 2: 0x73d2
     db $f8, $08, $08, $00
     db $00, $f8, $0a, $00
     db $08, $08, $0c, $00
     db $00, $f8, $0e, $00
-    
-    db $80
-    db $00, $00, $00
+
+    db $80, $00, $00, $00
 
     ; frames
     db $be, $73
     db $d2, $73
-    
+
     db $00, $01, $00, $01, $00, $01, $00, $01, $00, $01, $00, $01
     db $00, $01, $00, $01, $00, $00
 
@@ -4581,22 +4590,18 @@ JasperSpriteImage:: ; 0x740f
 
 JasperSpriteFrames::
     ; frame 1: 0x7451
-    db $00, $08, $00, $00, $00, $f8, $02, $00, $80
-
-    db $00, $00, $00
+    db $00, $08, $00, $00, $00, $f8, $02, $00, $80, $00, $00, $00
 
     ; frame 2: 0x745d
-    db $00, $08, $02, $20, $00, $f8, $00, $20, $80
-
-    db $00, $00, $00
+    db $00, $08, $02, $20, $00, $f8, $00, $20, $80, $00, $00, $00
 
     ; frames
     db $51, $74
     db $5d, $74
-    
+
     db $00, $01, $00, $01, $00, $01, $00, $01, $00, $01, $00, $01
     db $00, $01, $00, $01, $00, $00
-    
+
     ; bank 9 0x747f
     db $02, $00, $f0, $69, $74, $6d, $74, $7d, $74, $00, $0f, $f8, $07
 
@@ -4609,19 +4614,15 @@ JenSpriteImage:: ; 0x7492
 
 JenSpriteFrames::
     ; frame 1: 0x74d4
-    db $00, $08, $00, $00, $00, $f8, $02, $00, $80
-
-    db $00, $00, $00
+    db $00, $08, $00, $00, $00, $f8, $02, $00, $80, $00, $00, $00
 
     ; frame 2: 0x74e0
-    db $00, $08, $02, $20, $00, $f8, $00, $20, $80
-
-    db $00, $00, $00
+    db $00, $08, $02, $20, $00, $f8, $00, $20, $80, $00, $00, $00
 
     ; frames
     db $d4, $74
     db $e0, $74
-    
+
     db $00, $01, $00, $01, $00, $01, $00, $01, $00, $01, $00, $01
     db $00, $01, $00, $01, $00, $00
 
@@ -4639,21 +4640,19 @@ JoeySpriteFrames::
     ; frame 1 0x7557
     db $00, $08, $00, $00
     db $00, $f8, $02, $00
-    
-    db $80
-    db $00, $00, $00
+
+    db $80, $00, $00, $00
 
     ; frame 2 0x755b
     db $00, $08, $02, $20
-    db $00, $f8, $00, $20,
+    db $00, $f8, $00, $20
 
-    db $80
-    db $00, $00, $00
+    db $80, $00, $00, $00
 
     ; frames
     db $57, $75
     db $63, $75
-    
+
     db $00, $01, $00, $01, $00, $01, $00, $01, $00, $01, $00, $01
     db $00, $01, $00, $01, $00, $00
 
@@ -4668,19 +4667,15 @@ JohnSpriteImage:: ; 0x7598
 
 JohnSpriteFrames::
     ; frame 0x761a
-    db $00, $08, $00, $00, $00, $f8, $02, $00, $80
-
-    db $00, $00, $00
+    db $00, $08, $00, $00, $00, $f8, $02, $00, $80, $00, $00, $00
 
     ; frame 0x7626
-    db $00, $08, $04, $00, $00, $f8, $06, $00, $80
-
-    db $00, $00, $00
+    db $00, $08, $04, $00, $00, $f8, $06, $00, $80, $00, $00, $00
 
     ; frames
     db $1a, $76
     db $26, $76
-    
+
     db $00, $01, $00, $01, $00, $01, $00, $01, $00, $01, $00, $01
     db $00, $01, $00, $01, $00, $00
 
@@ -4706,13 +4701,13 @@ KirbySpriteFrames::
     db $00, $07, $04, $20
     db $00, $f8, $02, $20
     db $fc, $08, $06, $20
-    
+
     db $80, $00, $00, $00
 
     ; frames
     db $dd, $76
     db $f1, $76
-    
+
     db $00, $01, $00, $01, $00, $01, $00, $01, $00, $01, $00, $01
     db $00, $01, $00, $01, $00, $00
 
@@ -4723,61 +4718,35 @@ KirbySpriteFrames::
 
 LinkSpriteFrames::
     ; link frame (down): 0x772a
-    db $00, $08, $08, $00, $00, $f8, $0a, $00, $80
-
-    db $00, $00, $00
+    db $00, $08, $08, $00, $00, $f8, $0a, $00, $80, $00, $00, $00
 
     ; link frame (right): 0x7736
-    db $00, $08, $00, $00, $00, $f8, $02, $00, $80
-
-    db $00, $00, $00
+    db $00, $08, $00, $00, $00, $f8, $02, $00, $80, $00, $00, $00
 
     ; link frame (up): 0x7742
-    db $00, $08, $04, $00, $00, $f8, $06, $00, $80
-
-    db $00, $00, $00
+    db $00, $08, $04, $00, $00, $f8, $06, $00, $80, $00, $00, $00
 
     ; link frame (left): 0x774e
-    db $00, $08, $02, $20, $00, $f8, $00, $20, $80
+    db $00, $08, $02, $20, $00, $f8, $00, $20, $80, $00, $00, $00
 
-    db $00, $00, $00
+    db $00, $08, $10, $00, $00, $f8, $12, $00, $80, $00, $00, $00
 
-    db $00, $08, $10, $00, $00, $f8, $12, $00, $80
+    db $00, $08, $12, $20, $00, $f8, $10, $20, $80, $00, $00, $00
 
-    db $00, $00, $00
+    db $00, $08, $0c, $00, $00, $f8, $0e, $00, $80, $00, $00, $00
 
-    db $00, $08, $12, $20, $00, $f8, $10, $20, $80
+    db $00, $08, $06, $20, $00, $f8, $04, $20, $80, $00, $00, $00
 
-    db $00, $00, $00
+    db $00, $08, $0e, $20, $00, $f8, $0c, $20, $80, $00, $00, $00
 
-    db $00, $08, $0c, $00, $00, $f8, $0e, $00, $80
- 
-    db $00, $00, $00
+    db $00, $08, $14, $00, $00, $f8, $16, $00, $80, $00, $00, $00
 
-    db $00, $08, $06, $20, $00, $f8, $04, $20, $80
+    db $00, $08, $18, $00, $00, $f8, $1a, $00, $80, $00, $00, $00
 
-    db $00, $00, $00
+    db $00, $08, $16, $20, $00, $f8, $14, $20, $80, $00, $00, $00
 
-    db $00, $08, $0e, $20, $00, $f8, $0c, $20, $80
+    db $00, $08, $1a, $20, $00, $f8, $18, $20, $80, $00, $00, $00
 
-    db $00, $00, $00
- 
-    db $00, $08, $14, $00, $00, $f8, $16, $00, $80
-
-    db $00, $00, $00
-
-    db $00, $08, $18, $00, $00, $f8, $1a, $00, $80
-   
-    db $00, $00, $00
-
-    db $00, $08, $16, $20, $00, $f8, $14, $20, $80
-
-    db $00, $00, $00
-
-    db $00, $08, $1a, $20, $00, $f8, $18, $20, $80
-
-    db $00, $00, $00
- 
     ; frames
     db $2a, $77
     db $36, $77
@@ -4795,34 +4764,30 @@ LinkSpriteFrames::
     db $a2, $77
     db $ae, $77
     db $ba, $77
-    
+
     db $00, $00, $01, $01, $02, $02, $03, $03, $04, $05, $06, $07, $08, $09, $0a, $0b
     db $0c, $0f, $0c, $0f, $0c, $0f, $0c, $0f, $0c, $0f, $0c, $0f, $0c, $0f, $0c, $0f
     db $00, $00, $08, $00
 
     ; bank 9 0x780a
     db $10, $00, $f0, $c6, $77, $e6, $77, $06, $78, $00, $0f, $00, $07
-    
+
     ; bank 9 0x7817
     db $07, $db, $79, $00, $00, $00 ; points to bank 7: 0x79db
 
 RandySpriteFrames::
     ; randy frame 1: 0x781d
     db $00, $0f, $00, $00, $00, $f8, $02, $00, $f0, $00, $04, $00, $10, $f8, $06, $00
-    db $f0, $00, $08, $00, $80
-
-    db $00, $00, $00
+    db $f0, $00, $08, $00, $80, $00, $00, $00
 
     ; randy frame 2: 0x7835
     db $00, $0e, $0a, $00, $f0, $00, $0c, $00, $10, $f8, $0e, $00, $f0, $00, $10, $00
-    db $10, $f8, $12, $00, $f0, $00, $14, $00, $80
-
-    db $00, $00, $00
+    db $10, $f8, $12, $00, $f0, $00, $14, $00, $80, $00, $00, $00
 
     ; frames
     db $1d, $78
     db $35, $78
-    
+
     db $00, $01, $00, $01
     db $00, $01, $00, $01
     db $00, $01, $00, $01
@@ -4840,19 +4805,15 @@ RichieSpriteImage:: ; 0x787a
     INCBIN "gfx/bank009_richie_787c.2bpp"
 
     ; frame 1: 0x78bc
-    db $00, $08, $00, $00, $00, $f8, $02, $00, $80
-
-    db $00, $00, $00
+    db $00, $08, $00, $00, $00, $f8, $02, $00, $80, $00, $00, $00
 
     ; frame 2: 0x78c8
-    db $00, $08, $02, $20, $00, $f8, $00, $20, $80
-
-    db $00, $00, $00
+    db $00, $08, $02, $20, $00, $f8, $00, $20, $80, $00, $00, $00
 
     ; frames
     db $bc, $78
     db $c8, $78
-    
+
     db $00, $01, $00, $01, $00, $01, $00, $01, $00, $01, $00, $01
     db $00, $01, $00, $01, $00, $00
 
@@ -4864,21 +4825,17 @@ RichieSpriteImage:: ; 0x787a
 RubberninjaSpriteImage:: ; 0x78fd
     db $04, $00
     INCBIN "gfx/bank009_rubberninja_78ff.2bpp"
-    
-    ; frame 1: 0x793f
-    db $00, $08, $00, $00, $00, $f8, $02, $00, $80
 
-    db $00, $00, $00
+    ; frame 1: 0x793f
+    db $00, $08, $00, $00, $00, $f8, $02, $00, $80, $00, $00, $00
 
     ; frame 2: 0x794b
-    db $00, $08, $02, $20, $00, $f8, $00, $20, $80
-
-    db $00, $00, $00
+    db $00, $08, $02, $20, $00, $f8, $00, $20, $80, $00, $00, $00
 
     ; frames
     db $3f, $79
     db $4b, $79
-    
+
     db $00, $01, $00, $01, $00, $01, $00, $01, $00, $01, $00, $01
     db $00, $01, $00, $01, $00, $00
 
@@ -4895,21 +4852,19 @@ SamusSpriteFrames::
     ; frame 1: 0x79c2
     db $00, $08, $00, $00
     db $00, $f8, $02, $00
-    
-    db $80
-    db $00, $00, $00
+
+    db $80, $00, $00, $00
 
     ; frame 2: 0x79ce
     db $00, $08, $02, $20
     db $00, $f8, $00, $20
-    
-    db $80
-    db $00, $00, $00
+
+    db $80, $00, $00, $00
 
     ; frames
     db $c2, $79
     db $ce, $79
-    
+
     db $00, $01, $00, $01, $00, $01, $00, $01, $00, $01, $00, $01
     db $00, $01, $00, $01, $00, $00
 
@@ -4921,7 +4876,7 @@ SamusSpriteFrames::
 ImageBank009_7a05SpriteImage: ; 0x7a03
     db $08, $00
     INCBIN "gfx/bank009_7a05.2bpp"
-    
+
 JTSpriteFrames::
     ; JT frame 1: 0x7a85
     db $00, $08, $00, $00, $00, $f8, $02, $00, $80
@@ -4929,24 +4884,16 @@ JTSpriteFrames::
     db $00, $00, $00
 
     ; JT frame 2: 0x7a91
-    db $00, $08, $04, $00, $00, $f8, $06, $00, $80
-
-    db $00, $00, $00
+    db $00, $08, $04, $00, $00, $f8, $06, $00, $80, $00, $00, $00
 
     db $00, $08, $08, $00, $f0, $00, $0a, $00, $10, $f8, $0c, $00, $f0, $00, $0e, $00
-    db $80
-
-    db $00, $00, $00
+    db $80, $00, $00, $00
 
     db $00, $08, $10, $00, $f0, $00, $0e, $20, $10, $f8, $12, $00, $f0, $00, $0a, $20
-    db $80
-
-    db $00, $00, $00
+    db $80, $00, $00, $00
 
     ; JT frame (dead): 0x7ac5
-    db $00, $08, $14, $00, $00, $f8, $14, $20, $80
-
-    db $00, $00, $00
+    db $00, $08, $14, $00, $00, $f8, $14, $20, $80, $00, $00, $00
 
     ; frames
     db $85, $7a
@@ -4954,7 +4901,7 @@ JTSpriteFrames::
     db $9d, $7a
     db $b1, $7a
     db $c5, $7a
-    
+
     db $00, $01, $00, $01, $00, $01, $00, $01, $00, $01, $00, $01, $00, $01, $00, $01
     db $02, $03, $02, $03, $02, $03, $02, $03, $02, $03, $02, $03, $02, $03, $02, $03
     db $04, $04, $04, $04, $04, $04, $04, $04, $04, $04, $04, $04, $04, $04, $04, $04
@@ -4971,35 +4918,35 @@ JTSpriteFrames::
 SnakeSpriteImage:: ; 0x7b26
     db $10, $00
     INCBIN "gfx/bank009_snake_7b28.2bpp"
-    
+
 SnakeSpriteFrames::
     ; frame 1: 0x7c28
     db $00, $08, $00, $00
-    
+
     ; 0x7c2c
     db $f0, $00, $02, $00
-    
+
     ; 0x7c30
     db $10, $f8, $04, $00
-    
+
     ; 0x7c34
     db $f0, $00, $06, $00
-    
+
     db $80
     db $00, $00, $00
 
     ; frame 2: 0x7c3c
     db $f0, $10, $08, $00
-    
+
     ; 0x7c40
     db $10, $f8, $0a, $00
-    
+
     ; 0x7c44
     db $f0, $00, $0c, $00
-    
+
     ; 0x7c48
     db $10, $f8, $04, $00
-    
+
     db $f0, $00, $0e, $00, $80
 
     db $00, $00, $00
@@ -5007,7 +4954,7 @@ SnakeSpriteFrames::
     ; frames
     db $28, $7c
     db $3c, $7c
-    
+
     db $00, $01, $00, $01, $00, $01, $00, $01, $00, $01, $00, $01
     db $00, $01, $00, $01, $00, $00
 
@@ -5023,27 +4970,19 @@ TomfulpSpriteImage:: ; 0x7c7d
 TomfulpSpriteFrames::
     ; frame 1: 0x7d7f
     db $00, $08, $00, $00, $f0, $00, $02, $00, $10, $f8, $04, $00, $f0, $00, $06, $00
-    db $80
-
-    db $00, $00, $00
+    db $80, $00, $00, $00
 
     ; frame 2: 0x7d93
     db $00, $08, $08, $00, $f0, $00, $0a, $00, $10, $f8, $0c, $00, $f0, $00, $0e, $00
-    db $80
-
-    db $00, $00, $00
+    db $80, $00, $00, $00
 
     ; frame 3: 0x7da7
     db $00, $08, $0c, $20, $f0, $00, $0e, $20, $10, $f8, $08, $20, $f0, $00, $0a, $20
-    db $80
-
-    db $00, $00, $00
+    db $80, $00, $00, $00
 
     ; frame 4: 0x7dbb
     db $00, $08, $04, $20, $f0, $00, $06, $20, $10, $f8, $00, $20, $f0, $00, $02, $20
-    db $80
-
-    db $00, $00, $00
+    db $80, $00, $00, $00
 
     ; frames
     db $7f, $7d
@@ -5054,7 +4993,7 @@ TomfulpSpriteFrames::
     db $bb, $7d
     db $a7, $7d
     db $bb, $7d
-    
+
     db $00, $07, $00, $07, $00, $07, $00, $07, $00, $07, $00, $07, $00, $07, $00, $07
     db $00, $00
 
@@ -5062,9 +5001,9 @@ TomfulpSpriteFrames::
     db $08, $00, $e0, $cf, $7d, $df, $7d, $ef, $7d, $00, $0f, $f8, $07
 
     db $09, $7d, $7c, $00, $00, $00 ; points to bank 9: 0x7c7d tom fulp
-   
+
 McdonaldsWorkerSpriteImage:: ; 0x7e04
-    db $06, $00 
+    db $06, $00
     INCBIN "gfx/bank009_mcdonaldsworker_7e06.2bpp"
 
 McdonaldsWorkerSpriteFrames::
@@ -5079,7 +5018,7 @@ McdonaldsWorkerSpriteFrames::
     ; frames
     db $66, $7e
     db $72, $7e
-    
+
     db $00, $01, $00, $01, $00, $01, $00, $01, $00, $01, $00, $01, $00, $01, $00, $01
     db $00, $00
 
@@ -5091,46 +5030,46 @@ McdonaldsWorkerSpriteFrames::
 PondSpriteImage:: ; 0x7ea7
     db $08, $00
     INCBIN "gfx/bank009_pond_7ea9.2bpp"
-    
+
 PondSpriteFrames::
     ; bank 9: frame 1 0x7f29
     db $00, $08, $00, $00
-    
+
     ; 0x7f2d
     db $00, $f8, $00, $00
-    
+
     db $80, $00, $00, $00
 
     ; bank 9: frame 2 0x7f35
     db $00, $08, $02, $00
-    
+
     ; 0x7f39
     db $00, $f8, $02, $00
-    
+
     db $80, $00, $00, $00
 
     ; bank 9: frame 3 0x7f41
     db $00, $08, $04, $00
-    
+
     ; 0x7f45
     db $00, $f8, $04, $00
-    
-    db $80, $00, $00, $00
-    
-    ; bank 9: frame 4 0x7f4d
-    db $00, $08, $06, $00
-    
-    ; 0x7f51
-    db $00, $f8, $06, $00
-    
+
     db $80, $00, $00, $00
 
-    ; frames       
+    ; bank 9: frame 4 0x7f4d
+    db $00, $08, $06, $00
+
+    ; 0x7f51
+    db $00, $f8, $06, $00
+
+    db $80, $00, $00, $00
+
+    ; frames
     db $29, $7f
     db $35, $7f
     db $41, $7f
     db $4d, $7f
-    
+
     db $00, $03, $00, $03, $00, $03, $00, $03
     db $00, $03, $00, $03, $00, $03, $00, $03, $00, $00
 
@@ -5149,4 +5088,3 @@ bank009_7f86: ; related to Mcdonalds transition
     db $1a, $00, $7f, $e2, $00, $0b, $00, $00, $01, $09, $7f, $ea, $55, $68, $62, $09, $04, $53, $84, $10
     db $00, $19, $00, $00, $ff, $ff
     db $1a, $00, $7f, $fc, $00, $02, $ff, $ff, $01, $09, $7f, $ff, $5f, $10, $00, $00,
-

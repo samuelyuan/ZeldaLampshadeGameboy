@@ -1,10 +1,11 @@
 SECTION "ROM Bank $003", ROMX[$4000], BANK[$3]
 
-    ld hl, $c539
+_load_init:
+    ld hl, _ACTORS_LEN
     ld [hl], $00
-    ld hl, $c53b
+    ld hl, _PLAYER_SPRITE_LEN
     ld [hl], $00
-    ld hl, $c57e
+    ld hl, _SCENE_STACK_PTR
     ld [hl], $3e
     inc hl
     ld [hl], $c5
@@ -14,6 +15,8 @@ SECTION "ROM Bank $003", ROMX[$4000], BANK[$3]
     ld a, [bc]
     ld [c], a
     ld b, l
+
+_load_bkg_tileset:
     dec sp
     ld hl, sp+$09
     ld a, [hl]
@@ -36,7 +39,7 @@ SECTION "ROM Bank $003", ROMX[$4000], BANK[$3]
     push af
     inc sp
     push de
-    call Call_000_1307
+    call _ReadBankedUWORD
     add sp, $03
     inc bc
     inc bc
@@ -58,7 +61,7 @@ SECTION "ROM Bank $003", ROMX[$4000], BANK[$3]
     ld h, a
     ld l, $00
     push hl
-    call Call_000_1270
+    call _SetBankedBkgData
     add sp, $05
     jp Jump_003_40ed
 
@@ -73,7 +76,7 @@ jr_003_4056:
     push bc
     ld hl, $8000
     push hl
-    call Call_000_1270
+    call _SetBankedBkgData
     add sp, $05
     pop de
     pop bc
@@ -119,7 +122,7 @@ jr_003_4056:
     inc sp
     push af
     inc sp
-    call Call_000_1270
+    call _SetBankedBkgData
     add sp, $05
     jr jr_003_40ed
 
@@ -138,7 +141,7 @@ jr_003_40a6:
     ld h, [hl]
     ld l, $80
     push hl
-    call Call_000_1270
+    call _SetBankedBkgData
     add sp, $05
     jr jr_003_40ed
 
@@ -152,7 +155,7 @@ jr_003_40bf:
     push bc
     ld hl, $8080
     push hl
-    call Call_000_1270
+    call _SetBankedBkgData
     add sp, $05
     pop de
     pop bc
@@ -174,7 +177,7 @@ jr_003_40bf:
     ld h, a
     ld l, $00
     push hl
-    call Call_000_128c
+    call _SetBankedSpriteData
     add sp, $05
 
 Jump_003_40ed:
@@ -182,7 +185,7 @@ jr_003_40ed:
     inc sp
     ret
 
-
+_load_background:
     add sp, -$11
     ld hl, sp+$17
     ld a, [hl+]
@@ -207,45 +210,45 @@ jr_003_40ed:
     ld e, a
     ld d, [hl]
     push de
-    call Call_000_1323
+    call _MemcpyBanked
     add sp, $07
     pop bc
     ld hl, $0008
     add hl, bc
     ld a, [hl]
-    ld [$c529], a
+    ld [_image_bank], a
     ld hl, $0009
     add hl, bc
     ld a, [hl+]
     ld l, [hl]
     ld e, a
     ld d, l
-    ld hl, $c52a
+    ld hl, _image_ptr
     ld a, e
     ld [hl+], a
     ld [hl], d
     ld hl, $000b
     add hl, bc
     ld a, [hl]
-    ld [$c52c], a
+    ld [_IMAGE_ATTR_BANK], a
     ld hl, $000c
     add hl, bc
     ld a, [hl+]
     ld l, [hl]
     ld e, a
     ld d, l
-    ld hl, $c52d
+    ld hl, _IMAGE_ATTR_PTR
     ld a, e
     ld [hl+], a
     ld [hl], d
     ld a, [bc]
-    ld [$c532], a
+    ld [_image_tile_width], a
     ld e, c
     ld d, b
     inc de
     ld a, [de]
-    ld [$c533], a
-    ld hl, $c532
+    ld [_image_tile_height], a
+    ld hl, _image_tile_width
     ld l, [hl]
     ld h, $00
     add hl, hl
@@ -259,11 +262,11 @@ jr_003_40ed:
     ld [hl], d
     ld a, [$c534]
     add $60
-    ld [$c7dc], a
+    ld [_SCROLL_X_MAX], a
     ld a, [$c535]
     adc $ff
-    ld [$c7dd], a
-    ld hl, $c533
+    ld [_SCROLL_X_MAX + 1], a
+    ld hl, _image_tile_height
     ld l, [hl]
     ld h, $00
     add hl, hl
@@ -271,11 +274,11 @@ jr_003_40ed:
     add hl, hl
     ld e, l
     ld d, h
-    ld hl, $c536
+    ld hl, _IMAGE_HEIGHT
     ld a, e
     ld [hl+], a
     ld [hl], d
-    ld a, [$c536]
+    ld a, [_IMAGE_HEIGHT]
     add $70
     ld [$c7de], a
     ld a, [$c537]
@@ -307,7 +310,7 @@ jr_003_40ed:
     add sp, $14
     ret
 
-
+_load_sprite:
     add sp, -$05
     ld hl, sp+$0c
     ld a, [hl+]
@@ -336,7 +339,7 @@ jr_003_41ba:
     ld e, a
     ld d, [hl]
     push de
-    call Call_000_12e0
+    call _ReadBankedFarPtr
     add sp, $05
     ld a, [bc]
     ld hl, sp+$03
@@ -357,7 +360,7 @@ jr_003_41ba:
     push af
     inc sp
     push de
-    call Call_000_1307
+    call _ReadBankedUWORD
     add sp, $03
     ld a, e
     or a
@@ -377,7 +380,7 @@ jr_003_41ba:
     ld a, [hl]
     push af
     inc sp
-    call Call_000_128c
+    call _SetBankedSpriteData
     add sp, $05
     pop de
 
@@ -385,7 +388,7 @@ jr_003_4209:
     add sp, $05
     ret
 
-
+_load_bounds:
     ld hl, sp+$06
     ld a, [hl+]
     ld d, [hl]
@@ -410,11 +413,11 @@ jr_003_4216:
     push hl
     push de
     push bc
-    call Call_000_1323
+    call _MemcpyBanked
     add sp, $07
     ret
 
-
+_do_load_palette:
     add sp, -$07
     ld hl, sp+$11
     ld a, [hl-]
@@ -429,7 +432,7 @@ jr_003_4216:
     push bc
     inc sp
     push hl
-    call Call_000_1307
+    call _ReadBankedUWORD
     add sp, $03
     ld c, e
     pop de
@@ -483,7 +486,7 @@ jr_003_4255:
     ld h, [hl]
     ld l, a
     push hl
-    call Call_000_1323
+    call _MemcpyBanked
     add sp, $07
     pop de
     pop bc
@@ -518,7 +521,7 @@ jr_003_42a6:
     add sp, $07
     ret
 
-
+_load_scene:
     add sp, -$55
     ld hl, sp+$5b
     ld a, [hl+]
@@ -543,14 +546,14 @@ jr_003_42a6:
     push hl
     push bc
     push de
-    call Call_000_1323
+    call _MemcpyBanked
     add sp, $07
     pop bc
-    ld de, $c526
+    ld de, _CURRENT_SCENE
     ld hl, sp+$5d
     ld a, [hl]
     ld [de], a
-    ld hl, $c527
+    ld hl, _CURRENT_SCENE + 1
     ld a, c
     ld [hl+], a
     ld [hl], b
@@ -561,7 +564,7 @@ jr_003_42a6:
     inc bc
     inc bc
     ld a, [bc]
-    ld [$c53c], a
+    ld [_SCENE_TYPE], a
     ld hl, sp+$40
     ld a, [hl+]
     ld c, a
@@ -625,7 +628,7 @@ jr_003_432c:
     ld c, $15
 
 jr_003_432e:
-    ld hl, $c539
+    ld hl, _ACTORS_LEN
     ld [hl], c
     ld hl, sp+$40
     ld a, [hl+]
@@ -642,7 +645,7 @@ jr_003_432e:
     ld a, $1f
 
 jr_003_4344:
-    ld [$da31], a
+    ld [_TRIGGERS_LEN], a
     ld hl, sp+$40
     ld a, [hl+]
     ld e, a
@@ -658,7 +661,7 @@ jr_003_4344:
     ld a, $05
 
 jr_003_4359:
-    ld [$c53a], a
+    ld [_PROJECTILES_LEN], a
     ld hl, sp+$40
     ld a, [hl+]
     ld e, a
@@ -674,7 +677,7 @@ jr_003_4359:
     ld a, $40
 
 jr_003_436e:
-    ld [$c538], a
+    ld [_SPRITES_LEN], a
     ld hl, sp+$40
     ld a, [hl+]
     ld e, a
@@ -684,7 +687,7 @@ jr_003_436e:
     ld c, l
     ld b, h
     ld a, [bc]
-    ld [$c52f], a
+    ld [_COLLISION_BANK], a
     ld hl, sp+$40
     ld a, [hl+]
     ld e, a
@@ -694,12 +697,12 @@ jr_003_436e:
     ld a, [hl+]
     ld c, a
     ld a, [hl]
-    ld hl, $c530
+    ld hl, _COLLISION_PTR
     ld [hl], c
     inc hl
     ld [hl], a
     ld e, $01
-    ld hl, $5705
+    ld hl, _ui_load_tiles ; bank 1
     call RST_08
     ld hl, sp+$40
     ld a, [hl+]
@@ -725,7 +728,7 @@ jr_003_436e:
     ld b, a
     push bc
     ld e, $03
-    ld hl, $40ef
+    ld hl, _load_background ; bank 3
     call RST_08
     add sp, $03
     ld hl, sp+$40
@@ -766,7 +769,7 @@ jr_003_436e:
     ld de, $dfa0
     push de
     ld e, $03
-    ld hl, $422c
+    ld hl, _do_load_palette ; bank 3
     call RST_08
     add sp, $05
     ld hl, sp+$53
@@ -782,10 +785,10 @@ jr_003_436e:
 Call_003_4404:
     inc sp
     push bc
-    call Call_000_1307
+    call _ReadBankedUWORD
     add sp, $03
     ld a, e
-    ld [$c648], a
+    ld [_DMG_palette], a
     ld hl, sp+$40
     ld a, [hl+]
     ld e, a
@@ -821,10 +824,10 @@ Call_003_4404:
     ld e, a
     ld d, [hl]
     push de
-    ld de, $c64b
+    ld de, _SprPalette
     push de
     ld e, $03
-    ld hl, $422c
+    ld hl, _do_load_palette ; bank 3
     call RST_08
     add sp, $05
     ld hl, sp+$53
@@ -838,7 +841,7 @@ Call_003_4404:
     push af
     inc sp
     push bc
-    call Call_000_1307
+    call _ReadBankedUWORD
     add sp, $03
     ld hl, sp+$53
     ld a, e
@@ -846,8 +849,8 @@ Call_003_4404:
     ld [hl], d
     ld hl, sp+$53
     ld a, [hl]
-    ld [$c649], a
-    ld bc, $c64a
+    ld [_DMG_palette + 1], a
+    ld bc, _DMG_palette + 2
     ld hl, sp+$54
     ld a, [hl]
     ld [bc], a
@@ -871,9 +874,9 @@ Call_003_4404:
     ld e, a
     ld d, [hl]
     push de
-    ld de, $c68b
+    ld de, _PARALLAX_ROWS
     push de
-    call Call_000_376d
+    call _memset1
     add sp, $06
     ld hl, sp+$40
     ld a, [hl+]
@@ -887,7 +890,7 @@ Call_003_4404:
     or a
     jr nz, jr_003_44ad
 
-    ld a, [$c53c]
+    ld a, [_SCENE_TYPE]
     sub $05
     ld a, $02
     jr z, jr_003_44a8
@@ -895,11 +898,11 @@ Call_003_4404:
     xor a
 
 jr_003_44a8:
-    ld [$c53d], a
+    ld [_scene_LCD_type], a
     jr jr_003_44b2
 
 jr_003_44ad:
-    ld hl, $c53d
+    ld hl, _scene_LCD_type
     ld [hl], $01
 
 jr_003_44b2:
@@ -932,7 +935,7 @@ jr_003_44b2:
     push bc
     ld de, $c0db
     push de
-    call Call_000_376d
+    call _memset1
     add sp, $06
     ld hl, sp+$4f
     ld a, [hl+]
@@ -974,7 +977,7 @@ jr_003_44b2:
     push af
     inc sp
     ld e, $03
-    ld hl, $41ae
+    ld hl, _load_sprite ; bank 3
     call RST_08
     add sp, $04
     ld c, e
@@ -1042,7 +1045,7 @@ jr_003_4532:
     ld b, a
     push bc
     ld e, $03
-    ld hl, $420c
+    ld hl, _load_bounds
     call RST_08
     add sp, $05
     jr jr_003_45a5
@@ -1058,7 +1061,7 @@ Jump_003_457a:
     push de
     ld de, $c0db
     push de
-    call Call_000_376d
+    call _memset1
     add sp, $06
     ld de, $0010
     push de
@@ -1066,7 +1069,7 @@ Jump_003_457a:
     push de
     ld de, $c0cb
     push de
-    call Call_000_37b0
+    call _memset2
     add sp, $06
 
 jr_003_45a5:
@@ -1099,7 +1102,7 @@ jr_003_45a5:
     ld a, h
     ld hl, sp+$45
     ld [hl], a
-    ld a, [$c538]
+    ld a, [_SPRITES_LEN]
     or a
     jp z, Jump_003_4679
 
@@ -1176,7 +1179,7 @@ jr_003_4605:
     ld l, a
     push hl
     push de
-    call Call_000_12e0
+    call _ReadBankedFarPtr
     add sp, $05
     ld de, $c580
     ld hl, sp+$54
@@ -1216,7 +1219,7 @@ jr_003_4605:
     push af
     inc sp
     ld e, $03
-    ld hl, $41ae
+    ld hl, _load_sprite
     call RST_08
     add sp, $04
     ld a, e
@@ -1263,21 +1266,21 @@ jr_003_4679:
     push de
     ld de, $c0de
     push de
-    call Call_000_376d
+    call _memset1
     add sp, $06
-    ld hl, $c507
+    ld hl, _PLAYER_MOVING
     ld [hl], $00
     xor a
-    ld hl, $c4fd
+    ld hl, _ACTORS_ACTIVE_HEAD
     ld [hl+], a
     ld [hl], a
     xor a
-    ld hl, $c501
+    ld hl, _ACTORS_INACTIVE_HEAD
     ld [hl+], a
     ld [hl], a
-    ld hl, $c0b9
+    ld hl, _ACTORS
     res 0, [hl]
-    ld hl, $c4ff
+    ld hl, _ACTORS_ACTIVE_TAIL
     ld a, $b9
     ld [hl+], a
     ld a, $c0
@@ -1290,7 +1293,7 @@ jr_003_4679:
     xor a
     ld [hl+], a
     ld [hl], a
-    ld hl, $c4ff
+    ld hl, _ACTORS_ACTIVE_TAIL
     ld a, [hl+]
     ld b, [hl]
     add $30
@@ -1300,7 +1303,7 @@ jr_003_4679:
     inc b
 
 jr_003_46e0:
-    ld hl, $c501
+    ld hl, _ACTORS_INACTIVE_HEAD
     ld a, [hl+]
     ld [bc], a
     inc bc
@@ -1332,7 +1335,7 @@ jr_003_46e0:
     ld a, [hl+]
     ld e, a
     ld d, [hl]
-    ld hl, $c4ff
+    ld hl, _ACTORS_ACTIVE_TAIL
     ld a, [hl+]
     ld [de], a
     inc de
@@ -1340,17 +1343,17 @@ jr_003_46e0:
     ld [de], a
 
 jr_003_4712:
-    ld a, [$c4ff]
-    ld [$c501], a
-    ld a, [$c500]
-    ld [$c502], a
-    ld de, $c0b9
+    ld a, [_ACTORS_ACTIVE_TAIL]
+    ld [_ACTORS_INACTIVE_HEAD], a
+    ld a, [_ACTORS_ACTIVE_TAIL + 1]
+    ld [_ACTORS_INACTIVE_HEAD + 1], a
+    ld de, _ACTORS
     push de
     ld e, $01
-    ld hl, $41db
+    ld hl, _activate_actor ; bank 1
     call RST_08
     pop hl
-    ld a, [$c539]
+    ld a, [_ACTORS_LEN]
     or a
     jp z, Jump_003_4942
 
@@ -1364,7 +1367,7 @@ jr_003_4712:
     ld b, h
     ld a, [bc]
     ld b, a
-    ld hl, $c539
+    ld hl, _ACTORS_LEN
     ld l, [hl]
     ld h, $00
     dec hl
@@ -1405,9 +1408,9 @@ jr_003_4712:
     push bc
     ld de, $c0ed
     push de
-    call Call_000_1323
+    call _MemcpyBanked
     add sp, $07
-    ld a, [$c539]
+    ld a, [_ACTORS_LEN]
     dec a
     ld hl, sp+$52
     ld [hl], a
@@ -1845,7 +1848,7 @@ Jump_003_4942:
     push de
     ld de, $c758
     push de
-    call Call_000_1323
+    call _MemcpyBanked
     add sp, $07
     ld a, [$c53a]
     ld hl, sp+$54
@@ -2004,7 +2007,7 @@ jr_003_4a50:
 
 
 Jump_003_4a71:
-    ld a, [$c4fd]
+    ld a, [_ACTORS_ACTIVE_HEAD]
     ld hl, sp+$51
     ld [hl], a
     ld a, [$c4fe]
@@ -2109,7 +2112,7 @@ jr_003_4aaf:
     push de
     ld de, $c821
     push de
-    call Call_000_1323
+    call _MemcpyBanked
     add sp, $07
 
 jr_003_4b01:
@@ -2211,7 +2214,7 @@ jr_003_4b83:
     add sp, $55
     ret
 
-
+_load_player:
     ld hl, $0597
     ld a, [hl+]
     ld c, a
@@ -2251,7 +2254,7 @@ jr_003_4b83:
     set 5, [hl]
     ret
 
-
+load_emote:
     ld hl, sp+$08
     ld a, [hl-]
     dec hl
@@ -2263,7 +2266,7 @@ jr_003_4b83:
     push de
     ld hl, $047c
     push hl
-    call Call_000_128c
+    call _SetBankedSpriteData
     add sp, $05
     ret
 
@@ -2379,7 +2382,7 @@ jr_003_4bf7:
     push hl
     push bc
     push de
-    call Call_000_376d
+    call _memset1
     add sp, $06
     ld hl, sp+$11
     ld [hl], $02
@@ -3536,7 +3539,7 @@ ExplorationMusicStart:: ; 0x724b
 ExplorationMusicRef:: ; 0x7fcc
     db $04, $6b, $72, $ac, $7d, $b8, $7d, $c4, $7d, $d0, $7d, $dc, $7d, $18, $7e, $54
     db $7e, $4b, $72, $cc, $7e
-    
+
 bank003_7fe1:
     db $25, $12, $04, $61, $14, $00, $00, $ff, $fc, $31, $ff, $fc, $14, $00, $01, $ff
     db $fc, $0d, $ff, $fc, $00, $55, $af, $02, $21, $01, $c6, $0d, $57, $03, $00

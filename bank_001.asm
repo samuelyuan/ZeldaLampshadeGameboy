@@ -1,49 +1,54 @@
 SECTION "ROM Bank $001", ROMX[$4000], BANK[$1]
 
+_actors_init:
     xor a
-    ld hl, $c501
+    ld hl, _ACTORS_INACTIVE_HEAD
     ld [hl+], a
     ld [hl], a
     xor a
-    ld hl, $c4fd
+    ld hl, _ACTORS_ACTIVE_HEAD
     ld [hl+], a
     ld [hl], a
     xor a
-    ld hl, $c4ff
+    ld hl, _ACTORS_ACTIVE_TAIL
     ld [hl+], a
     ld [hl], a
-    ld hl, $c507
+    ld hl, _PLAYER_MOVING
     ld [hl], $00
-    ld hl, $c508
+    ld hl, _PLAYER_IFRAMES
     ld [hl], $00
     xor a
-    ld hl, $c509
+    ld hl, _PLAYER_COLLISION_ACTOR
     ld [hl+], a
     ld [hl], a
     xor a
-    ld hl, $c50b
+    ld hl, _EMOTE_ACTOR
     ld [hl+], a
     ld [hl], a
     ld de, $0444
     push de
     ld de, $0000
     push de
-    ld de, $c0b9
+    ld de, _ACTORS
     push de
-    call Call_000_37b0
+    call _memset2
     add sp, $06
     ret
 
-
+_emote_offsets:
     ld [bc], a
     ld bc, $ff00
     cp $fd
+
     db $fc
+
     ei
     ld a, [$fcfb]
     db $fd
     cp $ff
     nop
+
+_emote_metasprite:
     nop
     nop
     nop
@@ -55,7 +60,8 @@ SECTION "ROM Bank $001", ROMX[$4000], BANK[$1]
     nop
     nop
 
-    ld de, $c0b9
+_player_init:
+    ld de, _ACTORS
     push de
     ld e, $01
     ld hl, $4606
@@ -66,7 +72,7 @@ SECTION "ROM Bank $001", ROMX[$4000], BANK[$1]
     res 3, [hl]
     ret
 
-
+_deactivate_actor:
     add sp, -$08
     ld hl, sp+$0e
     ld a, [hl]
@@ -374,7 +380,7 @@ jr_001_41d8:
     add sp, $08
     ret
 
-
+_activate_actor:
     add sp, -$08
     ld hl, sp+$0e
     ld a, [hl+]
@@ -640,7 +646,7 @@ Jump_001_4317:
     add sp, $08
     ret
 
-
+_activate_actors_in_row:
     add sp, -$06
     ld a, [$c501]
     ld [$c515], a
@@ -824,7 +830,7 @@ Jump_001_440e:
     add sp, $06
     ret
 
-
+_activate_actors_in_col:
     add sp, -$07
     ld a, [$c501]
     ld [$c517], a
@@ -1061,7 +1067,7 @@ Jump_001_455f:
     add sp, $07
     ret
 
-
+_actor_set_frames:
     add sp, -$05
     ld hl, sp+$0b
     ld a, [hl+]
@@ -1130,7 +1136,7 @@ jr_001_45b3:
     add sp, $05
     ret
 
-
+_actor_set_frame_offset:
     dec sp
     dec sp
     ld hl, sp+$08
@@ -1179,7 +1185,7 @@ jr_001_45b3:
     inc sp
     ret
 
-
+_actor_get_frame_offset:
     ld hl, sp+$06
     ld a, [hl+]
     ld c, a
@@ -1195,7 +1201,7 @@ jr_001_45b3:
     ld e, a
     ret
 
-
+_actor_set_anim_idle:
     ld hl, sp+$06
     ld a, [hl+]
     ld c, a
@@ -1228,7 +1234,7 @@ jr_001_45b3:
     add sp, $04
     ret
 
-
+_actor_set_anim_moving:
     ld hl, sp+$06
     ld a, [hl+]
     ld c, a
@@ -1263,7 +1269,7 @@ jr_001_45b3:
     add sp, $04
     ret
 
-
+_actor_set_dir:
     ld hl, sp+$06
     ld a, [hl+]
     ld c, a
@@ -1339,7 +1345,7 @@ jr_001_46a1:
     add sp, $04
     ret
 
-
+_actor_at_tile:
     add sp, -$04
     ld a, [$c4fd]
     ld hl, sp+$00
@@ -1506,7 +1512,7 @@ jr_001_479d:
     add sp, $04
     ret
 
-
+_actor_in_front_of_player:
     add sp, -$0c
     ld hl, sp+$00
     ld a, l
@@ -1685,7 +1691,7 @@ jr_001_479d:
     add sp, $13
     ret
 
-
+_actor_overlapping_player:
     add sp, -$10
     ld de, $c0eb
     ld a, [de]
@@ -2223,7 +2229,7 @@ jr_001_4b1d:
     add sp, $10
     ret
 
-
+_actor_overlapping_bb:
     add sp, -$17
     ld hl, sp+$00
     ld [hl], $b9
@@ -2677,7 +2683,7 @@ jr_001_4d3c:
     add sp, $17
     ret
 
-
+_actor_handle_player_collision:
     dec sp
     ld a, [$c508]
     or a
@@ -2779,7 +2785,7 @@ jr_001_4dc2:
     inc sp
     ret
 
-
+_check_collision_in_direction:
     add sp, -$10
     ld hl, sp+$16
     ld a, [hl]
@@ -3214,7 +3220,7 @@ jr_001_4fcb:
     push bc
     inc sp
     push de
-    call Call_000_1307
+    call _ReadBankedUWORD
     add sp, $03
     ld hl, sp+$03
     ld [hl], e
@@ -3642,7 +3648,7 @@ jr_001_51df:
     push bc
     inc sp
     push de
-    call Call_000_1307
+    call _ReadBankedUWORD
     add sp, $03
     ld hl, sp+$03
     ld [hl], e
@@ -3989,7 +3995,7 @@ jr_001_5382:
     push af
     inc sp
     push bc
-    call Call_000_1307
+    call _ReadBankedUWORD
     add sp, $03
     ld c, e
     pop de
@@ -4303,7 +4309,7 @@ jr_001_54dd:
     ld h, [hl]
     ld l, a
     push hl
-    call Call_000_1307
+    call _ReadBankedUWORD
     add sp, $03
     ld l, e
     pop de
@@ -4393,7 +4399,7 @@ jr_001_55b7:
     ret
 
 
-Call_001_55ba:
+_ui_swap_tiles:
     ld hl, $dfe0
     ld de, $dff0
     ld a, [de]
@@ -4444,7 +4450,7 @@ Call_001_55ba:
     ld a, [de]
     ld [hl+], a
     inc de
-    ld a, [$c92a]
+    ld a, [_TEXT_BKG_FILL]
     ld [hl+], a
     ld [hl+], a
     ld [hl+], a
@@ -4464,7 +4470,7 @@ Call_001_55ba:
     ret
 
 
-Call_001_5604:
+_ui_print_make_mask_lr:
     ld hl, sp+$02
     ld a, [hl+]
     or a
@@ -4496,7 +4502,7 @@ jr_001_561b:
     ret
 
 
-Call_001_5620:
+_ui_print_make_mask_rl:
     ld hl, sp+$02
     ld a, [hl+]
     or a
@@ -4527,36 +4533,36 @@ jr_001_5637:
     ld e, a
     ret
 
-
-    ld hl, $ca38
+_ui_init:
+    ld hl, _VWF_DIRECTION
     ld [hl], $00
-    ld hl, $ca42
+    ld hl, _VWF_CURRENT_FONT_IDX
     ld [hl], $00
-    ld a, [$05a1]
-    ld [$ca41], a
-    ld hl, $05a2
+    ld a, [_ui_fonts]
+    ld [_VWF_CURRENT_FONT_BANK], a
+    ld hl, _ui_fonts + 1
     ld a, [hl+]
     ld c, a
     ld b, [hl]
-    ld a, [$ca41]
+    ld a, [_VWF_CURRENT_FONT_BANK]
     push af
     inc sp
     ld de, $0008
     push de
     push bc
-    ld de, $ca39
+    ld de, _VWF_CURRENT_FONT_DESC
     push de
-    call Call_000_1323
+    call _MemcpyBanked
     add sp, $07
-    ld hl, $c924
+    ld hl, _TEXT_OPTIONS
     ld [hl], $00
-    ld hl, $c925
+    ld hl, _TEXT_IN_SPEED
     ld [hl], $00
-    ld hl, $c926
+    ld hl, _TEXT_OUT_SPEED
     ld [hl], $00
-    ld hl, $c928
+    ld hl, _TEXT_FF_JOYPAD
     ld [hl], $01
-    ld hl, $c92a
+    ld hl, _TEXT_BKG_FILL
     ld [hl], $00
     xor a
     ld hl, $ca2a
@@ -4572,24 +4578,24 @@ jr_001_5637:
     ld [hl], $cc
     ld hl, $ca33
     ld [hl], $00
-    ld hl, $c91f
+    ld hl, _WIN_DEST_POS_Y
     ld [hl], $90
-    ld hl, $c91e
+    ld hl, _WIN_POS_Y
     ld [hl], $90
-    ld hl, $c91d
+    ld hl, _WIN_DEST_POS_X
     ld [hl], $00
-    ld hl, $c91c
+    ld hl, _WIN_POS_X
     ld [hl], $00
-    ld hl, $c920
+    ld hl, _WIN_SPEED
     ld [hl], $01
-    ld hl, $c921
+    ld hl, _TEXT_DRAWN
     ld [hl], $01
-    ld hl, $c927
+    ld hl, _TEXT_DRAW_SPEED
     ld [hl], $01
-    ld hl, $c922
+    ld hl, _CURRENT_TEXT_SPEED
     ld [hl], $00
-    call Call_000_0265
-    ld hl, $ca43
+    call _GetWinAddr
+    ld hl, _TEXT_RENDER_BASE_ADDR
     ld a, e
     ld [hl+], a
     ld [hl], d
@@ -4605,24 +4611,24 @@ jr_001_5637:
     ld [hl], c
     inc hl
     ld [hl], a
-    call Call_000_0265
-    ld hl, $ca45
+    call _GetWinAddr
+    ld hl, _TEXT_SCROLL_ADDR
     ld a, e
     ld [hl+], a
     ld [hl], d
-    ld hl, $ca47
+    ld hl, _TEXT_SCROLL_WIDTH
     ld [hl], $14
-    ld hl, $ca48
+    ld hl, _TEXT_SCROLL_HEIGHT
     ld [hl], $08
-    ld hl, $ca49
+    ld hl, _TEXT_SCROLL_FILL
     ld [hl], $c9
-    ld hl, $ca4b
+    ld hl, _TEXT_SOUND_BANK
     ld [hl], $ff
     ld e, $01
-    ld hl, $5705
+    ld hl, _ui_load_tiles
     jp RST_08
 
-
+_ui_load_tiles:
     ld b, $09
     push bc
     inc sp
@@ -4631,16 +4637,16 @@ jr_001_5637:
     ld a, $09
     cp a
     push af
-    call Call_000_1270
+    call _SetBankedBkgData
     add sp, $05
     ld b, $0a
     push bc
     inc sp
-    ld de, $42bd
+    ld de, $42bd ; CursorImage bank 0a 0x42bd
     push de
     ld hl, $01cb
     push hl
-    call Call_000_1270
+    call _SetBankedBkgData
     add sp, $05
     ld bc, $dfe0
     ld e, c
@@ -4650,12 +4656,12 @@ jr_001_5637:
     ld l, h
     push hl
     push de
-    call Call_000_37b0
+    call _memset2
     add sp, $06
     push bc
     ld hl, $01c9
     push hl
-    call Call_000_35b7
+    call _set_win_data
     add sp, $04
     ld e, c
     ld d, b
@@ -4664,22 +4670,22 @@ jr_001_5637:
     ld l, $ff
     push hl
     push de
-    call Call_000_37b0
+    call _memset2
     add sp, $06
     push bc
     ld hl, $01ca
     push hl
-    call Call_000_35b7
+    call _set_win_data
     add sp, $04
     ret
 
-
+_ui_draw_frame:
     ld hl, sp+$09
     ld a, [hl]
     or a
     ret z
 
-    call Call_000_0265
+    call _GetWinAddr
     ld hl, sp+$07
     ld l, [hl]
     ld h, $00
@@ -4705,7 +4711,7 @@ jr_001_5637:
     cp a
     push af
     push de
-    call Call_000_032d
+    call _ui_draw_frame_row
     add sp, $04
     pop bc
     ld hl, sp+$09
@@ -4742,7 +4748,7 @@ jr_001_5795:
     inc sp
     ld e, a
     push de
-    call Call_000_032d
+    call _ui_draw_frame_row
     add sp, $04
     pop de
     pop bc
@@ -4759,12 +4765,12 @@ jr_001_57b8:
     ld l, $c6
     push hl
     push bc
-    call Call_000_032d
+    call _ui_draw_frame_row
     add sp, $04
     ret
 
 
-Call_001_57cb:
+_ui_print_reset:
     ld a, [$ca34]
     or a
     jr z, jr_001_57e5
@@ -4782,7 +4788,7 @@ Call_001_57cb:
 jr_001_57e5:
     ld hl, $ca34
     ld [hl], $00
-    ld hl, $c92a
+    ld hl, _TEXT_BKG_FILL
     ld c, [hl]
     ld b, $00
     ld de, $0020
@@ -4790,11 +4796,11 @@ jr_001_57e5:
     push bc
     ld de, $dfe0
     push de
-    call Call_000_37b0
+    call _memset2
     add sp, $06
     ret
 
-
+_ui_set_start_tile:
     ld hl, sp+$06
     ld a, [hl]
     ld [$ca30], a
@@ -4805,7 +4811,7 @@ jr_001_57e5:
     ld [$ca33], a
     ld hl, $ca34
     ld [hl], $00
-    ld hl, $c92a
+    ld hl, _TEXT_BKG_FILL
     ld c, [hl]
     ld b, $00
     ld de, $0020
@@ -4813,24 +4819,24 @@ jr_001_57e5:
     push bc
     ld de, $dfe0
     push de
-    call Call_000_37b0
+    call _memset2
     add sp, $06
     ret
 
 
-Call_001_582b:
+_ui_print_render:
     add sp, -$03
-    ld a, [$ca39]
+    ld a, [_VWF_CURRENT_FONT_DESC]
     rrca
     jr nc, jr_001_5854
 
-    ld hl, $ca41
+    ld hl, _VWF_CURRENT_FONT_BANK
     ld b, [hl]
-    ld hl, $ca3b
+    ld hl, _VWF_CURRENT_FONT_DESC + 2
     ld a, [hl+]
     ld h, [hl]
     ld l, a
-    ld de, $ca3a
+    ld de, _VWF_CURRENT_FONT_DESC + 1
     ld a, [de]
     push hl
     ld hl, sp+$07
@@ -4842,7 +4848,7 @@ Call_001_582b:
     push bc
     inc sp
     push hl
-    call Call_000_1307
+    call _ReadBankedUWORD
     add sp, $03
     jr jr_001_5857
 
@@ -4872,8 +4878,8 @@ jr_001_5857:
     ld [hl], c
     inc hl
     ld [hl], a
-    ld a, [$ca39]
-    ld hl, $ca41
+    ld a, [_VWF_CURRENT_FONT_DESC]
+    ld hl, _VWF_CURRENT_FONT_BANK
     ld c, [hl]
     bit 1, a
     jp z, Jump_001_59ce
@@ -4881,14 +4887,14 @@ jr_001_5857:
     bit 2, a
     jr z, jr_001_5887
 
-    ld a, [$c92a]
+    ld a, [_TEXT_BKG_FILL]
     jr jr_001_5888
 
 jr_001_5887:
     xor a
 
 jr_001_5888:
-    ld [$ca37], a
+    ld [_VWF_INVERSE_MAP], a
     ld hl, $ca3d
     ld a, [hl+]
     ld b, [hl]
@@ -4904,29 +4910,29 @@ jr_001_5888:
     push af
     inc sp
     push de
-    call Call_000_1307
+    call _ReadBankedUWORD
     add sp, $03
     ld c, e
     ld hl, sp+$00
     ld [hl], c
-    ld a, [$ca38]
+    ld a, [_VWF_DIRECTION]
     or a
     jr nz, jr_001_5906
 
     ld a, [$ca34]
-    ld [$ca36], a
+    ld [_VWF_CURRENT_ROTATE], a
     push bc
     ld a, [$ca34]
     ld b, a
     push bc
-    call Call_001_5604
+    call _ui_print_make_mask_lr
     pop hl
     pop bc
-    ld hl, $ca35
+    ld hl, _VWF_CURRENT_MASK
     ld [hl], e
     push bc
     push de
-    ld a, [$ca41]
+    ld a, [_VWF_CURRENT_FONT_BANK]
     push af
     inc sp
     ld hl, sp+$06
@@ -4936,7 +4942,7 @@ jr_001_5888:
     push hl
     ld hl, $dfe0
     push hl
-    call Call_000_02aa
+    call _ui_print_shift_char
     add sp, $05
     pop de
     pop bc
@@ -4950,10 +4956,10 @@ jr_001_5888:
 
     sub [hl]
     or $80
-    ld [$ca36], a
-    ld hl, $ca35
+    ld [_VWF_CURRENT_ROTATE], a
+    ld hl, _VWF_CURRENT_MASK
     ld [hl], d
-    ld a, [$ca41]
+    ld a, [_VWF_CURRENT_FONT_BANK]
     push af
     inc sp
     ld hl, sp+$02
@@ -4963,7 +4969,7 @@ jr_001_5888:
     push de
     ld de, $dff0
     push de
-    call Call_000_02aa
+    call _ui_print_shift_char
     add sp, $05
     jr jr_001_596e
 
@@ -4986,7 +4992,7 @@ jr_001_5915:
     set 7, a
 
 jr_001_5919:
-    ld [$ca36], a
+    ld [_VWF_CURRENT_ROTATE], a
     ld a, [$ca34]
     push af
     inc sp
@@ -4994,12 +5000,12 @@ jr_001_5919:
     ld a, [hl]
     push af
     inc sp
-    call Call_001_5620
+    call _ui_print_make_mask_rl
     pop hl
     ld hl, $ca35
     ld [hl], e
     push de
-    ld a, [$ca41]
+    ld a, [_VWF_CURRENT_FONT_BANK]
     push af
     inc sp
     ld hl, sp+$04
@@ -5009,7 +5015,7 @@ jr_001_5919:
     push bc
     ld bc, $dfe0
     push bc
-    call Call_000_02aa
+    call _ui_print_shift_char
     add sp, $05
     pop de
     ld a, [$ca34]
@@ -5025,7 +5031,7 @@ jr_001_5919:
     ld [$ca36], a
     ld hl, $ca35
     ld [hl], d
-    ld a, [$ca41]
+    ld a, [_VWF_CURRENT_FONT_BANK]
     push af
     inc sp
     ld hl, sp+$02
@@ -5035,7 +5041,7 @@ jr_001_5919:
     push de
     ld de, $dff0
     push de
-    call Call_000_02aa
+    call _ui_print_shift_char
     add sp, $05
 
 Jump_001_596e:
@@ -5053,14 +5059,14 @@ jr_001_596e:
     ld a, [$ca30]
     push af
     inc sp
-    call Call_000_35b7
+    call _set_win_data
     add sp, $04
     ld a, $07
     ld hl, $ca34
     sub [hl]
     jr nc, jr_001_59ca
 
-    call Call_001_55ba
+    call _ui_swap_tiles
     ld hl, $ca34
     ld a, [hl]
     add $f8
@@ -5088,7 +5094,7 @@ jr_001_59ae:
     ld a, [$ca30]
     push af
     inc sp
-    call Call_000_35b7
+    call _set_win_data
     add sp, $04
 
 jr_001_59c6:
@@ -5131,7 +5137,7 @@ jr_001_59ea:
     ld a, [$ca30]
     push af
     inc sp
-    call Call_000_1270
+    call _SetBankedBkgData
     add sp, $05
     ld a, [$ca31]
     ld [$ca33], a
@@ -5155,15 +5161,15 @@ jr_001_5a1c:
 
     dec sp
     dec sp
-    ld a, [$c928]
+    ld a, [_TEXT_FF_JOYPAD]
     or a
     jr z, jr_001_5a3a
 
-    ld a, [$c61b]
+    ld a, [_FRAME_JOY]
     and $30
     jr z, jr_001_5a3a
 
-    ld a, [$c61c]
+    ld a, [_LAST_JOY]
     and $30
     jr nz, jr_001_5a3a
 
@@ -5193,7 +5199,7 @@ jr_001_5a4d:
 
     ld bc, $02a2
     ld a, c
-    ld hl, $c927
+    ld hl, _TEXT_DRAW_SPEED
     add [hl]
     ld c, a
     jr nc, jr_001_5a60
@@ -5202,32 +5208,32 @@ jr_001_5a4d:
 
 jr_001_5a60:
     ld a, [bc]
-    ld [$c922], a
-    ld a, [$ca42]
-    ld [$ca4e], a
-    ld a, [$c92a]
-    ld [$ca4f], a
-    ld a, [$ca38]
-    ld [$ca50], a
-    ld a, [$c928]
+    ld [_CURRENT_TEXT_SPEED], a
+    ld a, [_VWF_CURRENT_FONT_IDX]
+    ld [_TEXT_PALETTE + 1], a
+    ld a, [_TEXT_BKG_FILL]
+    ld [_TEXT_PALETTE + 2], a
+    ld a, [_VWF_DIRECTION]
+    ld [_TEXT_PALETTE + 3], a
+    ld a, [_TEXT_FF_JOYPAD]
     ld [$ca51], a
-    ld a, [$c927]
+    ld a, [_TEXT_DRAW_SPEED]
     ld [$ca52], a
     ld hl, $ca2a
     ld [hl], $2b
     inc hl
     ld [hl], $c9
-    ld a, [$c924]
+    ld a, [_TEXT_OPTIONS]
     rrca
     jr c, jr_001_5abd
 
-    ld a, [$ca43]
+    ld a, [_TEXT_RENDER_BASE_ADDR]
     add $21
     ld [$ca2e], a
-    ld a, [$ca44]
+    ld a, [_TEXT_RENDER_BASE_ADDR + 1]
     adc $00
     ld [$ca2f], a
-    ld a, [$ca38]
+    ld a, [_VWF_DIRECTION]
     dec a
     jr nz, jr_001_5ab1
 
@@ -5246,7 +5252,7 @@ jr_001_5ab1:
     ld [$ca2d], a
 
 jr_001_5abd:
-    call Call_001_57cb
+    call _ui_print_reset
 
 Jump_001_5ac0:
 jr_001_5ac0:
@@ -5321,7 +5327,7 @@ Jump_001_5b02:
     sub [hl]
     jr z, jr_001_5b3f
 
-    ld hl, $ca42
+    ld hl, _VWF_CURRENT_FONT_IDX
     ld c, [hl]
     ld b, $00
     ld l, c
@@ -5334,7 +5340,7 @@ Jump_001_5b02:
     add hl, bc
     ld a, [hl+]
     ld b, a
-    ld [$ca41], a
+    ld [_VWF_CURRENT_FONT_BANK], a
     ld a, [hl+]
     ld c, a
     ld a, [hl]
@@ -5344,20 +5350,20 @@ Jump_001_5b02:
     push de
     ld b, a
     push bc
-    ld de, $ca39
+    ld de, _VWF_CURRENT_FONT_DESC
     push de
-    call Call_000_1323
+    call _MemcpyBanked
     add sp, $07
 
 jr_001_5b3f:
-    ld a, [$ca4f]
-    ld [$c92a], a
-    ld a, [$ca50]
-    ld [$ca38], a
+    ld a, [_TEXT_PALETTE + 2]
+    ld [_TEXT_BKG_FILL], a
+    ld a, [_TEXT_PALETTE + 3]
+    ld [_VWF_DIRECTION], a
     ld a, [$ca51]
-    ld [$c928], a
+    ld [_TEXT_FF_JOYPAD], a
     ld a, [$ca52]
-    ld [$c927], a
+    ld [_TEXT_DRAW_SPEED], a
     ld e, $00
     jp Jump_001_5e82
 
@@ -5378,7 +5384,7 @@ jr_001_5b64:
     ld a, [bc]
     dec a
     and $07
-    ld [$c927], a
+    ld [_TEXT_DRAW_SPEED], a
     add $a2
     ld c, a
     ld a, $02
@@ -5416,11 +5422,11 @@ jr_001_5b88:
     add hl, bc
     ld c, l
     ld b, h
-    ld a, [$ca39]
+    ld a, [_VWF_CURRENT_FONT_DESC]
     ld hl, sp+$01
     ld [hl], a
     ld a, [bc]
-    ld [$ca41], a
+    ld [_VWF_CURRENT_FONT_BANK], a
     ld l, c
     ld h, b
     inc hl
@@ -5432,9 +5438,9 @@ jr_001_5b88:
     ld de, $0008
     push de
     push bc
-    ld de, $ca39
+    ld de, _VWF_CURRENT_FONT_DESC
     push de
-    call Call_000_1323
+    call _MemcpyBanked
     add sp, $07
     ld hl, $ca34
     ld a, [hl]
@@ -5447,7 +5453,7 @@ jr_001_5b88:
     pop hl
     jp z, Jump_001_5e76
 
-    ld a, [$ca39]
+    ld a, [_VWF_CURRENT_FONT_DESC]
     bit 1, a
     jp nz, Jump_001_5e76
 
@@ -5519,7 +5525,7 @@ jr_001_5c0c:
     or a
     jp z, Jump_001_5e76
 
-    call Call_001_57cb
+    call _ui_print_reset
     jp Jump_001_5e76
 
 
@@ -5636,7 +5642,7 @@ jr_001_5c89:
     or a
     jp z, Jump_001_5e76
 
-    call Call_001_57cb
+    call _ui_print_reset
     jp Jump_001_5e76
 
 
@@ -5647,13 +5653,13 @@ Jump_001_5cbc:
     jr z, jr_001_5cd0
 
     ld [hl], $00
-    ld hl, $c928
+    ld hl, _TEXT_FF_JOYPAD
     ld [hl], $00
-    ld a, [$c61b]
-    ld [$c61c], a
+    ld a, [_FRAME_JOY]
+    ld [_LAST_JOY], a
 
 jr_001_5cd0:
-    ld a, [$c927]
+    ld a, [_TEXT_DRAW_SPEED]
     or a
     jr nz, jr_001_5ce2
 
@@ -5667,14 +5673,14 @@ jr_001_5cd0:
 
 
 jr_001_5ce2:
-    ld a, [$c61c]
+    ld a, [_LAST_JOY]
     ld b, $00
     cpl
     ld c, a
     ld a, b
     cpl
     ld b, a
-    ld a, [$c61b]
+    ld a, [_FRAME_JOY]
     ld e, $00
     and c
     ld c, a
@@ -5703,9 +5709,9 @@ jr_001_5cfe:
     jr z, jr_001_5d1d
 
     ld a, [$ca51]
-    ld [$c928], a
-    ld a, [$c61b]
-    ld [$c61c], a
+    ld [_TEXT_FF_JOYPAD], a
+    ld a, [_FRAME_JOY]
+    ld [_LAST_JOY], a
     jp Jump_001_5e76
 
 
@@ -5756,7 +5762,7 @@ jr_001_5d46:
 jr_001_5d4d:
     ld hl, sp+$00
     ld a, [hl]
-    ld [$c92a], a
+    ld [_TEXT_BKG_FILL], a
     jp Jump_001_5e76
 
 
@@ -5784,7 +5790,7 @@ jr_001_5d6b:
     ld a, $01
 
 jr_001_5d6d:
-    ld [$ca38], a
+    ld [_VWF_DIRECTION], a
     jp Jump_001_5e76
 
 
@@ -5864,7 +5870,7 @@ jr_001_5ddf:
     or a
     jp z, Jump_001_5e76
 
-    call Call_001_57cb
+    call _ui_print_reset
     jp Jump_001_5e76
 
 
@@ -5888,7 +5894,7 @@ Jump_001_5dec:
     or a
     jr z, jr_001_5e76
 
-    call Call_001_57cb
+    call _ui_print_reset
     jr jr_001_5e76
 
 Jump_001_5e0e:
@@ -5908,7 +5914,7 @@ jr_001_5e16:
     ld a, [bc]
     push af
     inc sp
-    call Call_001_582b
+    call _ui_print_render
     inc sp
     ld a, e
     or a
@@ -5924,7 +5930,7 @@ jr_001_5e16:
     push bc
     call Call_000_022e
     add sp, $03
-    ld a, [$ca38]
+    ld a, [_VWF_DIRECTION]
     or a
     jr nz, jr_001_5e48
 
@@ -6048,7 +6054,7 @@ jr_001_5e9b:
     push hl
     push bc
     push de
-    call Call_000_1323
+    call _MemcpyBanked
     add sp, $07
     ld hl, sp+$08
     ld a, [hl+]
@@ -6157,7 +6163,7 @@ jr_001_5e9b:
 
 Jump_001_5f58:
     call Call_000_16dd
-    call Call_000_24e0
+    call _ui_update
     ld c, $c0
     ldh a, [$92]
     sub c
@@ -6172,31 +6178,31 @@ jr_001_5f6c:
     ld [hl], $c0
 
 jr_001_5f71:
-    ld hl, $c50e
+    ld hl, _allocated_hardware_sprites
     ld [hl], $00
-    call Call_000_13f1
+    call _camera_update
     ld e, $05
-    ld hl, $40ca
+    ld hl, _scroll_update
     call RST_08
-    call Call_000_0e73
+    call _actors_update
     call Call_000_2000
     ld a, $28
     push af
     inc sp
-    ld a, [$c50e]
+    ld a, [_allocated_hardware_sprites]
     push af
     inc sp
-    call Call_000_0ce4
+    call _hide_sprites_range
     pop hl
-    ld a, [$da35]
+    ld a, [___render_shadow_OAM]
     ldh [$92], a
-    ld hl, $da1f
+    ld hl, _GAME_TIME
     inc [hl]
-    call Call_000_0e35
-    ld a, [$c61b]
+    call _wait_vbl_done
+    ld a, [_FRAME_JOY]
     ld hl, sp+$18
     ld [hl], a
-    ld a, [$c61c]
+    ld a, [_LAST_JOY]
     ld hl, sp+$19
     ld [hl], a
     push hl
@@ -6417,7 +6423,7 @@ jr_001_606a:
     push hl
     push bc
     push de
-    call Call_000_1323
+    call _MemcpyBanked
     add sp, $07
     ld hl, sp+$0a
     ld a, [hl+]
@@ -6464,13 +6470,13 @@ Jump_001_60eb:
     or [hl]
     jr z, jr_001_6107
 
-    ld a, [$c91c]
-    ld hl, $c91d
+    ld a, [_WIN_POS_X]
+    ld hl, _WIN_DEST_POS_X
     sub [hl]
     jr nz, jr_001_6105
 
-    ld a, [$c91e]
-    ld hl, $c91f
+    ld a, [_WIN_POS_Y]
+    ld hl, _WIN_DEST_POS_Y
     sub [hl]
     jr z, jr_001_6107
 
@@ -6488,10 +6494,10 @@ jr_001_6107:
     ld b, $01
 
 jr_001_6113:
-    ld a, [$c61b]
+    ld a, [_FRAME_JOY]
     ld hl, sp+$02
     ld [hl], a
-    ld hl, $c61c
+    ld hl, _LAST_JOY
     ld a, [hl]
     bit 2, c
     jr z, jr_001_612f
@@ -6528,11 +6534,11 @@ jr_001_6141:
     bit 4, c
     jr z, jr_001_6153
 
-    ld a, [$c61b]
+    ld a, [_FRAME_JOY]
     or a
     jr z, jr_001_6151
 
-    ld a, [$c61c]
+    ld a, [_LAST_JOY]
     or a
     jr z, jr_001_6153
 
@@ -6545,7 +6551,7 @@ jr_001_6153:
     jr z, jr_001_61aa
 
     push bc
-    call Call_000_24e0
+    call _ui_update
     pop bc
     ld e, $c0
     ldh a, [$92]
@@ -6561,29 +6567,29 @@ jr_001_616a:
     ld [hl], $c0
 
 jr_001_616f:
-    ld hl, $c50e
+    ld hl, _allocated_hardware_sprites
     ld [hl], $00
     push bc
-    call Call_000_13f1
+    call _camera_update
     ld e, $05
     ld hl, $40ca
     call RST_08
-    call Call_000_0e73
+    call _actors_update
     call Call_000_2000
     pop bc
     ld a, $28
     push af
     inc sp
-    ld a, [$c50e]
+    ld a, [_allocated_hardware_sprites]
     push af
     inc sp
-    call Call_000_0ce4
+    call _hide_sprites_range
     pop hl
     ld a, [$da35]
     ldh [$92], a
     ld hl, $da1f
     inc [hl]
-    call Call_000_0e35
+    call _wait_vbl_done
     push bc
     call Call_000_16dd
     pop bc

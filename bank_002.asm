@@ -50,7 +50,7 @@ SECTION "ROM Bank $002", ROMX[$4000], BANK[$2]
     jr jr_002_4046
 
 jr_002_4042:
-    ld hl, $cb98
+    ld hl, _SCRIPT_MEMORY
     add hl, bc
 
 jr_002_4046:
@@ -60,7 +60,7 @@ jr_002_4046:
     ld [hl+], a
     ld a, c
     ld [hl-], a
-    ld bc, $c0b9
+    ld bc, _ACTORS
     ld a, [hl+]
     ld e, a
     ld d, [hl]
@@ -207,7 +207,7 @@ jr_002_4046:
     ld d, [hl]
     push de
     ld e, $01
-    ld hl, $4634
+    ld hl, _actor_set_anim_moving
     call RST_08
     pop hl
     ld hl, sp+$08
@@ -2063,7 +2063,7 @@ jr_002_499a:
     jr jr_002_49bd
 
 jr_002_49b9:
-    ld hl, $cb98
+    ld hl, _SCRIPT_MEMORY
     add hl, bc
 
 jr_002_49bd:
@@ -2081,7 +2081,7 @@ jr_002_49bd:
     add hl, bc
     add hl, hl
     add hl, hl
-    ld de, $c0b9
+    ld de, _ACTORS
     add hl, de
     set 6, [hl]
     ret
@@ -2109,13 +2109,13 @@ jr_002_49bd:
     jr jr_002_49f3
 
 jr_002_49ef:
-    ld hl, $cb98
+    ld hl, _SCRIPT_MEMORY
     add hl, bc
 
 jr_002_49f3:
     ld e, l
     ld d, h
-    ld bc, $c0b9
+    ld bc, _ACTORS
     ld a, [de]
     ld e, a
     ld d, $00
@@ -2180,13 +2180,13 @@ jr_002_4a16:
     jr jr_002_4a45
 
 jr_002_4a41:
-    ld hl, $cb98
+    ld hl, _SCRIPT_MEMORY
     add hl, bc
 
 jr_002_4a45:
     ld e, l
     ld d, h
-    ld bc, $c0b9
+    ld bc, _ACTORS
     ld a, [de]
     ld e, a
     ld d, $00
@@ -2250,7 +2250,7 @@ jr_002_4a67:
     jr jr_002_4a96
 
 jr_002_4a92:
-    ld hl, $cb98
+    ld hl, _SCRIPT_MEMORY
     add hl, bc
 
 jr_002_4a96:
@@ -2268,7 +2268,7 @@ jr_002_4a96:
     add hl, bc
     add hl, hl
     add hl, hl
-    ld de, $c0b9
+    ld de, _ACTORS
     add hl, de
     ld bc, $002b
     add hl, bc
@@ -2307,7 +2307,7 @@ jr_002_4a96:
     jr jr_002_4add
 
 jr_002_4ad9:
-    ld hl, $cb98
+    ld hl, _SCRIPT_MEMORY
     add hl, bc
 
 jr_002_4add:
@@ -2325,7 +2325,7 @@ jr_002_4add:
     add hl, bc
     add hl, hl
     add hl, hl
-    ld de, $c0b9
+    ld de, _ACTORS
     add hl, de
     ld c, l
     ld b, h
@@ -2375,7 +2375,7 @@ jr_002_4add:
     jr jr_002_4b30
 
 jr_002_4b2c:
-    ld hl, $cb98
+    ld hl, _SCRIPT_MEMORY
     add hl, bc
 
 jr_002_4b30:
@@ -2405,7 +2405,7 @@ jr_002_4b30:
     jr jr_002_4b53
 
 jr_002_4b4e:
-    ld hl, $cb98
+    ld hl, _SCRIPT_MEMORY
     add hl, bc
     ld c, l
 
@@ -2428,7 +2428,7 @@ jr_002_4b53:
     add hl, de
     add hl, hl
     add hl, hl
-    ld de, $c0b9
+    ld de, _ACTORS
     add hl, de
     ld e, l
     ld d, h
@@ -2454,7 +2454,7 @@ jr_002_4b53:
     inc sp
     push de
     ld e, $01
-    ld hl, $4562
+    ld hl, _actor_set_frames
     call RST_08
     add sp, $08
     ret
@@ -2483,7 +2483,7 @@ jr_002_4b53:
     jr jr_002_4bb5
 
 jr_002_4bb1:
-    ld hl, $cb98
+    ld hl, _SCRIPT_MEMORY
     add hl, bc
 
 jr_002_4bb5:
@@ -2492,7 +2492,7 @@ jr_002_4bb5:
     ld hl, sp+$00
     ld [hl+], a
     ld [hl], c
-    ld bc, $c0b9
+    ld bc, _ACTORS
     pop de
     push de
     ld a, [de]
@@ -2586,7 +2586,7 @@ jr_002_4bb5:
     jr jr_002_4c2f
 
 jr_002_4c2b:
-    ld hl, $cb98
+    ld hl, _SCRIPT_MEMORY
     add hl, bc
 
 jr_002_4c2f:
@@ -2595,7 +2595,7 @@ jr_002_4c2f:
     ld hl, sp+$00
     ld [hl+], a
     ld [hl], c
-    ld bc, $c0b9
+    ld bc, _ACTORS
     pop de
     push de
     ld a, [de]
@@ -2691,13 +2691,13 @@ jr_002_4c2f:
     jr jr_002_4ca6
 
 jr_002_4ca2:
-    ld hl, $cb98
+    ld hl, _SCRIPT_MEMORY
     add hl, bc
 
 jr_002_4ca6:
     ld e, l
     ld d, h
-    ld bc, $c0b9
+    ld bc, _ACTORS
     ld a, [de]
     ld e, a
     ld d, $00
@@ -2739,7 +2739,7 @@ jr_002_4ca6:
     jr jr_002_4cdf
 
 jr_002_4cd9:
-    ld hl, $cb98
+    ld hl, _SCRIPT_MEMORY
     add hl, bc
     ld c, l
     ld b, h
@@ -2796,13 +2796,13 @@ jr_002_4cdf:
     jr jr_002_4d20
 
 jr_002_4d1c:
-    ld hl, $cb98
+    ld hl, _SCRIPT_MEMORY
     add hl, bc
 
 jr_002_4d20:
     ld e, l
     ld d, h
-    ld bc, $c0b9
+    ld bc, _ACTORS
     ld a, [de]
     ld e, a
     ld d, $00
@@ -2844,7 +2844,7 @@ jr_002_4d20:
     jr jr_002_4d59
 
 jr_002_4d53:
-    ld hl, $cb98
+    ld hl, _SCRIPT_MEMORY
     add hl, bc
     ld c, l
     ld b, h
@@ -2929,7 +2929,7 @@ jr_002_4d59:
     jr jr_002_4dca
 
 jr_002_4dbf:
-    ld de, $cb98
+    ld de, _SCRIPT_MEMORY
     ld hl, sp+$02
     ld a, [hl+]
     ld h, [hl]
@@ -2962,7 +2962,7 @@ jr_002_4dca:
     add hl, de
     add hl, hl
     add hl, hl
-    ld de, $c0b9
+    ld de, _ACTORS
     add hl, de
     ld e, l
     ld d, h
@@ -3049,7 +3049,7 @@ jr_002_4e38:
     jr jr_002_4e5b
 
 jr_002_4e57:
-    ld hl, $cb98
+    ld hl, _SCRIPT_MEMORY
     add hl, bc
 
 jr_002_4e5b:
@@ -3067,7 +3067,7 @@ jr_002_4e5b:
     add hl, bc
     add hl, hl
     add hl, hl
-    ld de, $c0b9
+    ld de, _ACTORS
     add hl, de
     ld c, l
     ld b, h
@@ -3126,7 +3126,7 @@ jr_002_4e5b:
     jr jr_002_4ebb
 
 jr_002_4eb7:
-    ld hl, $cb98
+    ld hl, _SCRIPT_MEMORY
     add hl, bc
 
 jr_002_4ebb:
@@ -3144,7 +3144,7 @@ jr_002_4ebb:
     add hl, bc
     add hl, hl
     add hl, hl
-    ld de, $c0b9
+    ld de, _ACTORS
     add hl, de
     ld c, l
     ld b, h
@@ -3249,7 +3249,7 @@ jr_002_4ebb:
     inc sp
     push bc
     ld e, $01
-    ld hl, $4562
+    ld hl, _actor_set_frames
     call RST_08
     add sp, $06
     ret
@@ -3279,13 +3279,13 @@ jr_002_4ebb:
     jr jr_002_4f8a
 
 jr_002_4f86:
-    ld hl, $cb98
+    ld hl, _SCRIPT_MEMORY
     add hl, bc
 
 jr_002_4f8a:
     ld e, l
     ld d, h
-    ld bc, $c0b9
+    ld bc, _ACTORS
     ld a, [de]
     ld e, a
     ld d, $00
@@ -3340,7 +3340,7 @@ jr_002_4f8a:
     inc sp
     push af
     inc sp
-    call Call_000_128c
+    call _SetBankedSpriteData
     add sp, $07
     ret
 
@@ -3367,7 +3367,7 @@ jr_002_4f8a:
     jr jr_002_4ff2
 
 jr_002_4fee:
-    ld hl, $cb98
+    ld hl, _SCRIPT_MEMORY
     add hl, bc
 
 jr_002_4ff2:
@@ -3385,7 +3385,7 @@ jr_002_4ff2:
     add hl, bc
     add hl, hl
     add hl, hl
-    ld de, $c0b9
+    ld de, _ACTORS
     add hl, de
     ld bc, $000e
     add hl, bc
@@ -3419,7 +3419,7 @@ jr_002_4ff2:
     jr jr_002_5030
 
 jr_002_502c:
-    ld hl, $cb98
+    ld hl, _SCRIPT_MEMORY
     add hl, bc
 
 jr_002_5030:
@@ -3437,7 +3437,7 @@ jr_002_5030:
     add hl, bc
     add hl, hl
     add hl, hl
-    ld de, $c0b9
+    ld de, _ACTORS
     add hl, de
     ld bc, $000f
     add hl, bc
@@ -3471,7 +3471,7 @@ jr_002_5030:
     jr jr_002_506e
 
 jr_002_506a:
-    ld hl, $cb98
+    ld hl, _SCRIPT_MEMORY
     add hl, bc
 
 jr_002_506e:
@@ -3489,7 +3489,7 @@ jr_002_506e:
     add hl, de
     add hl, hl
     add hl, hl
-    ld de, $c0b9
+    ld de, _ACTORS
     add hl, de
     inc bc
     inc bc
@@ -3526,7 +3526,7 @@ jr_002_506e:
     jr jr_002_50b2
 
 jr_002_50ae:
-    ld hl, $cb98
+    ld hl, _SCRIPT_MEMORY
     add hl, bc
 
 jr_002_50b2:
@@ -3544,7 +3544,7 @@ jr_002_50b2:
     add hl, de
     add hl, hl
     add hl, hl
-    ld de, $c0b9
+    ld de, _ACTORS
     add hl, de
     inc bc
     inc bc
@@ -3587,7 +3587,7 @@ jr_002_50b2:
     jr jr_002_50fd
 
 jr_002_50f9:
-    ld hl, $cb98
+    ld hl, _SCRIPT_MEMORY
     add hl, bc
 
 jr_002_50fd:
@@ -3605,7 +3605,7 @@ jr_002_50fd:
     add hl, bc
     add hl, hl
     add hl, hl
-    ld de, $c0b9
+    ld de, _ACTORS
     add hl, de
     ld c, l
     ld b, h
@@ -3667,7 +3667,7 @@ jr_002_50fd:
     inc sp
     push bc
     ld e, $01
-    ld hl, $4562
+    ld hl, _actor_set_frames
     call RST_08
     add sp, $07
     ret
@@ -3704,13 +3704,13 @@ jr_002_50fd:
     jr jr_002_5192
 
 jr_002_518e:
-    ld hl, $cb98
+    ld hl, _SCRIPT_MEMORY
     add hl, bc
 
 jr_002_5192:
     ld e, l
     ld d, h
-    ld bc, $c0b9
+    ld bc, _ACTORS
     ld a, [de]
     ld e, a
     ld d, $00
@@ -3750,7 +3750,7 @@ jr_002_5192:
     jr jr_002_51c7
 
 jr_002_51c3:
-    ld hl, $cb98
+    ld hl, _SCRIPT_MEMORY
     add hl, bc
 
 jr_002_51c7:
@@ -3877,7 +3877,7 @@ jr_002_51c7:
     ld d, [hl]
     push de
     ld e, $01
-    ld hl, $4562
+    ld hl, _actor_set_frames
     call RST_08
     add sp, $09
     ret
@@ -3907,7 +3907,7 @@ jr_002_51c7:
     jr jr_002_5298
 
 jr_002_5294:
-    ld hl, $cb98
+    ld hl, _SCRIPT_MEMORY
     add hl, bc
 
 jr_002_5298:
@@ -4527,7 +4527,7 @@ jr_002_5507:
     jr jr_002_555a
 
 jr_002_5552:
-    ld hl, $cb98
+    ld hl, _SCRIPT_MEMORY
     add hl, bc
     ld e, l
     ld d, h
@@ -4764,7 +4764,7 @@ jr_002_5623:
     jr jr_002_566b
 
 jr_002_5665:
-    ld hl, $cb98
+    ld hl, _SCRIPT_MEMORY
     add hl, bc
     ld a, h
     ld c, l
@@ -5006,7 +5006,7 @@ jr_002_574f:
     jr jr_002_578c
 
 jr_002_5786:
-    ld de, $cb98
+    ld de, _SCRIPT_MEMORY
     pop hl
     push hl
     add hl, de
@@ -5063,7 +5063,7 @@ jr_002_57a8:
     jr jr_002_57cb
 
 jr_002_57c7:
-    ld hl, $cb98
+    ld hl, _SCRIPT_MEMORY
     add hl, bc
 
 jr_002_57cb:
@@ -5129,7 +5129,7 @@ jr_002_57cb:
     jr jr_002_5828
 
 jr_002_581b:
-    ld hl, $cb98
+    ld hl, _SCRIPT_MEMORY
     add hl, bc
     ld e, l
     ld d, h
@@ -5166,7 +5166,7 @@ jr_002_5828:
     jr jr_002_584c
 
 jr_002_5845:
-    ld hl, $cb98
+    ld hl, _SCRIPT_MEMORY
     add hl, bc
     ld a, [hl+]
     ld c, a
@@ -5414,7 +5414,7 @@ jr_002_5919:
     jr jr_002_5960
 
 jr_002_5959:
-    ld hl, $cb98
+    ld hl, _SCRIPT_MEMORY
     add hl, bc
     ld a, [hl+]
     ld c, a
@@ -5652,7 +5652,7 @@ jr_002_5a2d:
     jr jr_002_5a64
 
 jr_002_5a5e:
-    ld hl, $cb98
+    ld hl, _SCRIPT_MEMORY
     add hl, bc
     ld c, l
     ld b, h
@@ -5726,7 +5726,7 @@ jr_002_5a64:
     jr jr_002_5ab7
 
 jr_002_5ab1:
-    ld hl, $cb98
+    ld hl, _SCRIPT_MEMORY
     add hl, bc
     ld c, l
     ld b, h
@@ -5756,7 +5756,7 @@ jr_002_5ab7:
     jr jr_002_5ad9
 
 jr_002_5ad3:
-    ld hl, $cb98
+    ld hl, _SCRIPT_MEMORY
     add hl, bc
     ld c, l
     ld b, h
@@ -5948,7 +5948,7 @@ jr_002_5b5a:
     jr jr_002_5bb3
 
 jr_002_5ba8:
-    ld hl, $cb98
+    ld hl, _SCRIPT_MEMORY
     add hl, bc
     ld c, l
     ld a, h
@@ -5978,7 +5978,7 @@ jr_002_5bb3:
     jr jr_002_5bce
 
 jr_002_5bca:
-    ld hl, $cb98
+    ld hl, _SCRIPT_MEMORY
     add hl, bc
 
 jr_002_5bce:
@@ -6020,7 +6020,7 @@ jr_002_5bce:
     jr jr_002_5c00
 
 jr_002_5bfa:
-    ld hl, $cb98
+    ld hl, _SCRIPT_MEMORY
     add hl, bc
     ld c, l
     ld b, h
@@ -6085,7 +6085,7 @@ jr_002_5c00:
     jr jr_002_5c54
 
 jr_002_5c49:
-    ld hl, $cb98
+    ld hl, _SCRIPT_MEMORY
     add hl, bc
     ld e, l
     ld d, h
@@ -6159,7 +6159,7 @@ jr_002_5c87:
     rrca
     jr nc, jr_002_5c9e
 
-    call Call_000_0e35
+    call _wait_vbl_done
 
 jr_002_5c9e:
     ld b, b
@@ -6200,7 +6200,7 @@ jr_002_5c9e:
     jr jr_002_5cd0
 
 jr_002_5cca:
-    ld hl, $cb98
+    ld hl, _SCRIPT_MEMORY
     add hl, bc
     ld c, l
     ld b, h
@@ -6245,7 +6245,7 @@ jr_002_5cd0:
     jr jr_002_5d03
 
 jr_002_5cfd:
-    ld hl, $cb98
+    ld hl, _SCRIPT_MEMORY
     add hl, bc
     ld c, l
     ld b, h
@@ -6298,7 +6298,7 @@ jr_002_5d03:
     jr jr_002_5d43
 
 jr_002_5d38:
-    ld hl, $cb98
+    ld hl, _SCRIPT_MEMORY
     add hl, bc
     ld c, l
     ld a, h
@@ -6351,7 +6351,7 @@ jr_002_5d43:
     jr jr_002_5d79
 
 jr_002_5d73:
-    ld hl, $cb98
+    ld hl, _SCRIPT_MEMORY
     add hl, bc
     ld c, l
     ld b, h
@@ -6390,7 +6390,7 @@ jr_002_5d79:
     jr jr_002_5da5
 
 jr_002_5d9f:
-    ld hl, $cb98
+    ld hl, _SCRIPT_MEMORY
     add hl, bc
     ld c, l
     ld b, h
@@ -6431,7 +6431,7 @@ jr_002_5da5:
     jr jr_002_5dd3
 
 jr_002_5dcd:
-    ld hl, $cb98
+    ld hl, _SCRIPT_MEMORY
     add hl, bc
     ld c, l
     ld b, h
@@ -6506,7 +6506,7 @@ jr_002_5dd3:
     jr jr_002_5e23
 
 jr_002_5e1e:
-    ld hl, $cb98
+    ld hl, _SCRIPT_MEMORY
     add hl, bc
     ld c, l
 
@@ -6516,13 +6516,13 @@ jr_002_5e23:
     ld c, a
     ld b, [hl]
     push bc
-    call Call_000_34af
+    call _initrand
     pop hl
     ret
 
 
     add sp, -$04
-    call Call_000_3484
+    call _randw
     ld a, e
     ld hl, sp+$12
     and [hl]
@@ -6614,7 +6614,7 @@ jr_002_5e65:
     jr jr_002_5ea2
 
 jr_002_5e9a:
-    ld de, $cb98
+    ld de, _SCRIPT_MEMORY
     pop hl
     push hl
     add hl, de
@@ -6752,7 +6752,7 @@ jr_002_5ea2:
     jr jr_002_5f40
 
 jr_002_5f3c:
-    ld hl, $cb98
+    ld hl, _SCRIPT_MEMORY
     add hl, bc
 
 jr_002_5f40:
@@ -6782,7 +6782,7 @@ jr_002_5f40:
     jr jr_002_5f68
 
 jr_002_5f5d:
-    ld hl, $cb98
+    ld hl, _SCRIPT_MEMORY
     add hl, bc
     ld c, l
     ld a, h
@@ -6812,7 +6812,7 @@ jr_002_5f68:
     jr jr_002_5f83
 
 jr_002_5f7f:
-    ld hl, $cb98
+    ld hl, _SCRIPT_MEMORY
     add hl, bc
 
 jr_002_5f83:
@@ -6867,7 +6867,7 @@ jr_002_5f83:
     jr jr_002_5fc9
 
 jr_002_5fbe:
-    ld hl, $cb98
+    ld hl, _SCRIPT_MEMORY
     add hl, bc
     ld c, l
     ld a, h
@@ -6897,7 +6897,7 @@ jr_002_5fc9:
     jr jr_002_5fe4
 
 jr_002_5fe0:
-    ld hl, $cb98
+    ld hl, _SCRIPT_MEMORY
     add hl, bc
 
 jr_002_5fe4:
@@ -6921,7 +6921,7 @@ jr_002_5fe4:
     jr jr_002_5ffe
 
 jr_002_5ffa:
-    ld hl, $cb98
+    ld hl, _SCRIPT_MEMORY
     add hl, bc
 
 jr_002_5ffe:
@@ -6961,7 +6961,7 @@ jr_002_5ffe:
     jr jr_002_602c
 
 jr_002_6028:
-    ld hl, $cb98
+    ld hl, _SCRIPT_MEMORY
     add hl, bc
 
 jr_002_602c:
@@ -7011,7 +7011,7 @@ jr_002_602c:
     jr jr_002_606e
 
 jr_002_606a:
-    ld hl, $cb98
+    ld hl, _SCRIPT_MEMORY
     add hl, bc
 
 jr_002_606e:
@@ -7026,7 +7026,7 @@ jr_002_606e:
     ld d, [hl]
     push de
     push bc
-    call Call_000_37b0
+    call _memset2
     add sp, $08
     ret
 
@@ -7082,7 +7082,7 @@ jr_002_606e:
     jr jr_002_60ca
 
 jr_002_60c4:
-    ld hl, $cb98
+    ld hl, _SCRIPT_MEMORY
     add hl, bc
     ld a, h
     ld c, l
@@ -7115,7 +7115,7 @@ jr_002_60ca:
     jr jr_002_60ef
 
 jr_002_60ea:
-    ld hl, $cb98
+    ld hl, _SCRIPT_MEMORY
     add hl, bc
     ld c, l
 
@@ -7130,11 +7130,11 @@ jr_002_60ef:
     ld d, [hl]
     push de
     push bc
-    call Call_000_376d
+    call _memset1
     add sp, $0c
     ret
 
-
+_func_bank002_6100:
     add sp, -$05
     ld hl, sp+$0b
     ld a, [hl]
@@ -7145,9 +7145,9 @@ jr_002_60ef:
     push de
     ld de, $0000
     push de
-    ld de, $cb98
+    ld de, _SCRIPT_MEMORY
     push de
-    call Call_000_37b0
+    call _memset2
     add sp, $06
     ld de, $0130
     push de
@@ -7155,7 +7155,7 @@ jr_002_60ef:
     push de
     ld de, $ca58
     push de
-    call Call_000_37b0
+    call _memset2
     add sp, $06
 
 jr_002_612a:
@@ -7263,7 +7263,7 @@ jr_002_619d:
     add sp, $05
     ret
 
-
+_func_bank002_61bc:
     add sp, -$09
     ld hl, $cb8b
     ld a, [hl-]
@@ -7673,31 +7673,31 @@ jr_002_63a1:
     ld e, $00
     ret
 
-
+    ; bank 2 0x63a4
     db $25, $12, $04, $1a, $00, $63, $b3, $00, $04, $00, $00, $02, $09, $64, $4a, $40
     db $00
-    
+
     db "I'm trying to get\n"
     db "some water out of\n"
     db "the well"
-    
+
     db $00, $47, $03, $01, $05, $14, $00, $00, $45, $ff, $0d, $00, $41, $ff, $00, $44
     db $07, $01, $40, $00
-    
+
     db "to wake up JT..."
-    
+
     db $00, $47, $03, $01, $05, $14, $00, $00, $41, $ff, $00, $44, $07, $01, $40, $00
-    
+
     db "but there's no\n"
     db "bucket to hold it"
-    
+
     db $00, $47, $03, $01, $05, $14, $00, $00, $41, $ff, $00, $44, $07, $01, $45, $fe
     db $12, $00, $44, $03, $01, $1a, $00, $64, $56, $00, $04, $00, $00, $01, $09, $65
     db $bf, $40, $00
-    
+
     db "That vase will\n"
     db "work in the well!"
-    
+
     db $00, $47, $03, $01, $04, $14, $00, $00, $45, $ff, $0e, $00, $41, $ff, $00, $44
     db $07, $01, $45, $fe, $12, $00, $44, $03, $01, $14, $00, $1e, $ff, $fc, $0d, $ff
     db $fc, $00, $55, $af, $02, $40, $00
@@ -7719,15 +7719,15 @@ jr_002_63a1:
 
     db $00, $47, $03, $01, $04, $14, $00, $00, $45, $ff, $0e, $00, $41, $ff, $00, $44
     db $07, $01, $40, $00
-    
+
     db "This frog has a\n"
     db "world-wide fanbase,"
-    
+
     db $00, $47, $03, $01, $04, $14, $00, $00, $41, $ff, $00, $44, $07, $01, $40, $00
-    
+
     db "as well as being\n"
     db "quite tasty..."
-    
+
     db $00, $47, $03, $01, $04, $14, $00, $00, $41, $ff, $00, $44, $07, $01, $45, $fe
     db $12, $00, $44, $03, $01, $14, $00, $04, $ff, $fc, $14, $00, $00, $ff, $fd, $14
     db $04, $80, $ff, $fe, $14, $00, $01, $ff, $ff, $30, $ff, $fc, $14, $00, $04, $ff
@@ -7902,7 +7902,7 @@ jr_002_6edc:
     dec a
     jr nz, jr_002_6edc
 
-    ld bc, $c0b9
+    ld bc, _ACTORS
     ld hl, $0005
     add hl, bc
     ld a, [hl]
@@ -8001,7 +8001,7 @@ jr_002_6ef8:
     push af
     inc sp
     push de
-    call Call_000_1307
+    call _ReadBankedUWORD
     add sp, $03
     jr jr_002_6f8d
 
@@ -8129,10 +8129,10 @@ jr_002_6f8d:
     inc sp
     push hl
     inc sp
-    ld de, $c0b9
+    ld de, _ACTORS
     push de
     ld e, $01
-    ld hl, $4562
+    ld hl, _actor_set_frames
     call RST_08
     add sp, $04
     pop bc
@@ -8151,7 +8151,7 @@ jr_002_6f8d:
 Jump_002_704f:
     ld hl, $d99f
     ld [hl], $00
-    ld de, $c0b9
+    ld de, _ACTORS
     push de
     ld e, $01
     ld hl, $4606
@@ -8199,7 +8199,7 @@ jr_002_7061:
     ld a, c
     ld [hl+], a
     ld [hl], $00
-    ld a, [$c61b]
+    ld a, [_FRAME_JOY]
     ld hl, sp+$12
     ld [hl], a
     ld a, [$c52f]
@@ -8373,7 +8373,7 @@ jr_002_7061:
     push af
     inc sp
     push bc
-    call Call_000_1307
+    call _ReadBankedUWORD
     add sp, $03
     jr jr_002_71b2
 
@@ -8478,7 +8478,7 @@ Jump_002_71ca:
     push af
     inc sp
     push bc
-    call Call_000_1307
+    call _ReadBankedUWORD
     add sp, $03
     jr jr_002_7246
 
@@ -8604,7 +8604,7 @@ jr_002_72ab:
     push af
     inc sp
     push de
-    call Call_000_1307
+    call _ReadBankedUWORD
     add sp, $03
     jr jr_002_7305
 
@@ -8733,7 +8733,7 @@ jr_002_7367:
     push af
     inc sp
     push de
-    call Call_000_1307
+    call _ReadBankedUWORD
     add sp, $03
     jr jr_002_73c0
 
@@ -9419,7 +9419,7 @@ jr_002_7697:
     push af
     inc sp
     push bc
-    call Call_000_1307
+    call _ReadBankedUWORD
     add sp, $03
     jr jr_002_773f
 
@@ -9583,7 +9583,7 @@ Jump_002_7781:
     push af
     inc sp
     push bc
-    call Call_000_1307
+    call _ReadBankedUWORD
     add sp, $03
     jr jr_002_782a
 
@@ -9641,7 +9641,7 @@ jr_002_782a:
 
 Jump_002_7868:
 jr_002_7868:
-    ld a, [$c61b]
+    ld a, [_FRAME_JOY]
     bit 4, a
     jr z, jr_002_788a
 
@@ -9903,7 +9903,7 @@ Jump_002_798b:
     push af
     inc sp
     push de
-    call Call_000_1307
+    call _ReadBankedUWORD
     add sp, $03
     jr jr_002_79e6
 
@@ -10181,7 +10181,7 @@ Jump_002_7ace:
     ld h, [hl]
     ld l, a
     push hl
-    call Call_000_1307
+    call _ReadBankedUWORD
     add sp, $03
     ld l, e
     pop de
@@ -10461,7 +10461,7 @@ Jump_002_7c74:
     push af
     inc sp
     push de
-    call Call_000_1307
+    call _ReadBankedUWORD
     add sp, $03
     ld a, e
     jr jr_002_7cc7
@@ -10635,7 +10635,7 @@ Jump_002_7d5b:
     push af
     inc sp
     push de
-    call Call_000_1307
+    call _ReadBankedUWORD
     add sp, $03
     jr jr_002_7dad
 
@@ -10744,13 +10744,13 @@ jr_002_7e18:
     ld [hl], b
 
 Jump_002_7e1d:
-    ld a, [$c61b]
+    ld a, [_FRAME_JOY]
     rrca
     rrca
     and $01
     jr z, jr_002_7e2f
 
-    ld a, [$c61c]
+    ld a, [_LAST_JOY]
     rrca
     rrca
     and $01
@@ -10804,7 +10804,7 @@ jr_002_7e34:
     jr jr_002_7ed6
 
 jr_002_7e71:
-    ld a, [$c61b]
+    ld a, [_FRAME_JOY]
     ld h, $00
     push af
     and $10
@@ -10818,7 +10818,7 @@ jr_002_7e71:
     or l
     jr z, jr_002_7ed6
 
-    ld a, [$c61c]
+    ld a, [_LAST_JOY]
     ld l, $00
     and c
     ld c, a
@@ -10877,7 +10877,7 @@ jr_002_7ea1:
     ld [hl], $00
 
 jr_002_7ed6:
-    ld hl, $c61b
+    ld hl, _FRAME_JOY
     ld e, [hl]
     ld d, $00
     ld a, e
@@ -10892,7 +10892,7 @@ jr_002_7ed6:
     or e
     jr z, jr_002_7f17
 
-    ld a, [$c61c]
+    ld a, [_LAST_JOY]
     ld e, $00
     and c
     ld c, a
@@ -10936,10 +10936,10 @@ jr_002_7f17:
     inc sp
     push bc
     inc sp
-    ld de, $c0b9
+    ld de, _ACTORS
     push de
     ld e, $01
-    ld hl, $4562
+    ld hl, _actor_set_frames
     call RST_08
     add sp, $04
     ld hl, $d9a3
@@ -10967,10 +10967,10 @@ jr_002_7f53:
 
     ld hl, $0103
     push hl
-    ld de, $c0b9
+    ld de, _ACTORS
     push de
     ld e, $01
-    ld hl, $4665
+    ld hl, _actor_set_dir
     call RST_08
     add sp, $04
     jp Jump_002_7ffd
@@ -11005,19 +11005,19 @@ jr_002_7f91:
 
     ld hl, $0101
     push hl
-    ld de, $c0b9
+    ld de, _ACTORS
     push de
     ld e, $01
-    ld hl, $4665
+    ld hl, _actor_set_dir
     call RST_08
     add sp, $04
     jr jr_002_7ffd
 
 jr_002_7fa7:
-    ld de, $c0b9
+    ld de, _ACTORS
     push de
     ld e, $01
-    ld hl, $4606
+    ld hl, _actor_set_anim_idle
     call RST_08
     pop hl
     jr jr_002_7ffd
@@ -11037,10 +11037,10 @@ jr_002_7fb6:
     inc sp
     push bc
     inc sp
-    ld de, $c0b9
+    ld de, _ACTORS
     push de
     ld e, $01
-    ld hl, $4562
+    ld hl, _actor_set_frames
     call RST_08
     add sp, $04
     jr jr_002_7ffd
@@ -11056,10 +11056,10 @@ jr_002_7fde:
     inc sp
     push bc
     inc sp
-    ld de, $c0b9
+    ld de, _ACTORS
     push de
     ld e, $01
-    ld hl, $4562
+    ld hl, _actor_set_frames
     call RST_08
     add sp, $04
 
@@ -11067,4 +11067,3 @@ Jump_002_7ffd:
 jr_002_7ffd:
     add sp, $13
     ret
-

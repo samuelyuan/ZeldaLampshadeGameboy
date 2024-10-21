@@ -762,7 +762,7 @@ jr_007_4364:
 jr_007_4366:
     db $20
 
-Call_007_4367:
+_DMGFadeToWhiteStep:
     ld hl, sp+$03
 
 jr_007_4369:
@@ -808,7 +808,7 @@ jr_007_4383:
     ret
 
 
-Call_007_438a:
+_DMGFadeToBlackStep:
     ld hl, sp+$03
     ld a, [hl-]
     ld e, [hl]
@@ -847,7 +847,7 @@ jr_007_439b:
     ret
 
 
-Call_007_43af:
+_ApplyPaletteChangeDMG:
     ld a, $04
     ld hl, sp+$02
     sub [hl]
@@ -856,40 +856,40 @@ Call_007_43af:
     ld [hl], $04
 
 jr_007_43b8:
-    ld a, [$da1e]
+    ld a, [_FADE_STYLE]
     or a
     jr nz, jr_007_43f2
 
-    ld a, [$c648]
+    ld a, [_DMG_palette]
     ld hl, sp+$02
     ld h, [hl]
     push hl
     inc sp
     push af
     inc sp
-    call Call_007_4367
+    call _DMGFadeToWhiteStep
     pop hl
     ld a, e
     ldh [rBGP], a
-    ld a, [$c649]
+    ld a, [_DMG_palette + 1]
     ld hl, sp+$02
     ld h, [hl]
     push hl
     inc sp
     push af
     inc sp
-    call Call_007_4367
+    call _DMGFadeToWhiteStep
     pop hl
     ld a, e
     ldh [rOBP0], a
-    ld a, [$c64a]
+    ld a, [_DMG_palette + 2]
     ld hl, sp+$02
     ld h, [hl]
     push hl
     inc sp
     push af
     inc sp
-    call Call_007_4367
+    call _DMGFadeToWhiteStep
     pop hl
     ld a, e
     ldh [rOBP1], a
@@ -897,126 +897,119 @@ jr_007_43b8:
 
 
 jr_007_43f2:
-    ld a, [$c648]
+    ld a, [_DMG_palette]
     ld hl, sp+$02
     ld h, [hl]
     push hl
     inc sp
     push af
     inc sp
-    call Call_007_438a
+    call _DMGFadeToBlackStep
     pop hl
     ld a, e
     ldh [rBGP], a
-    ld a, [$c649]
+    ld a, [_DMG_palette + 1]
     ld hl, sp+$02
     ld h, [hl]
     push hl
     inc sp
     push af
     inc sp
-    call Call_007_438a
+    call _DMGFadeToBlackStep
     pop hl
     ld a, e
     ldh [rOBP0], a
-    ld a, [$c64a]
+    ld a, [_DMG_palette + 2]
     ld hl, sp+$02
     ld h, [hl]
     push hl
     inc sp
     push af
     inc sp
-    call Call_007_438a
+    call _DMGFadeToBlackStep
     pop hl
     ld a, e
     ldh [rOBP1], a
     ret
 
+_fade_speeds:
+    db $00, $01, $03, $07, $0F, $1F, $3F
 
-    nop
-    db $01
-
-    db $03
-
-    rlca
-    rrca
-    rra
-    ccf
-
+_fade_init:
     ld a, [$4428]
-    ld [$c60d], a
-    ld hl, $c60e
+    ld [_fade_frames_per_step], a
+    ld hl, _fade_timer
     ld [hl], $05
-    ld hl, $c60c
+    ld hl, _fade_running
     ld [hl], $00
     ld a, $05
     push af
     inc sp
-    call Call_007_43af
+    call _ApplyPaletteChangeDMG
     inc sp
     ret
 
-
-    ld a, [$c60e]
+_fade_in:
+    ld a, [_fade_timer]
     or a
     ret z
 
-    ld hl, $c60f
+    ld hl, _fade_timer + 1
     ld [hl], $00
-    ld hl, $c610
+    ld hl, _fade_timer + 2
     ld [hl], $00
-    ld hl, $c60c
+    ld hl, _fade_running
     ld [hl], $01
-    ld hl, $c60e
+    ld hl, _fade_timer
     ld a, $05
     ld [hl], a
     push af
     inc sp
-    call Call_007_43af
+    call _ApplyPaletteChangeDMG
     inc sp
     ret
 
-
-    ld a, [$c60e]
+_fade_out:
+    ld a, [_fade_timer]
     sub $05
     ret z
 
     jr jr_007_446f
 
 jr_007_446f:
-    ld hl, $c60f
+    ld hl, _fade_timer + 1
     ld [hl], $00
-    ld hl, $c610
+    ld hl, _fade_timer + 2
     ld [hl], $01
-    ld hl, $c60c
+    ld hl, _fade_running
     ld [hl], $01
-    ld hl, $c60e
+    ld hl, _fade_timer
     ld [hl], $00
     xor a
     push af
     inc sp
-    call Call_007_43af
+    call _ApplyPaletteChangeDMG
     inc sp
     ret
 
-
-    ld a, [$c60c]
+_fade_update:
+    ld a, [_fade_running]
     or a
     ret z
 
-    ld hl, $c60f
+    ld hl, _fade_timer + 1
     ld c, [hl]
     inc [hl]
     ld a, c
-    ld hl, $c60d
+    ld hl, _fade_frames_per_step
     and [hl]
     ret nz
 
-    ld a, [$c610]
+    ld a, [_fade_timer + 2]
     or a
     jr nz, jr_007_44b6
 
-    ld hl, $c60e
+    ld hl, _fade_timer
     ld a, [hl]
     or a
     jr z, jr_007_44a9
@@ -1024,16 +1017,16 @@ jr_007_446f:
     dec [hl]
 
 jr_007_44a9:
-    ld a, [$c60e]
+    ld a, [_fade_timer]
     or a
     jr nz, jr_007_44cb
 
-    ld hl, $c60c
+    ld hl, _fade_running
     ld [hl], $00
     jr jr_007_44cb
 
 jr_007_44b6:
-    ld hl, $c60e
+    ld hl, _fade_timer
     ld a, [hl]
     sub $05
     jr nc, jr_007_44bf
@@ -1041,30 +1034,30 @@ jr_007_44b6:
     inc [hl]
 
 jr_007_44bf:
-    ld a, [$c60e]
+    ld a, [_fade_timer]
     sub $05
     jr nz, jr_007_44cb
 
-    ld hl, $c60c
+    ld hl, _fade_running
     ld [hl], $00
 
 jr_007_44cb:
-    ld a, [$c60e]
+    ld a, [_fade_timer]
     push af
     inc sp
-    call Call_007_43af
+    call _ApplyPaletteChangeDMG
     inc sp
     ret
 
 
-    ld a, [$c60e]
+    ld a, [_fade_timer]
     push af
     inc sp
-    call Call_007_43af
+    call _ApplyPaletteChangeDMG
     inc sp
     ret
 
-
+_fade_setspeed:
     ld bc, $4426
     ld hl, sp+$06
     ld l, [hl]
@@ -1073,37 +1066,38 @@ jr_007_44cb:
     ld c, l
     ld b, h
     ld a, [bc]
-    ld [$c60d], a
+    ld [_fade_frames_per_step], a
     ret
 
-
+_fade_in_modal:
     ld e, $07
-    ld hl, $4446
+    ld hl, _fade_in
     call RST_08
 
 jr_007_44f7:
-    ld a, [$c60c]
+    ld a, [_fade_running]
     or a
     ret z
 
-    call Call_000_0e35
+    call _wait_vbl_done
     ld e, $07
-    ld hl, $448b
+    ld hl, _fade_update
     call RST_08
     jr jr_007_44f7
 
+_fade_out_modal:
     ld e, $07
-    ld hl, $4467
+    ld hl, _fade_out
     call RST_08
 
 jr_007_4511:
-    ld a, [$c60c]
+    ld a, [_fade_running]
     or a
     ret z
 
-    call Call_000_0e35
+    call _wait_vbl_done
     ld e, $07
-    ld hl, $448b
+    ld hl, _fade_update
     call RST_08
     jr jr_007_4511
 
@@ -1118,7 +1112,7 @@ jr_007_4511:
     ld l, h
     push hl
     push de
-    call Call_000_37b0
+    call _memset2
     add sp, $06
     ld a, $b9
     ld [bc], a
@@ -1234,7 +1228,7 @@ jr_007_45ba:
     ld h, [hl]
     ld l, $00
     push hl
-    call Call_000_3964
+    call _set_bkg_tiles
     add sp, $06
     pop de
     ld hl, sp+$1b
@@ -1249,7 +1243,7 @@ jr_007_45d9:
     ld l, h
     push hl
     push de
-    call Call_000_37b0
+    call _memset2
     add sp, $06
     ld hl, sp+$27
     xor a
@@ -1303,7 +1297,7 @@ jr_007_461b:
     xor a
     rrca
     push af
-    call Call_000_1270
+    call _SetBankedBkgData
     add sp, $05
     pop bc
     ld a, $99
@@ -1356,7 +1350,7 @@ jr_007_4649:
     ld h, a
     ld l, $00
     push hl
-    call Call_000_1270
+    call _SetBankedBkgData
     add sp, $05
     pop bc
     ld a, $99
@@ -1388,7 +1382,7 @@ jr_007_4687:
     ld h, a
     ld l, $00
     push hl
-    call Call_000_1270
+    call _SetBankedBkgData
     add sp, $05
     pop bc
     ld a, $99
@@ -1429,7 +1423,7 @@ jr_007_46b0:
     ld h, a
     ld l, $00
     push hl
-    call Call_000_1270
+    call _SetBankedBkgData
     add sp, $05
     pop bc
     ld hl, sp+$31
@@ -1458,7 +1452,7 @@ jr_007_46b0:
     ld h, a
     ld l, $80
     push hl
-    call Call_000_1270
+    call _SetBankedBkgData
     add sp, $05
     pop bc
     ld a, $a1
@@ -1481,13 +1475,13 @@ jr_007_46b0:
     ld l, h
     push hl
     push de
-    call Call_000_37b0
+    call _memset2
     add sp, $06
     push bc
     xor a
     inc a
     push af
-    call Call_000_35b7
+    call _set_win_data
     add sp, $04
     xor a
     ld h, a
@@ -1960,7 +1954,7 @@ jr_007_490d:
     jr z, jr_007_4997
 
     push bc
-    call Call_000_3484
+    call _randw
     ld a, e
     pop bc
     and $0f
@@ -2008,7 +2002,7 @@ jr_007_4997:
     bit 1, c
     jr z, jr_007_49c8
 
-    call Call_000_3484
+    call _randw
     ld a, e
     and $0f
     ld c, a
@@ -2068,14 +2062,14 @@ jr_007_49e3:
     ; bank 7 0x49e6
     db $25, $12, $04, $1a, $00, $49, $f5, $00, $06, $00, $00, $02, $09, $4a, $61, $40
     db $00
-    
+
     db "I'm going on a\n" ; 0x49f7
     db "jungle mission\n"
     db "soon,"
-    
+
     db $00, $47, $03, $01, $05, $14, $00, $00, $45, $ff, $0d, $00, $41, $ff, $00, $44
     db $07, $01, $40, $00
-    
+
     db "need to practice\n" ; 0x4a2e
     db "my stealth..."
 
@@ -2092,16 +2086,16 @@ jr_007_49e3:
     db $00, $47, $03, $01, $04, $14, $00, $00, $41, $ff, $00, $44, $07, $01, $45, $fe
     db $12, $00, $44, $03, $01, $1a, $00, $4a, $b9, $00, $06, $00, $00, $01, $09, $4b
     db $a3, $40, $00
-    
+
     db "Woohoo! These face\n" ; 0x4abb
     db "paints are cool!"
-    
+
     db $00, $47, $03, $01, $04, $14, $00, $00, $45, $ff, $0e, $00, $41, $ff, $00, $44
     db $07, $01, $40, $00
-    
+
     db "Here, take this.\n" ; 0x4af2
     db "I've got 20."
-    
+
     db $00, $47, $03, $01, $04, $14, $00, $00, $41, $ff, $00, $44, $07, $01, $45, $fe
     db $12, $00, $44, $03, $01, $14, $00, $07, $00, $00, $14, $00, $04, $ff, $fc, $14
     db $00, $07, $ff, $fd, $75, $ff, $fc, $40, $00
@@ -2110,37 +2104,37 @@ jr_007_49e3:
 
     db $00, $47, $03, $01, $05, $14, $00, $00, $45, $ff, $0d, $00, $41, $ff, $00, $44
     db $07, $01, $40, $00
-    
+
     db "Caution: Keep away\n"
     db "from water and\n"
     db "small puppies."
-    
+
     db $00, $47, $03, $01, $05, $14, $00, $00, $41, $ff, $00, $44, $07, $01, $45, $fe
     db $12, $00, $44, $03, $01, $00
-    
+
     ; 0x4ba4
     db $25, $12, $04, $1a, $00, $4b, $b3, $00, $09, $00, $00, $02, $09, $4c, $5f, $40, $00
-    
+
     db "Life as a grave\n"
     db "digger sure is\n"
     db "boring."
-    
+
     db $00, $47, $03, $01, $05, $14, $00, $00, $45, $ff, $0d, $00, $41, $ff, $00, $44
     db $07, $01, $40, $00
-    
+
     db "I miss my handguns\n"
     db "too - the shovel"
-    
+
     db $00, $47, $03, $01, $05, $14, $00, $00, $41, $ff, $00, $44, $07, $01, $40, $00
-    
+
     db "just doesn't cut\n"
     db "it when fighting\n"
     db "demons"
-    
+
     db $00, $47, $03, $01, $05, $14, $00, $00, $41, $ff, $00, $44, $07, $01, $45, $fe
     db $12, $00, $44, $03, $01, $1a, $00, $4c, $6b, $00, $0a, $00, $00, $05, $09, $4c
     db $bf, $40, $00
-    
+
     db "Hey wait..."
 
     db $00, $47, $03, $01, $04, $14, $00, $00, $45, $ff, $0e, $00, $41, $ff, $00, $44
@@ -2152,75 +2146,75 @@ jr_007_49e3:
     db $00, $47, $03, $01, $04, $14, $00, $00, $41, $ff, $00, $44, $07, $01, $45, $fe
     db $12, $00, $44, $03, $01, $1a, $00, $4c, $cb, $00, $09, $00, $00, $01, $09, $4d
     db $eb, $40, $00
-    
+
     db "Thanks for the\n"
     db "handgun!"
-    
+
     db $00, $47, $03, $01, $05, $14, $00, $00, $45, $ff, $0d, $00, $41, $ff, $00, $44
     db $07, $01, $40, $00
-    
+
     db "You can take this\n"
     db "shovel if you\n"
     db "want..."
 
     db $00, $47, $03, $01, $05, $14, $00, $00, $41, $ff, $00, $44, $07, $01, $40, $00
-    
+
     db "It doesn't have a\n"
     db "DT mode though."
-    
+
     db $00, $47, $03, $01, $05, $14, $00, $00, $41, $ff, $00, $44, $07, $01, $45, $fe
     db $12, $00, $44, $03, $01, $14, $00, $0a, $00, $00, $14, $00, $06, $ff, $fc, $14
     db $00, $09, $ff, $fd, $75, $ff, $fc, $40, $00
-    
+
     db "You got the Shovel!"
-    
+
     db $00, $47, $03, $01, $05, $14, $00, $00, $45, $ff, $0d, $00, $41, $ff, $00, $44
     db $07, $01, $40, $00
-    
+
     db "Tool of choice for\n"
     db "xombies and grave-\n"
     db "diggers alike..."
-    
+
     db $00, $47, $03, $01, $05, $14, $00, $00, $41, $ff, $00, $44, $07, $01, $45, $fe
     db $12, $00, $44, $03, $01, $00
-    
+
     ; bank 7: 0x4dec
     db $25, $12, $04, $1a, $00, $4d, $fb, $00, $03, $00, $00, $02, $09, $4e, $b6, $40, $00
-    
+
     db "I just want to die!"
 
     db $00, $47, $03, $01, $05, $14, $00, $00, $45, $ff, $0d, $00, $41, $ff, $00, $44
     db $07, $01, $40, $00
-    
+
     db "Namco just won't\n"
     db "kill me off..."
-    
+
     db $00, $47, $03, $01, $05, $14, $00, $00, $41, $ff, $00, $44, $07, $01, $40, $00
-    
+
     db "I'm dug my own\n"
     db "grave,"
 
     db $00, $47, $03, $01, $05, $14, $00, $00, $41, $ff, $00, $44, $07, $01, $40, $00
-    
+
     db "with flowers and a\n"
     db "vase and\n"
     db "everything..."
-    
+
     db $00, $47, $03, $01, $05, $14, $00, $00, $41, $ff, $00, $44, $07, $01, $45, $fe
     db $12, $00, $44, $03, $01, $1a, $00, $4e, $c2, $00, $03, $00, $00, $01, $09, $50
     db $04, $40, $00
-    
+
     db "What's this little\n"
     db "iron?"
 
     db $00, $47, $03, $01, $04, $14, $00, $00, $45, $ff, $0e, $00, $41, $ff, $00, $44
     db $07, $01, $40, $00
-    
+
     db "Maybe I should\n"
     db "chew on  it..."
-    
+
     db $00, $47, $03, $01, $04, $14, $00, $00, $41, $ff, $00, $44, $07, $01, $40, $00
-    
+
     db "URGH!"
 
     db $00, $47, $03, $01, $04, $14, $00, $00, $41, $ff, $00, $44, $07, $01, $40, $00
@@ -2233,19 +2227,19 @@ jr_007_49e3:
     db $05, $00, $ff, $fe, $14, $00, $01, $ff, $ff, $30, $ff, $fc, $14, $00, $03, $ff
     db $fc, $33, $ff, $fc, $14, $00, $04, $00, $00, $14, $00, $06, $ff, $fc, $14, $00
     db $04, $ff, $fd, $75, $ff, $fc, $40, $00
-    
+
     db "You got the Vase!"
 
     db $00, $47, $03, $01, $05, $14, $00, $00, $45, $ff, $0d, $00, $41, $ff, $00, $44
-    db $07, $01, $40, $00 
+    db $07, $01, $40, $00
 
     db "There's a little\n"
     db "water left at\n"
     db "the bottom...  "
-    
+
     db $00, $47, $03, $01, $05, $14, $00, $00, $41, $ff, $00, $44, $07, $01, $45, $fe
     db $12, $00, $44, $03, $01, $00
-    
+
     ; bank 7 0x5005
     db $25, $12, $04, $1a, $00, $50, $14, $00, $05, $00, $00, $02, $09, $50, $bc, $40
     db $00
@@ -2261,7 +2255,7 @@ jr_007_49e3:
     db "peckish -"
 
     db $00, $47, $03, $01, $05, $14, $00, $00, $41, $ff, $00, $44, $07, $01, $40, $00
-    
+
     db "I only like\n"
     db "helpless animals\n"
     db "to eat, though."
@@ -2282,28 +2276,28 @@ jr_007_49e3:
     db "alert playthrough."
 
     db $00, $47, $03, $01, $06, $14, $00, $00, $41, $ff, $00, $44, $07, $01, $40, $00
-    
+
     db "Which is easier?"
 
     db $00, $47, $03, $01, $06, $14, $00, $00, $41, $ff, $00, $44, $07, $01, $45, $fe
     db $12, $00, $44, $03, $01, $1a, $00, $51, $7e, $00, $05, $00, $00, $01, $09, $52
     db $d1, $40, $00
-    
+
     db "You brought me a\n"
     db "frog to eat?"
-    
+
     db $00, $47, $03, $01, $05, $14, $00, $00, $45, $ff, $0d, $00, $41, $ff, $00, $44
     db $07, $01, $40, $00
-    
+
     db "Thanks!"
-    
+
     db $00, $47, $03, $01, $05, $14, $00, $00, $41, $ff, $00, $44, $07, $01, $40, $00
-    
+
     db "Here, take this\n" ; 0x51c8
     db "tiger face paint."
-    
+
     db $00, $47, $03, $01, $05, $14, $00, $00, $41, $ff, $00, $44, $07, $01, $40, $00
-    
+
     db "It's not lowering\n"
     db "my camo index\n"
     db "enough..."
@@ -2311,60 +2305,60 @@ jr_007_49e3:
     db $00, $47, $03, $01, $05, $14, $00, $00, $41, $ff, $00, $44, $07, $01, $45, $fe
     db $12, $00, $44, $03, $01, $14, $00, $06, $00, $00, $14, $00, $03, $ff, $fc, $14
     db $00, $06, $ff, $fd, $75, $ff, $fc, $40, $00
-    
+
     db "You got the\n"
     db "Tiger Face Paints!"
-    
+
     db $00, $47, $03, $01, $04, $14, $00, $00, $45, $ff, $0e, $00, $41, $ff, $00, $44
     db $07, $01, $40, $00
-    
+
     db "Great for stealth\n"
     db "missions..."
-    
+
     db $00, $47, $03, $01, $04, $14, $00, $00, $41, $ff, $00, $44, $07, $01, $40, $00
-    
+
     db "and kids' parties."
-    
+
     db $00, $47, $03, $01, $04, $14, $00, $00, $41, $ff, $00, $44, $07, $01, $45, $fe
     db $12, $00, $44, $03, $01, $00
-    
+
     ; bank 7: 0x52d2
     db $25, $12, $05, $1a, $00, $52, $e1, $00, $0c, $00, $00, $02, $09, $53, $54, $1a
     db $00, $52, $ed, $00, $01, $00, $00, $05, $09, $53, $54, $40, $00
-    
+
     db "Get me some food,\n"
     db "could you?"
-    
+
     db $00, $47, $03, $01, $04, $14, $00, $00, $45, $ff, $0e, $00, $41, $ff, $00, $44
     db $07, $01, $40, $00
-    
+
     db "I'll have a burger\n"
     db "and a sprite."
-    
+
     db $00, $47, $03, $01, $04, $14, $00, $00, $41, $ff, $00, $44, $07, $01, $45, $fe
     db $12, $00, $44, $03, $01, $1a, $00, $53, $60, $00, $00, $00, $00, $01, $09, $54
     db $b8, $40, $00
-    
+
     db "I'm guarding the\n"
     db "temple!"
-    
+
     db $00, $47, $03, $01, $05, $14, $00, $00, $45, $ff, $0d, $00, $41, $ff, $00, $44
     db $07, $01, $40, $00
-    
+
     db "I missed lunch\n"
     db "and I'm starving..."
-    
+
     db $00, $47, $03, $01, $05, $14, $00, $00, $41, $ff, $00, $44, $07, $01, $40, $00
-    
+
     db "Take this money\n"
     db "and get me some\n"
     db "lunch, could you?"
-    
+
     db $00, $47, $03, $01, $05, $14, $00, $00, $41, $ff, $00, $44, $07, $01, $40, $00
-    
+
     db "I'll have a burger\n"
     db "and a sprite."
-    
+
     db $00, $47, $03, $01, $05, $14, $00, $00, $41, $ff, $00, $44, $07, $01, $45, $fe
     db $12, $00, $44, $03, $01, $14, $00, $01, $00, $00, $14, $00, $04, $ff, $fc, $14
     db $00, $01, $ff, $fd, $75, $ff, $fc, $40, $00
@@ -2374,43 +2368,43 @@ jr_007_49e3:
 
     db $00, $47, $03, $01, $05, $14, $00, $00, $45, $ff, $0d, $00, $41, $ff, $00, $44
     db $07, $01, $40, $00
-    
+
     db "It looks like\n"
     db "Randy's advertising\n"
     db "money."
-    
+
     db $00, $47, $03, $01, $05, $14, $00, $00, $41, $ff, $00, $44, $07, $01, $45
     db $fe, $12, $00, $44, $03, $01, $1a, $00, $54, $c4, $00, $0c, $00, $00, $01, $09
     db $55, $d2, $40, $00
-    
+
     db "Hey you finally\n"
     db "got some food!"
-    
+
     db $00, $47, $03, $01, $04, $14, $00, $00, $45, $ff, $0e, $00, $41, $ff, $00, $44
     db $07, $01, $40, $00
-    
+
     db "What took you so\n"
     db "long?"
-    
+
     db $00, $47, $03, $01, $04, $14, $00, $00, $41, $ff, $00, $44, $07, $01, $40, $00
 
     db "Thanks anyway."
-    
+
     db $00, $47, $03, $01, $04, $14, $00, $00, $41, $ff, $00, $44, $07, $01, $45, $fe
     db $12, $00, $44, $03, $01, $14, $00, $1e, $ff, $fb, $0d, $ff, $fb, $00, $55, $af
     db $02, $40, $00
-    
+
     db "uurghh......"
-    
+
     db $00, $47, $03, $01, $04, $14, $00, $00, $45, $ff, $0e, $00, $41, $ff, $00, $44
     db $07, $01, $40, $00
-    
+
     db "stomach........."
-    
+
     db $00, $47, $03, $01, $04, $14, $00, $00, $41, $ff, $00, $44, $07, $01, $40, $00
-    
+
     db "pain......"
-    
+
     db $00, $47, $03, $01, $04, $14, $00, $00, $41, $ff, $00, $44, $07, $01, $45, $fe
     db $12, $00, $44, $03, $01, $14, $00, $02, $ff, $fc, $14, $03, $80, $ff, $fd, $14
     db $08, $80, $ff, $fe, $14, $00, $01, $ff, $ff, $30, $ff, $fc, $14, $00, $02, $ff
@@ -2418,31 +2412,31 @@ jr_007_49e3:
 
 bank007_55d3:
     db $25, $12, $04, $40, $00
-    
+
     db "Poor JT..."
 
     db $00, $47, $03, $01, $04, $14, $00, $00, $45, $ff, $0e, $00, $41, $ff, $00, $44
     db $07, $01, $40, $00
-    
+
     db "Oh well, I get his\n"
     db "stuff!"
-    
+
     db $00, $47, $03, $01, $04, $14, $00, $00, $41, $ff, $00, $44, $07, $01, $40, $00
-    
+
     db "You can have his\n"
     db "light gun though."
-    
+
     db $00, $47, $03, $01, $04, $14, $00, $00, $41, $ff, $00, $44, $07, $01, $45, $fe
     db $12, $00, $44, $03, $01, $1a, $00, $56, $62, $00, $08, $00, $00, $01, $09, $56
     db $df, $14, $00, $09, $00, $00, $14, $00, $05, $ff, $fc, $14, $00, $08, $ff, $fd
     db $75, $ff, $fc, $40, $00
-    
+
     db "You got the\n"
     db "Light Gun!"
-    
+
     db $00, $47, $03, $01, $05, $14, $00, $00, $45, $ff, $0d, $00, $41, $ff, $00, $44
     db $07, $01, $40, $00
-    
+
     db "It's so well made,\n"
     db "it almost looks\n"
     db "real..."
@@ -2450,21 +2444,21 @@ bank007_55d3:
     db $00, $47, $03, $01, $05, $14, $00, $00, $41, $ff, $00, $44, $07, $01, $45, $fe
     db $12, $00, $44, $03, $01, $00
 
-bank007_56e0:    
+bank007_56e0:
     db $25, $12, $04, $1a, $00, $56, $ef, $00, $02, $00, $00, $02, $09, $57, $64, $40
     db $00
-    
+
     db "All this greasy\n"
     db "food is doing\n"
     db "nothing for my\n"
     db "hair!"
-    
+
     db $00, $47, $03, $01, $06, $14, $00, $00, $45, $ff, $0c, $00, $41, $ff, $00
     db $44, $07, $01, $40, $00
-    
+
     db "I need to sort\n"
     db "it out..."
-    
+
     db $00, $47, $03, $01, $06, $14, $00, $00, $41, $ff, $00, $44, $07, $01, $45, $fe
     db $12, $00, $44, $03, $01, $1a, $00, $57, $70, $00, $03, $00, $00, $05, $09, $57
     db $e5, $40, $00
@@ -2491,13 +2485,13 @@ bank007_56e0:
     db $00, $47, $03, $01, $05, $14, $00, $00, $41, $ff, $00, $44, $07, $01
     db $45, $fe, $12, $00, $44, $03, $01
     db $1a, $00, $57, $f1, $00, $02, $00, $00, $01, $09, $58, $e9, $40, $00
-    
+
     db "Can I take those\n"
     db "hair products?"
-    
+
     db $00, $47, $03, $01, $05, $14, $00, $00, $45, $ff, $0d, $00, $41, $ff, $00, $44
     db $07, $01, $40, $00
-    
+
     db "You can have this\n"
     db "free toy I got with\n"
     db "my Happy Meal..."
@@ -2505,16 +2499,16 @@ bank007_56e0:
     db $00, $47, $03, $01, $05, $14, $00, $00, $41, $ff, $00, $44, $07, $01, $45, $fe
     db $12, $00, $44, $03, $01, $14, $00, $03, $00, $00, $14, $00, $04, $ff, $fc, $14
     db $00, $03, $ff, $fd, $75, $ff, $fc, $40, $00
-    
+
     db "You got the Tiny\n"
     db "Extreme Iron!"
-    
+
     db $00, $47, $03, $01, $04, $14, $00, $00, $45, $ff, $0e, $00, $41, $ff, $00, $44
     db $07, $01, $40, $00
 
     db "Warning: Deadly\n" ; 0x58b7
     db "if swallowed!"
-    
+
     db $00, $47, $03, $01, $04, $14, $00, $00, $41, $ff, $00, $44, $07, $01, $45, $fe
     db $12, $00, $44, $03, $01, $00
 
@@ -2537,15 +2531,15 @@ GraveyardTilemap:: ; 0x58ea
     db $55, $56, $58, $25, $58, $25, $55, $56, $58, $25, $66, $67, $58, $25, $55, $56, $7c, $7d, $7e, $7f
     db $25, $60, $4c, $4d, $6c, $6d, $25, $60, $6c, $6d, $6c, $6d, $6c, $6d, $b4, $b5, $b6, $b7, $b8, $b9
     db $58, $25, $55, $56, $72, $73, $58, $25, $72, $73, $72, $73, $72, $73, $ba, $bb, $bc, $bd, $be, $bf
-    
+
 bank007_5a52: ; Graveyard
     db $25, $12, $04
-    
+
     db $1a, $00, $5a, $61, $00, $04, $00, $00, $05, $09, $5a, $69, $14, $00, $03, $ff, $fc, $33, $ff, $fc
     db $14, $00, $04, $ff, $fc, $3f, $08, $00, $ff, $fc
     db $1a, $00, $5a, $7f, $00, $0b, $00, $00, $05, $09, $5a, $87, $14, $00, $04, $ff, $fc, $33, $ff, $fc
     db $14, $00, $05, $ff, $fc, $14, $00, $0c, $ff, $fd, $75, $ff, $fc
-    
+
     db $1a, $00, $5a, $a0, $00, $00, $00, $00, $01, $09, $5a, $ad, $14, $00, $06, $ff, $fc, $14, $00, $00, $ff, $fd, $75, $ff, $fc
     db $1a, $00, $5a, $b9, $00, $01, $00, $00, $01, $09, $5a, $c6, $14, $00, $06, $ff, $fc, $14, $00, $01, $ff, $fd, $75, $ff, $fc
     db $1a, $00, $5a, $d2, $00, $02, $00, $00, $01, $09, $5a, $df, $14, $00, $06, $ff, $fc, $14, $00, $02, $ff, $fd, $75, $ff, $fc
@@ -2561,14 +2555,14 @@ bank007_5a52: ; Graveyard
     db $1a, $00, $5b, $cc, $00, $0c, $00, $00, $01, $09, $5b, $d9, $14, $00, $06, $ff, $fc, $14, $00, $0b, $ff, $fd, $75, $ff, $fc
     db $1a, $00, $5b, $e5, $00, $0d, $00, $00, $05, $09, $5b, $f2, $14, $00, $06, $ff, $fc, $14, $00, $00, $ff, $fd, $75, $ff, $fc
     db $14, $00, $01, $ff, $fc, $0d, $ff, $fc, $00, $55, $af, $02, $21, $01, $c6, $0d, $57, $03, $00
-    
+
 GraveyardSprites:: ; bank 7 0x5c05
     db $09, $0e, $6f
     db $0a, $9b, $45
     db $09, $fc, $73
     db $09, $a9, $72
     db $08, $29, $7d
-    
+
 bank007_5c14: ; PC World
     db $25, $12, $04, $14, $00, $04, $ff, $fc, $14, $00, $0c, $ff, $fd, $75, $ff, $fc
     db $1a, $00, $5c, $30, $00, $00, $00, $00, $01, $09, $5c, $3d, $14, $00, $05, $ff, $fc, $14, $00, $00, $ff, $fd, $75, $ff, $fc
@@ -2588,7 +2582,7 @@ bank007_5c14: ; PC World
     db $14, $00, $01, $ff, $fc, $0d, $ff, $fc, $00, $55, $af, $02, $21, $01, $c6, $0d, $57, $03
 
     db $00
-    
+
 bank007_5d95: ; Mcdonalds
     db $25, $12, $04, $14, $00, $03, $ff, $fc, $14, $00, $0c, $ff, $fd, $75, $ff, $fc
     db $1a, $00, $5d, $b1, $00, $00, $00, $00, $01, $09, $5d, $be, $14, $00, $04, $ff, $fc, $14, $00, $00, $ff, $fd, $75, $ff, $fc
@@ -2629,7 +2623,7 @@ bank007_5f16: ; JR Inside
 
     db $00
 
-bank007_6097: ; JTHouseInside    
+bank007_6097: ; JTHouseInside
     db $25, $12, $04, $14, $00, $04, $ff, $fc, $14, $00, $0c, $ff, $fd, $75, $ff, $fc
     db $1a, $00, $60, $b3, $00, $00, $00, $00, $01, $09, $60, $c0, $14, $00, $05, $ff, $fc, $14, $00, $00, $ff, $fd, $75, $ff, $fc
     db $1a, $00, $60, $cc, $00, $01, $00, $00, $01, $09, $60, $d9, $14, $00, $05, $ff, $fc, $14, $00, $01, $ff, $fd, $75, $ff, $fc
@@ -2666,9 +2660,9 @@ bank007_6218: ; DimHouseInside
     db $1a, $00, $63, $60, $00, $0c, $00, $00, $01, $09, $63, $6d, $14, $00, $03, $ff, $fc, $14, $00, $0b, $ff, $fd, $75, $ff, $fc
     db $1a, $00, $63, $79, $00, $0d, $00, $00, $05, $09, $63, $86, $14, $00, $03, $ff, $fc, $14, $00, $00, $ff, $fd, $75, $ff, $fc
     db $14, $00, $01, $ff, $fc, $0d, $ff, $fc, $00, $55, $af, $02, $21, $01, $c6, $0d, $57, $03
-    
+
     db $00
-    
+
 bank007_6399: ; TempleLightOutside
     db $25, $12, $04, $14, $00, $01, $ff, $fc, $14, $00, $0c, $ff, $fd, $75, $ff, $fc
     db $1a, $00, $63, $b5, $00, $00, $00, $00, $01, $09, $63, $c2, $14, $00, $02, $ff, $fc, $14, $00, $00, $ff, $fd, $75, $ff, $fc
@@ -2686,15 +2680,15 @@ bank007_6399: ; TempleLightOutside
     db $1a, $00, $64, $e1, $00, $0c, $00, $00, $01, $09, $64, $ee, $14, $00, $02, $ff, $fc, $14, $00, $0b, $ff, $fd, $75, $ff, $fc
     db $1a, $00, $64, $fa, $00, $0d, $00, $00, $05, $09, $65, $07, $14, $00, $02, $ff, $fc, $14, $00, $00, $ff, $fd, $75, $ff, $fc
     db $14, $00, $01, $ff, $fc, $0d, $ff, $fc, $00, $55, $af, $02, $21, $01, $c6, $0d, $57, $03
-    
+
     db $00
-    
+
 bank007_651a: ; JT House Outside
     db $25, $12, $04
-    
+
     db $1a, $00, $65, $29, $00, $08, $00, $00, $05, $09, $65, $45, $14, $00, $01, $ff, $fc
     db $14, $01, $00, $ff, $fd, $14, $05, $80, $ff, $fe, $35, $ff, $fc
-    db $14, $00, $01, $ff, $fc, $84, $00, $03, $ff, $fc    
+    db $14, $00, $01, $ff, $fc, $84, $00, $03, $ff, $fc
     db $1a, $00, $65, $51, $00, $05, $00, $00, $02, $09, $65, $59, $14, $00, $02, $ff, $fc, $33, $ff, $fc
     db $1a, $00, $65, $65, $00, $08, $00, $00, $05, $09, $65, $6d, $14, $00, $02, $ff, $fc, $33, $ff, $fc
     db $14, $00, $03, $ff, $fc, $14, $00, $0c, $ff, $fd, $75, $ff, $fc
@@ -2713,7 +2707,7 @@ bank007_651a: ; JT House Outside
     db $1a, $00, $66, $b2, $00, $0c, $00, $00, $01, $09, $66, $bf, $14, $00, $04, $ff, $fc, $14, $00, $0b, $ff, $fd, $75, $ff, $fc
     db $1a, $00, $66, $cb, $00, $0d, $00, $00, $05, $09, $66, $d8, $14, $00, $04, $ff, $fc, $14, $00, $00, $ff, $fd, $75, $ff, $fc
     db $14, $00, $01, $ff, $fc, $0d, $ff, $fc, $00, $55, $af, $02, $21, $01, $c6, $0d, $57, $03, $00
-    
+
 WellSceneInit:: ; 0x66eb
     db $25, $12, $04
     db $1a, $00, $66, $fa, $00, $01, $00, $00, $02, $09, $67, $02, $14, $00, $04, $ff, $fc, $33, $ff, $fc
@@ -2733,11 +2727,11 @@ WellSceneInit:: ; 0x66eb
     db $1a, $00, $68, $42, $00, $0b, $00, $00, $01, $09, $68, $4f, $14, $00, $06, $ff, $fc, $14, $00, $0a, $ff, $fd, $75, $ff, $fc
     db $1a, $00, $68, $5b, $00, $0c, $00, $00, $01, $09, $68, $68, $14, $00, $06, $ff, $fc, $14, $00, $0b, $ff, $fd, $75, $ff, $fc
     db $1a, $00, $68, $74, $00, $0d, $00, $00, $05, $09, $68, $81, $14, $00, $06, $ff, $fc, $14, $00, $00, $ff, $fd, $75, $ff, $fc
-    
+
     db $60, $00, $7f, $cc, $03 ; bank 3 0x7fcc exploration music
-    
+
     db $14, $00, $01, $ff, $fc, $0d, $ff, $fc, $00, $55, $af, $02, $21, $01, $c6, $0d, $57, $03, $00
-    
+
 bank007_6899: ; dim house outside
     db $25, $12, $04, $14, $00, $01, $ff, $fc, $14, $00, $0c, $ff, $fd, $75, $ff, $fc
     db $1a, $00, $68, $b5, $00, $00, $00, $00, $01, $09, $68, $c2, $14, $00, $02, $ff, $fc, $14, $00, $00, $ff, $fd, $75, $ff, $fc
@@ -2755,7 +2749,7 @@ bank007_6899: ; dim house outside
     db $1a, $00, $69, $e1, $00, $0c, $00, $00, $01, $09, $69, $ee, $14, $00, $02, $ff, $fc, $14, $00, $0b, $ff, $fd, $75, $ff, $fc
     db $1a, $00, $69, $fa, $00, $0d, $00, $00, $05, $09, $6a, $07, $14, $00, $02, $ff, $fc, $14, $00, $00, $ff, $fd, $75, $ff, $fc
     db $14, $00, $01, $ff, $fc, $0d, $ff, $fc, $00, $55, $af, $02, $21, $01, $c6, $0d, $57, $03, $00
-    
+
 bank007_6a1a: ; NgHeadquartersOutside
     db $25, $12, $04, $14, $00, $02, $ff, $fc, $14, $00, $0c, $ff, $fd, $75, $ff, $fc
     db $1a, $00, $6a, $36, $00, $00, $00, $00, $01, $09, $6a, $43, $14, $00, $03, $ff, $fc, $14, $00, $00, $ff, $fd, $75, $ff, $fc
@@ -2773,89 +2767,89 @@ bank007_6a1a: ; NgHeadquartersOutside
     db $1a, $00, $6b, $62, $00, $0c, $00, $00, $01, $09, $6b, $6f, $14, $00, $03, $ff, $fc, $14, $00, $0b, $ff, $fd, $75, $ff, $fc
     db $1a, $00, $6b, $7b, $00, $0d, $00, $00, $05, $09, $6b, $88, $14, $00, $03, $ff, $fc, $14, $00, $00, $ff, $fd, $75, $ff, $fc
     db $14, $00, $01, $ff, $fc, $0d, $ff, $fc, $00, $55, $af, $02, $21, $01, $c6, $0d, $57, $03, $00
-    
-OutsideShopDialogue:: ; 0x6b9b 
+
+OutsideShopDialogue:: ; 0x6b9b
     db $20, $00, $07, $80, $04, $00, $00, $0f, $f8, $07, $00, $00, $00, $00, $0f, $10
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
     db $00, $00
-    
+
     db $09, $f3, $71 ; points to bank 9: 0x71f3 flower
     db $00, $00, $00
-    
+
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
-    
+
     db $20, $00, $02, $80, $04, $00, $00, $0f, $f8, $07, $00, $00, $00, $00, $0f, $10
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
     db $00, $00
-    
+
     db $0a, $9b, $45
     db $0a, $dd, $40 ; bank 0a 0x40dd sign outside of PC World
-    
+
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
-    
+
     db $20, $00, $02, $00, $06, $00, $00, $0f, $f8, $07, $00, $00, $00, $00, $ff, $10
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
     db $00, $00
-    
+
     db $09, $5b, $6c ; points to bank 9: 0x6c5b alex labbe
     db $09, $52, $4c ; points to bank 9: 0x4c52 dialogue
-    
+
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
-    
+
     db $20, $00, $05, $80, $04, $00, $00, $0f, $f8, $07, $00, $00, $00, $00, $1f, $10
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
     db $00, $00
-    
+
     db $09, $76, $72 ; points to bank 9: 0x7276 gerkinman
     db $09, $f1, $4c ; points to bank 9: 0x4cf1 dialogue
-    
+
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
-    
+
     db $20, $00, $06, $80, $06, $00, $00, $0f, $f8, $07, $00, $00, $00, $00, $0f, $10
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
     db $00, $00
-    
+
     db $09, $7f, $74 ; points to bank 9: 0x747f jasper
     db $0a, $0d, $41 ; points to bank 0a: 0x410d dialogue
-    
+
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
-    
+
     db $20, $00, $06, $00, $04, $00, $00, $0f, $f8, $07, $00, $00, $00, $00, $0f, $10
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
     db $00, $00
-    
+
     db $09, $48, $76 ; points to bank 9: 0x7648 john
     db $00, $00, $00
-    
+
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
-    
+
     db $20, $00, $00, $80, $04, $00, $00, $0f, $f8, $07, $00, $00, $00, $00, $0f, $10
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
     db $00, $00
-    
+
     db $09, $f3, $71 ; points to bank 9: 0x71f3 flower
     db $00, $00, $00
-    
+
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
-    
+
     db $20, $80, $08, $00, $03, $00, $00, $0f, $f8, $07, $00, $00, $00, $00, $ff, $10
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
     db $00, $00
-    
+
     db $08, $29, $7d ; points to bank 8: 0x7d29 items
     db $00, $00, $00
-    
+
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
-    
+
     db $20, $80, $08, $00, $05, $00, $00, $0f, $f8, $07, $00, $00, $00, $00, $ff, $10
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
     db $00, $00
-    
+
     db $08, $29, $7d ; points to bank 8: 0x7d29 items
     db $00, $00, $00
-    
+
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
-    
+
 bank007_6d6f: ; OutsideShop
     db $25, $12, $05, $14, $00, $01, $ff, $fc, $3f
     db $08, $00, $ff, $fc, $14, $00, $06, $ff, $fc, $33, $ff, $fc, $14, $00, $01, $ff
@@ -2974,7 +2968,7 @@ bank007_6d6f: ; OutsideShop
     db $fc
 
     db $00
-    
+
 bank007_6f58: ; JR Outside
     db $25, $12, $04, $1a, $00, $6f, $6f, $00, $01, $00, $00, $05
 
@@ -3158,7 +3152,7 @@ bank007_708f:
 
     db $14, $00, $01, $ff, $fc, $0d, $ff, $fc, $00, $55, $af, $02, $21, $01, $c6, $0d
     db $57, $03, $00
-    
+
 bank007_70ed: ; bridge
     db $25, $12, $04, $1a, $00, $70, $fc, $00, $0d, $00, $00, $05, $09
     db $71, $04
@@ -3558,7 +3552,7 @@ jr_007_75ce:
 
     db $00, $47, $03, $01, $05, $14, $00, $00, $41, $ff, $00, $44, $07, $01, $45, $fe
     db $12, $00, $44, $03, $01, $09, $77, $18, $00
-    
+
 ItemsSpriteImage:: ; 0x7719
     db $2c, $00
     INCBIN "gfx/bank007_items_771b.2bpp"
@@ -4201,4 +4195,3 @@ jr_007_7fea:
 jr_007_7ffd:
     add sp, $07
     ret
-

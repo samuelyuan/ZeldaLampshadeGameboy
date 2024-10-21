@@ -32,30 +32,17 @@ RST_18::
     ret
 
 
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-
+    db $ff, $ff, $ff, $ff, $ff, $ff, $ff
 RST_20::
     jp hl
 
 
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
+    db $ff, $ff, $ff, $ff, $ff, $ff, $ff
 
-RST_28::
+MemsetSmall:: 
     ld [hl+], a
     dec c
-    jr nz, RST_28
+    jr nz, MemsetSmall
 
     ret
 
@@ -64,23 +51,20 @@ RST_28::
     rst $38
     rst $38
 
-RST_30::
+MemcpySmall::
     ld a, [de]
     ld [hl+], a
     inc de
     dec c
-    jr nz, RST_30
-
+    jr nz, MemcpySmall
     ret
 
-
-    rst $38
+    db $ff
 
 RST_38::
     di
-
 Jump_000_0039:
-    jp Jump_000_0200
+    jp ___HandleCrash
 
 
 Jump_000_003c:
@@ -102,25 +86,18 @@ LCDCInterrupt::
     jp Jump_000_364a
 
 
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
+    db $ff, $ff, $ff, $ff, $ff
 
 TimerOverflowInterrupt::
     ei
-    jp Jump_000_1767
+    jp timer_ISR
 
 
-    rst $38
-    rst $38
-    rst $38
-    rst $38
+    db $ff, $ff, $ff, $ff
 
 SerialTransferCompleteInterrupt::
     ei
-    jp Jump_000_170d
+    jp sio_ISR
 
 
     rst $38
@@ -198,11 +175,10 @@ jr_000_0094:
     ldh a, [rSTAT]
     and $02
     jr nz, jr_000_0094
-
     pop af
     reti
 
-
+__standard_VBL_handler:
     ld hl, $c0a3
     inc [hl]
     jr nz, jr_000_00a4
@@ -216,11 +192,10 @@ jr_000_00a4:
     ldh [$91], a
     ret
 
-
-jr_000_00ac:
+_refresh_OAM:
     ldh a, [rSTAT]
     and $02
-    jr nz, jr_000_00ac
+    jr nz, _refresh_OAM
 
     ld a, $c0
     jp $ff84
@@ -230,8 +205,8 @@ Call_000_00b7:
     push de
     xor a
     ld bc, $197e
-    ld hl, $c0a0
-    call Call_000_0de1
+    ld hl, _CPU
+    call _memset_simple
     ld a, $c0
     ldh [$92], a
     ld h, a
@@ -297,7 +272,7 @@ Call_000_00cc:
     rst $38
 
 Boot::
-    jr jr_000_0157
+    jr _code_start
 
     rst $38
     rst $38
@@ -340,28 +315,29 @@ HeaderComplementCheck::
 HeaderGlobalChecksum::
     db $cd, $26
 
-    ld a, [$c0a1]
+_reset:
+    ld a, [_IS_GBA]
     ld b, a
-    ld a, [$c0a0]
+    ld a, [_CPU]
 
-jr_000_0157:
+_code_start:
     di
     ld d, a
     ld e, b
     ld sp, $df00
-    call Call_000_00b7
+    call $00b7
     ld a, d
-    ld [$c0a0], a
+    ld [_CPU], a
     cp $11
     jr nz, jr_000_016f
 
     xor a
     srl e
     rla
-    ld [$c0a1], a
+    ld [_IS_GBA], a
 
 jr_000_016f:
-    call Call_000_0e45
+    call _display_off
     xor a
     ldh [rSCY], a
     ldh [rSCX], a
@@ -374,8 +350,8 @@ jr_000_016f:
     ld c, $0c
     rst $30
     call $ff80
-    ld bc, $009c
-    call Call_000_0e27
+    ld bc, __standard_VBL_handler ; 0x009c
+    call _add_VBL
     ld a, $e4
     ldh [rBGP], a
     ldh [rOBP0], a
@@ -393,15 +369,15 @@ jr_000_016f:
     ld [hl+], a
     ld [hl], a
     ldh [rNR52], a
-    call Call_000_3991
+    call gsinit
     ei
-    call Call_000_05ac
+    call _main
 
 jr_000_01b7:
     halt
     jr jr_000_01b7
 
-Call_000_01bb:
+_set_interrupts:
     di
     ld hl, sp+$02
     xor a
@@ -477,17 +453,16 @@ jr_000_01ce:
     rst $38
     rst $38
 
-Jump_000_0200:
+___HandleCrash:
     push hl
     ld hl, $2000
     ld [hl], $07
     pop hl
     jp $4000
 
-
-Call_000_020a:
+_SIO_send_byte:
     ld a, $01
-    ld [$c61e], a
+    ld [_SIO_STATUS], a
     ld a, $01
     ldh [rSC], a
     ld hl, sp+$02
@@ -497,10 +472,9 @@ Call_000_020a:
     ldh [rSC], a
     ret
 
-
-Jump_000_021d:
+_SIO_receive:
     ld a, $02
-    ld [$c61e], a
+    ld [_SIO_STATUS], a
     xor a
     ldh [rSC], a
     ld a, $55
@@ -508,7 +482,6 @@ Jump_000_021d:
     ld a, $80
     ldh [rSC], a
     ret
-
 
 Call_000_022e:
     ld hl, sp+$02
@@ -528,10 +501,10 @@ jr_000_0234:
 
 
 Call_000_023d:
-    call Call_000_0265
+    call _GetWinAddr
     jr jr_000_0245
 
-    call Call_000_026d
+    call _GetBkgAddr
 
 jr_000_0245:
     push bc
@@ -566,14 +539,14 @@ jr_000_025b:
     ret
 
 
-Call_000_0265:
+_GetWinAddr:
     ldh a, [rLCDC]
     bit 6, a
     jr z, jr_000_0273
 
     jr jr_000_0277
 
-Call_000_026d:
+_GetBkgAddr:
     ldh a, [rLCDC]
     bit 3, a
     jr nz, jr_000_0277
@@ -588,15 +561,15 @@ jr_000_0277:
     ret
 
 
-Call_000_027b:
+state_init:
     ld hl, $05b4
     jr jr_000_0283
 
-Call_000_0280:
-    ld hl, $05c6
+_state_update:
+    ld hl, $05c6 ; contains data $05, $8f, $79 (bank 5: 0x798f)
 
 jr_000_0283:
-    ld a, [$c53c]
+    ld a, [_SCENE_TYPE]
     ld e, a
     add a
     add e
@@ -619,15 +592,15 @@ jr_000_0283:
     ld [$2000], a
     ret
 
+ui_time_masks:
+    db $00, $00
 
-    nop
-    nop
     ld bc, $0703
     rrca
     rra
     ccf
 
-Call_000_02aa:
+_ui_print_shift_char:
     ld hl, sp+$06
     ldh a, [$90]
     push af
@@ -731,7 +704,7 @@ jr_000_030a:
     ret
 
 
-Call_000_032d:
+_ui_draw_frame_row:
     ld hl, sp+$05
     ld a, [hl-]
     ld c, a
@@ -1240,10 +1213,9 @@ jr_000_051a:
     ld d, b
     ld [bc], a
     ld [bc], a
-    db $db
-    ld d, b
-    ld [bc], a
-    inc b
+
+    db $db, $50, $02, $04
+
     bit 0, a
     dec b
     ld bc, $4cf6
@@ -1279,28 +1251,31 @@ jr_000_051a:
     ld hl, sp-$13
     or [hl]
     dec b
-    nop
-    inc bc
-    nop
-    ld b, $02
-    add hl, bc
-    db $e3
-    ld e, a
-    db $10
-    rlca
-    inc bc
-    ld b, e
-    ld [hl], d
 
-Call_000_05a4:
+    db $00, $03, $00, $06, $02
+    
+_start_scene:
+    ; points to bank 9: 0x5fe3
+    db $09, $e3, $5f
+
+    db $10
+    
+    db $07
+    
+_ui_fonts:
+    db $03
+    
+    db $43, $72
+
+_core_reset_hook:
     ld e, $06
-    ld hl, $4000
+    ld hl, _core_reset ; jumps to bank 6: 0x4000
     jp RST_08
 
 
-Call_000_05ac:
+_main:
     ld e, $06
-    ld hl, $431c
+    ld hl, $431c ; jumps to bank 6 0x431c
     jp RST_08
 
 
@@ -1347,7 +1322,7 @@ jr_000_05de:
     ld a, [hl+]
     ld h, [hl]
     ld l, a
-    call Call_000_0605
+    call hUGE_init
     pop bc
     ret
 
@@ -1363,7 +1338,7 @@ jr_000_05ed:
     and $01
     ld c, a
     ld b, [hl]
-    call Call_000_065b
+    call hUGE_mute_channel
     pop bc
     ret
 
@@ -1380,12 +1355,12 @@ jr_000_05fe:
 
 Call_000_0600:
 Jump_000_0600:
-    call Call_000_0851
+    db $cd, $51, $08
     pop bc
     ret
 
 
-Call_000_0605:
+hUGE_init:
     ld a, [hl+]
     ld [$d9dc], a
     ld a, [hl+]
@@ -1405,7 +1380,7 @@ jr_000_0616:
     jr nz, jr_000_0616
 
     ld c, $29
-    ld hl, $d9de
+    ld hl, _hUGE_mute_mask
     xor a
 
 jr_000_0622:
@@ -1447,7 +1422,7 @@ Call_000_064d:
     ret
 
 
-Call_000_065b:
+hUGE_mute_channel:
     ld e, $fe
     ld a, b
     or a
@@ -1460,10 +1435,10 @@ jr_000_0661:
     jr nz, jr_000_0661
 
 jr_000_0668:
-    ld a, [$d9de]
+    ld a, [_hUGE_mute_mask]
     and e
     or c
-    ld [$d9de], a
+    ld [_hUGE_mute_mask], a
     and c
     jp nz, Jump_000_086f
 
@@ -1545,7 +1520,7 @@ Call_000_06b5:
 
 Jump_000_06c2:
     ld c, a
-    ld a, [$d9de]
+    ld a, [_hUGE_mute_mask]
     dec b
     jr z, jr_000_06da
 
@@ -1612,7 +1587,7 @@ jr_000_06f0:
 
 Call_000_0705:
 jr_000_0705:
-    ld a, [$d9de]
+    ld a, [_hUGE_mute_mask]
     bit 0, a
     ret nz
 
@@ -1629,11 +1604,11 @@ jr_000_0705:
 
 Call_000_0720:
 jr_000_0720:
-    ld a, [$d9de]
+    ld a, [_hUGE_mute_mask]
     bit 1, a
     ret nz
 
-    ld a, [$d9e2]
+    ld a, [$d9e2] ; seems related to audio
     ld [$d9ef], a
     ldh [rNR23], a
     ld a, [$d9e3]
@@ -1646,7 +1621,7 @@ jr_000_0720:
 
 Call_000_073b:
 jr_000_073b:
-    ld a, [$d9de]
+    ld a, [_hUGE_mute_mask]
     bit 2, a
     ret nz
 
@@ -1667,7 +1642,7 @@ jr_000_073b:
 
 Call_000_075c:
 jr_000_075c:
-    ld a, [$d9de]
+    ld a, [_hUGE_mute_mask]
     bit 3, a
     ret nz
 
@@ -1687,7 +1662,7 @@ Call_000_0770:
     ld l, a
     adc $07
     sub l
-    ld h, a
+    ld h, a ; loads address 0x0784 into hl register 
     ld a, [hl+]
     ld h, [hl]
     ld l, a
@@ -1695,7 +1670,6 @@ Call_000_0770:
     ld a, [$d9e5]
     or a
     jp hl
-
 
     di
     ld [$0927], sp
@@ -1765,7 +1739,7 @@ Call_000_07c8:
 
     ld a, b
     or a
-    ld a, [$d9de]
+    ld a, [_hUGE_mute_mask]
     jr z, jr_000_07dd
 
     bit 1, a
@@ -1793,7 +1767,7 @@ jr_000_07dd:
     daa
     rra
     ld d, a
-    ld a, [$d9de]
+    ld a, [_hUGE_mute_mask]
     and d
     ret nz
 
@@ -1902,7 +1876,7 @@ Call_000_0851:
     daa
     rra
     ld d, a
-    ld a, [$d9de]
+    ld a, [_hUGE_mute_mask]
     and d
     ret nz
 
@@ -1928,7 +1902,7 @@ Jump_000_086f:
     ret nz
 
     swap c
-    ld a, [$d9de]
+    ld a, [_hUGE_mute_mask]
     dec b
     jr z, jr_000_089c
 
@@ -2030,6 +2004,7 @@ jr_000_08ed:
     jp Jump_000_06c2
 
 
+    ; 0x08f3
     ret z
 
     ld d, $04
@@ -2222,7 +2197,7 @@ jr_000_09b0:
     ret
 
 
-Call_000_09b9:
+hUGE_dosound:
     ld a, [$d9e5]
     or a
     jp nz, Jump_000_0b34
@@ -2242,7 +2217,7 @@ Call_000_09b9:
     res 7, a
     jr z, jr_000_09f2
 
-    ld a, [$d9de]
+    ld a, [_hUGE_mute_mask]
     bit 0, a
     jr nz, jr_000_09f5
 
@@ -2284,7 +2259,7 @@ jr_000_09f5:
     res 7, a
     jr z, jr_000_0a35
 
-    ld a, [$d9de]
+    ld a, [_hUGE_mute_mask]
     bit 1, a
     jr nz, jr_000_0a38
 
@@ -2330,7 +2305,7 @@ Call_000_0a61:
     res 7, a
     jr z, jr_000_0acb
 
-    ld a, [$d9de]
+    ld a, [_hUGE_mute_mask]
     bit 2, a
     jr nz, jr_000_0ace
 
@@ -2426,7 +2401,7 @@ Jump_000_0af7:
     res 7, a
     jr z, jr_000_0b25
 
-    ld a, [$d9de]
+    ld a, [_hUGE_mute_mask]
     bit 3, a
 
 Call_000_0b00:
@@ -2466,7 +2441,7 @@ jr_000_0b28:
 
 
 Jump_000_0b34:
-    ld a, [$d9de]
+    ld a, [_hUGE_mute_mask]
     bit 0, a
     jr nz, jr_000_0b4d
 
@@ -2483,7 +2458,7 @@ Jump_000_0b34:
     call Call_000_0770
 
 jr_000_0b4d:
-    ld a, [$d9de]
+    ld a, [_hUGE_mute_mask]
     bit 1, a
     jr nz, jr_000_0b66
 
@@ -2500,7 +2475,7 @@ jr_000_0b4d:
     call Call_000_0770
 
 jr_000_0b66:
-    ld a, [$d9de]
+    ld a, [_hUGE_mute_mask]
     bit 2, a
     jr nz, jr_000_0b7f
 
@@ -2517,7 +2492,7 @@ jr_000_0b66:
     call Call_000_0770
 
 jr_000_0b7f:
-    ld a, [$d9de]
+    ld a, [_hUGE_mute_mask]
     bit 3, a
     jr nz, jr_000_0bca
 
@@ -2809,7 +2784,7 @@ jr_000_0cdc:
     ret
 
 
-Call_000_0ce4:
+_hide_sprites_range:
     ld hl, sp+$02
     ld a, [hl+]
     cp $28
@@ -2824,7 +2799,7 @@ Call_000_0ce4:
 
     ret z
 
-    ld hl, $da35
+    ld hl, ___render_shadow_OAM
     ld h, [hl]
     ld l, e
     ld de, $0004
@@ -2988,7 +2963,7 @@ jr_000_0da0:
     ret
 
 
-Call_000_0da2:
+_move_metasprite:
     ld hl, sp+$04
     ld a, [hl-]
     ld b, a
@@ -3001,11 +2976,11 @@ Call_000_0da2:
     add a
     add a
     ld e, a
-    ld hl, $da1b
+    ld hl, ___current_metasprite
     ld a, [hl+]
     ld h, [hl]
     ld l, a
-    ld a, [$da35]
+    ld a, [___render_shadow_OAM]
     ld d, a
 
 jr_000_0dba:
@@ -3022,7 +2997,7 @@ jr_000_0dba:
     ld c, a
     ld [de], a
     inc e
-    ld a, [$da1d]
+    ld a, [___current_base_prop]
     add [hl]
     inc hl
     ld [de], a
@@ -3046,7 +3021,7 @@ jr_000_0dde:
     ret
 
 
-Call_000_0de1:
+_memset_simple:
     ld e, a
     ld a, b
     or c
@@ -3058,7 +3033,7 @@ Call_000_0de1:
     ld e, l
     inc de
 
-Call_000_0dea:
+_memcpy_simple:
     ld a, b
     or c
     ret z
@@ -3132,7 +3107,7 @@ jr_000_0e1c:
 
     jr jr_000_0e1c
 
-Call_000_0e27:
+_add_VBL:
     ld hl, $c0a5
 
 Jump_000_0e2a:
@@ -3151,7 +3126,7 @@ jr_000_0e31:
     ret
 
 
-Call_000_0e35:
+_wait_vbl_done:
     ldh a, [rLCDC]
     and $80
     ret z
@@ -3168,7 +3143,7 @@ jr_000_0e3d:
     ret
 
 
-Call_000_0e45:
+_display_off:
     ldh a, [rLCDC]
     and $80
     ret z
@@ -3205,17 +3180,16 @@ Call_000_0e68:
     ld a, [hl+]
     ld c, a
     ld b, [hl]
-    call Call_000_0e27
+    call _add_VBL
     pop bc
     ret
 
-
-Call_000_0e73:
+_actors_update:
     add sp, -$08
     ldh a, [$90]
     ld hl, sp+$00
     ld [hl], a
-    ld hl, $c7d8
+    ld hl, _DRAW_SCROLL_X
     ld a, [hl+]
     ld c, a
     ld b, [hl]
@@ -3229,8 +3203,8 @@ Call_000_0e73:
     rr c
     ld a, c
     add $40
-    ld [$c511], a
-    ld hl, $c7da
+    ld [_allocated_hardware_sprites + 3], a
+    ld hl, _DRAW_SCROLL_Y
     ld a, [hl+]
     ld c, a
     ld b, [hl]
@@ -3294,7 +3268,7 @@ jr_000_0ec2:
     srl h
     rr l
     ld a, l
-    ld hl, $c7d4
+    ld hl, _scroll_x
     ld e, [hl]
     sub e
     add $08
@@ -3303,7 +3277,7 @@ jr_000_0ec2:
     inc hl
     ld e, [hl]
     add e
-    ld [$c503], a
+    ld [_screen_x], a
     ld hl, sp+$06
     ld a, [hl+]
     ld h, [hl]
@@ -3323,7 +3297,7 @@ jr_000_0ec2:
     srl h
     rr l
     ld a, l
-    ld hl, $c7d6
+    ld hl, _scroll_y
     ld e, [hl]
     sub e
     add $08
@@ -3332,12 +3306,12 @@ jr_000_0ec2:
     inc bc
     ld a, [bc]
     add e
-    ld [$c504], a
+    ld [_screen_y], a
     ld a, $01
     ldh [$90], a
     ld a, $01
     ld [$2000], a
-    ld hl, $c50d
+    ld hl, _EMOTE_TIMER
     ld a, [hl]
     sub $0f
     jr nc, jr_000_0f54
@@ -3352,45 +3326,45 @@ jr_000_0ec2:
 
 jr_000_0f4d:
     ld a, [bc]
-    ld hl, $c504
+    ld hl, _screen_y
     ld c, [hl]
     add c
     ld [hl], a
 
 jr_000_0f54:
-    ld hl, $c504
+    ld hl, _screen_y
     ld e, [hl]
-    ld hl, $c503
+    ld hl, _screen_x
     ld b, [hl]
-    ld hl, $c50e
+    ld hl, _allocated_hardware_sprites
     ld c, [hl]
-    ld hl, $da1b
+    ld hl, ___current_metasprite
     ld [hl], $49
     inc hl
     ld [hl], $40
-    ld hl, $da1d
+    ld hl, ___current_base_prop
     ld [hl], $7c
     ld a, e
     push af
     inc sp
     push bc
-    call Call_000_0da2
+    call _move_metasprite
     add sp, $03
     ld a, e
-    ld hl, $c50e
+    ld hl, _allocated_hardware_sprites
     add [hl]
 
 Call_000_0f7b:
     ld [hl], a
 
 Jump_000_0f7c:
-    ld a, [$c4ff]
-    ld [$c50f], a
-    ld a, [$c500]
-    ld [$c510], a
+    ld a, [_ACTORS_ACTIVE_TAIL]
+    ld [_allocated_hardware_sprites + 1], a
+    ld a, [_ACTORS_ACTIVE_TAIL + 1]
+    ld [_allocated_hardware_sprites + 2], a
 
 Jump_000_0f88:
-    ld hl, $c510
+    ld hl, _allocated_hardware_sprites + 2
     ld a, [hl-]
     or [hl]
     jp z, Jump_000_1263
@@ -3398,7 +3372,7 @@ Jump_000_0f88:
     ld a, [hl]
     ld hl, sp+$01
     ld [hl], a
-    ld a, [$c510]
+    ld a, [_allocated_hardware_sprites + 2]
     ld hl, sp+$02
     ld [hl-], a
     ld a, [hl+]
@@ -3466,7 +3440,7 @@ Jump_000_0f88:
 
     ld a, c
     add $08
-    ld [$c503], a
+    ld [_screen_x], a
     ld hl, sp+$06
     ld a, [hl+]
     ld e, a
@@ -3486,7 +3460,7 @@ Jump_000_0f88:
     rr c
     ld a, c
     add $08
-    ld [$c504], a
+    ld [_screen_y], a
     jp Jump_000_1100
 
 
@@ -3496,7 +3470,7 @@ jr_000_1013:
     ld a, c
     sub b
     add $08
-    ld [$c503], a
+    ld [_screen_x], a
     ld hl, sp+$06
     ld a, [hl+]
     ld e, a
@@ -3519,7 +3493,7 @@ jr_000_1013:
     ld c, [hl]
     sub c
     add $08
-    ld [$c504], a
+    ld [_screen_y], a
     ld hl, sp+$04
     ld a, [hl+]
     ld e, a
@@ -3641,7 +3615,7 @@ jr_000_10d4:
     ld d, [hl]
     push de
     ld e, $01
-    ld hl, $406a
+    ld hl, _deactivate_actor
     call RST_08
     pop hl
     pop bc
@@ -3656,7 +3630,7 @@ jr_000_10f7:
 
 Jump_000_1100:
 jr_000_1100:
-    ld a, [$da2f]
+    ld a, [_SHOW_ACTORS_ON_OVERLAY]
     or a
     jr nz, jr_000_1173
 
@@ -3664,7 +3638,7 @@ jr_000_1100:
     sub $07
     jr z, jr_000_1173
 
-    ld hl, $c503
+    ld hl, _screen_x
     ld c, [hl]
     ld b, $00
     ld hl, $0008
@@ -3696,7 +3670,7 @@ jr_000_112c:
 jr_000_1131:
     jr nc, jr_000_1173
 
-    ld a, [$c504]
+    ld a, [_screen_y]
     ld b, $00
     add $f8
     ld c, a
@@ -3780,7 +3754,7 @@ jr_000_1193:
     cp $ff
     jr z, jr_000_11dc
 
-    ld hl, $da1f
+    ld hl, _GAME_TIME
     and [hl]
     jr nz, jr_000_11dc
 
@@ -3853,19 +3827,19 @@ jr_000_11e7:
     ld l, [hl]
     ld e, a
     ld d, l
-    ld a, [$c504]
+    ld a, [_screen_y]
     ld hl, sp+$05
     ld [hl], a
-    ld a, [$c503]
+    ld a, [_screen_x]
     ld hl, sp+$06
     ld [hl], a
-    ld a, [$c50e]
+    ld a, [_allocated_hardware_sprites]
     ld hl, sp+$07
     ld [hl], a
     ld hl, $000a
     add hl, bc
     ld a, [hl]
-    ld [$da1d], a
+    ld [___current_base_prop], a
     ld l, e
     ld h, d
     inc hl
@@ -3904,7 +3878,7 @@ jr_000_1225:
     ld a, [hl]
     push af
     inc sp
-    call Call_000_0da2
+    call _move_metasprite
     add sp, $03
     ld a, e
     ld hl, $c50e
@@ -3938,7 +3912,7 @@ Jump_000_1263:
     ret
 
 
-Call_000_1270:
+_SetBankedBkgData:
     ldh a, [$90]
     ld [$c519], a
     ld hl, sp+$06
@@ -3946,7 +3920,7 @@ Call_000_1270:
     ldh [$90], a
     ld [$2000], a
     pop bc
-    call Call_000_35b7
+    call _set_win_data
     ld a, [$c519]
     ldh [$90], a
     ld [$2000], a
@@ -3954,8 +3928,7 @@ Call_000_1270:
     ld l, c
     jp hl
 
-
-Call_000_128c:
+_SetBankedSpriteData:
     ldh a, [$90]
     ld [$c519], a
     ld hl, sp+$06
@@ -3963,7 +3936,7 @@ Call_000_128c:
     ldh [$90], a
     ld [$2000], a
     pop bc
-    call Call_000_35bf
+    call set_sprite_data
     ld a, [$c519]
     ldh [$90], a
     ld [$2000], a
@@ -3971,7 +3944,7 @@ Call_000_128c:
     ld l, c
     jp hl
 
-
+_SetBankedBkgTiles:
     ldh a, [$90]
     ld [$c519], a
     ld hl, sp+$08
@@ -3979,7 +3952,7 @@ Call_000_128c:
     ldh [$90], a
     ld [$2000], a
     pop bc
-    call Call_000_3964
+    call _set_bkg_tiles
     ld a, [$c519]
     ldh [$90], a
     ld [$2000], a
@@ -3988,7 +3961,7 @@ Call_000_128c:
     jp hl
 
 
-Call_000_12c4:
+_SetBankedWinTiles:
     ldh a, [$90]
     ld [$c519], a
     ld hl, sp+$08
@@ -3996,7 +3969,7 @@ Call_000_12c4:
     ldh [$90], a
     ld [$2000], a
     pop bc
-    call Call_000_359e
+    call _set_win_tiles
     ld a, [$c519]
     ldh [$90], a
     ld [$2000], a
@@ -4005,7 +3978,7 @@ Call_000_12c4:
     jp hl
 
 
-Call_000_12e0:
+_ReadBankedFarPtr:
     ldh a, [$90]
     ld [$c519], a
     ld hl, sp+$06
@@ -4034,7 +4007,7 @@ Call_000_12e0:
     ret
 
 
-Call_000_1307:
+_ReadBankedUWORD:
     ldh a, [$90]
     ld [$c519], a
     ld hl, sp+$04
@@ -4053,7 +4026,7 @@ Call_000_1307:
     ret
 
 
-Call_000_1323:
+_MemcpyBanked:
     ldh a, [$90]
     ld [$c519], a
     ld hl, sp+$08
@@ -4061,7 +4034,7 @@ Call_000_1323:
     ldh [$90], a
     ld [$2000], a
     pop bc
-    call Call_000_376d
+    call _memset1
     ld a, [$c519]
     ldh [$90], a
     ld [$2000], a
@@ -4136,7 +4109,7 @@ jr_000_1383:
     inc sp
     push bc
     push de
-    call Call_000_12e0
+    call _ReadBankedFarPtr
     add sp, $05
     ld hl, sp+$04
     ld a, [hl+]
@@ -4211,9 +4184,9 @@ jr_000_13ee:
     ret
 
 
-Call_000_13f1:
+_camera_update:
     add sp, -$07
-    ld a, [$c522]
+    ld a, [_camera_settings]
     ld hl, sp+$00
     ld [hl], a
     push hl
@@ -4221,7 +4194,7 @@ Call_000_13f1:
     pop hl
     jp z, Jump_000_148c
 
-    ld hl, $c0ba
+    ld hl, _ACTORS + 1
 
 Call_000_1403:
     ld a, [hl+]
@@ -4245,7 +4218,7 @@ Call_000_1403:
     ld a, h
     ld hl, sp+$02
     ld [hl], a
-    ld a, [$c520]
+    ld a, [_camera_deadzone_x]
     ld c, a
     rlca
     sbc a
@@ -4271,7 +4244,7 @@ Call_000_1403:
     sbc h
     ld b, a
     ld c, e
-    ld a, [$c51e]
+    ld a, [_camera_offset_x]
     ld e, a
     rlca
     sbc a
@@ -4282,10 +4255,10 @@ Call_000_1403:
     ld a, b
     sbc d
     ld b, a
-    ld a, [$c51a]
+    ld a, [_camera_x]
     ld hl, sp+$05
     ld [hl], a
-    ld a, [$c51b]
+    ld a, [_camera_x + 1]
     ld hl, sp+$06
     ld [hl-], a
     ld a, [hl+]
@@ -4294,7 +4267,7 @@ Call_000_1403:
     sbc b
     jr nc, jr_000_1468
 
-    ld hl, $c51a
+    ld hl, _camera_x
     ld a, c
     ld [hl+], a
     ld [hl], b
@@ -4328,7 +4301,7 @@ jr_000_1468:
     sbc [hl]
     jr nc, jr_000_148c
 
-    ld hl, $c51a
+    ld hl, _camera_x
     ld a, c
     ld [hl+], a
     ld [hl], b
@@ -4341,7 +4314,7 @@ jr_000_148c:
     pop hl
     jp z, Jump_000_1521
 
-    ld hl, $c0bc
+    ld hl, _ACTORS + 3
     ld a, [hl+]
     ld c, a
     ld b, [hl]
@@ -4363,7 +4336,7 @@ jr_000_148c:
     ld a, h
     ld hl, sp+$02
     ld [hl], a
-    ld a, [$c521]
+    ld a, [_camera_deadzone_y]
     ld c, a
     rlca
     sbc a
@@ -4389,7 +4362,7 @@ jr_000_148c:
     sbc h
     ld b, a
     ld c, e
-    ld a, [$c51f]
+    ld a, [_camera_offset_y]
     ld e, a
     rlca
     sbc a
@@ -4400,10 +4373,10 @@ jr_000_148c:
     ld a, b
     sbc d
     ld b, a
-    ld a, [$c51c]
+    ld a, [_camera_y]
     ld hl, sp+$05
     ld [hl], a
-    ld a, [$c51d]
+    ld a, [_camera_y + 1]
     ld hl, sp+$06
     ld [hl-], a
     ld a, [hl+]
@@ -4412,7 +4385,7 @@ jr_000_148c:
     sbc b
     jr nc, jr_000_14fd
 
-    ld hl, $c51c
+    ld hl, _camera_y
     ld a, c
     ld [hl+], a
     ld [hl], b
@@ -4446,7 +4419,7 @@ jr_000_14fd:
     sbc [hl]
     jr nc, jr_000_1521
 
-    ld hl, $c51c
+    ld hl, _camera_y
     ld a, c
     ld [hl+], a
     ld [hl], b
@@ -4515,7 +4488,7 @@ Call_000_1524:
     push hl
     push de
     push bc
-    call Call_000_376d
+    call _memset1
     add sp, $06
     ld hl, sp+$00
     ld a, [hl]
@@ -4527,13 +4500,13 @@ Call_000_1524:
     ret
 
 
-Call_000_1583:
+_events_update:
     add sp, -$08
     ld hl, sp+$05
     ld a, $e8
     ld [hl+], a
     ld [hl], $c5
-    ld a, [$c61b]
+    ld a, [_FRAME_JOY]
     ld hl, sp+$07
     ld [hl], a
     ld hl, sp+$00
@@ -4602,13 +4575,13 @@ Jump_000_1596:
     pop hl
     jr z, jr_000_15ec
 
-    ld a, [$c61b]
+    ld a, [_FRAME_JOY]
     ld hl, sp+$00
     xor [hl]
-    ld [$c61b], a
+    ld [_FRAME_JOY], a
 
 jr_000_15ec:
-    ld a, [$c61c]
+    ld a, [_LAST_JOY]
     ld hl, sp+$00
     and [hl]
     jr nz, jr_000_1632
@@ -4689,16 +4662,16 @@ Jump_000_163d:
 
 Jump_000_1648:
     ld a, [$c61d]
-    ld hl, $c61b
+    ld hl, _FRAME_JOY
     and [hl]
     ld [$c61d], a
     add sp, $08
     ret
 
 
-Call_000_1655:
+_timers_update:
     add sp, -$05
-    ld bc, $c604
+    ld bc, _TIMER_VALUES
     ld hl, sp+$04
     ld [hl], $00
 
@@ -4798,7 +4771,7 @@ jr_000_16aa:
     push af
     inc sp
     ld e, $02
-    ld hl, $61bc
+    ld hl, _func_bank002_61bc
     call RST_08
     add sp, $08
     pop bc
@@ -4820,17 +4793,17 @@ jr_000_16da:
 Call_000_16dd:
     ld bc, $c617
     ld a, [bc]
-    ld [$c61c], a
-    call Call_000_373a
+    ld [_LAST_JOY], a
+    call _joypad
     ld a, e
-    ld hl, $c61b
+    ld hl, _FRAME_JOY
     ld [hl], a
     ld [bc], a
     ld a, [hl]
     and $0f
     ld e, a
     ld d, $00
-    ld hl, $c61c
+    ld hl, _LAST_JOY
     ld a, [hl]
     and $0f
     ld b, a
@@ -4846,13 +4819,13 @@ Call_000_16dd:
 jr_000_1703:
     ld a, [hl]
     cpl
-    ld hl, $c61b
+    ld hl, _FRAME_JOY
     and [hl]
-    ld [$c61d], a
+    ld [_RECENT_JOY], a
     ret
 
 
-Jump_000_170d:
+sio_ISR:
     push af
     push hl
     push bc
@@ -4860,7 +4833,7 @@ Jump_000_170d:
     ld c, $01
     xor a
     ldh [rSC], a
-    ld hl, $c61e
+    ld hl, _SIO_STATUS
     ld a, [hl]
     cp $02
     jr nz, jr_000_1730
@@ -4873,7 +4846,7 @@ Jump_000_170d:
     ld [c], a
     ld a, $80
     ldh [rSC], a
-    call Call_000_2438
+    call _on_SIO_receive
     inc sp
     jr jr_000_175c
 
@@ -4890,7 +4863,7 @@ jr_000_1730:
     jr jr_000_174b
 
 jr_000_173f:
-    ld a, [$c620]
+    ld a, [_link_next_mode]
     cp $02
     jr nz, jr_000_174b
 
@@ -4906,9 +4879,9 @@ jr_000_174d:
     ld a, $80
     ldh [rSC], a
     ld a, $00
-    ld [$c620], a
+    ld [_link_next_mode], a
     ld a, $01
-    ld [$c61f], a
+    ld [_link_byte_sent], a
 
 jr_000_175c:
     pop de
@@ -4923,14 +4896,13 @@ jr_000_175f:
     pop af
     reti
 
-
-Jump_000_1767:
+timer_ISR:
     push af
     push hl
     push bc
     push de
-    call Call_000_1a7e
-    call Call_000_2479
+    call _music_play_isr
+    call _SIO_update
     pop de
     pop bc
     pop hl
@@ -4943,14 +4915,14 @@ jr_000_1774:
     pop af
     reti
 
-
+_simple_LCD_isr:
     ldh a, [rLYC]
     sub $96
     jr nz, jr_000_17b5
 
-    ld a, [$c7d8]
+    ld a, [_DRAW_SCROLL_X]
     ldh [rSCX], a
-    ld a, [$c7da]
+    ld a, [_DRAW_SCROLL_Y]
     ldh [rSCY], a
     ld a, [$ff4a]
     or a
@@ -4971,7 +4943,7 @@ jr_000_179d:
     sub $07
     jr nz, jr_000_17af
 
-    ld a, [$da2f]
+    ld a, [_SHOW_ACTORS_ON_OVERLAY]
     or a
     jr nz, jr_000_17af
 
@@ -4980,14 +4952,14 @@ jr_000_179d:
     ldh [rLCDC], a
 
 jr_000_17af:
-    ld a, [$da30]
+    ld a, [_OVERLAY_CUT_SCANLINE]
     ldh [rLYC], a
     ret
 
 
 jr_000_17b5:
     ldh a, [rLYC]
-    ld hl, $da30
+    ld hl, _OVERLAY_CUT_SCANLINE
     sub [hl]
     jr nc, jr_000_17db
 
@@ -4995,7 +4967,7 @@ jr_000_17b5:
     sub $07
     jr nz, jr_000_17d5
 
-    ld a, [$da2f]
+    ld a, [_SHOW_ACTORS_ON_OVERLAY]
     or a
     jr nz, jr_000_17d5
 
@@ -5009,7 +4981,7 @@ jr_000_17c9:
     ldh [rLCDC], a
 
 jr_000_17d5:
-    ld a, [$da30]
+    ld a, [_OVERLAY_CUT_SCANLINE]
     ldh [rLYC], a
     ret
 
@@ -5022,7 +4994,7 @@ jr_000_17db:
     ldh a, [rLCDC]
     and $df
     ldh [rLCDC], a
-    ld a, [$da2e]
+    ld a, [_HIDE_SPRITES]
     or a
     jr nz, jr_000_17f3
 
@@ -5035,7 +5007,7 @@ jr_000_17f3:
     ldh [rLYC], a
     ret
 
-
+_fullscreen_LCD_isr:
     ldh a, [rLYC]
     sub $96
     jr nz, jr_000_1813
@@ -5043,9 +5015,9 @@ jr_000_17f3:
     ldh a, [rLCDC]
     and $ef
     ldh [rLCDC], a
-    ld a, [$c7d8]
+    ld a, [_DRAW_SCROLL_X]
     ldh [rSCX], a
-    ld a, [$c7da]
+    ld a, [_DRAW_SCROLL_Y]
     ldh [rSCY], a
     ld a, $47
     ldh [rLYC], a
@@ -5064,11 +5036,11 @@ jr_000_1813:
     ldh [rLYC], a
     ret
 
-
-    ld a, [$c91c]
+_VBL_isr:
+    ld a, [_WIN_POS_X]
     add $07
     ldh [rWX], a
-    ld hl, $c91e
+    ld hl, _WIN_POS_Y
     ld a, [hl]
     ldh [rWY], a
     ld a, [hl]
@@ -5086,7 +5058,7 @@ jr_000_183e:
     ldh [rLCDC], a
 
 jr_000_1844:
-    ld a, [$da2e]
+    ld a, [_HIDE_SPRITES]
     or a
     jr z, jr_000_1852
 
@@ -5112,8 +5084,7 @@ jr_000_1858:
     ld [bc], a
     ret
 
-
-Call_000_186e:
+_isqrt:
     add sp, -$04
     ld bc, $4000
     xor a
@@ -5187,7 +5158,7 @@ jr_000_18be:
     add sp, $04
     ret
 
-
+_sine_wave:
     nop
     inc bc
     ld b, $09
@@ -5430,6 +5401,8 @@ jr_000_195e:
     rst $38
     rst $38
     nop
+
+_dir_angle_lookup:
     add b
     ld b, b
     nop
@@ -5437,19 +5410,21 @@ jr_000_195e:
 
     ld hl, sp+$04
     ld a, [hl]
+
+_hUGETrackerRoutine:
     or a
     ret nz
 
-    ld hl, $c627
+    ld hl, _ROUTINE_QUEUE_HEAD
     inc [hl]
     ld a, [hl]
     and $03
     ld [hl], a
-    ld hl, $c628
+    ld hl, _ROUTINE_QUEUE_TAIL
     sub [hl]
     jr nz, jr_000_19eb
 
-    ld hl, $c628
+    ld hl, _ROUTINE_QUEUE_TAIL
     inc [hl]
     ld a, [hl]
     and $03
@@ -5458,7 +5433,7 @@ jr_000_195e:
 jr_000_19eb:
     ld bc, $c623
     ld a, c
-    ld hl, $c627
+    ld hl, _ROUTINE_QUEUE_HEAD
     add [hl]
     ld c, a
     jr nc, jr_000_19f7
@@ -5472,17 +5447,17 @@ jr_000_19f7:
     ret
 
 
-Call_000_19fc:
+_music_events_update:
     add sp, -$03
 
 jr_000_19fe:
-    ld a, [$c627]
-    ld hl, $c628
+    ld a, [_ROUTINE_QUEUE_HEAD]
+    ld hl, _ROUTINE_QUEUE_TAIL
     sub [hl]
     jr z, jr_000_1a7b
 
     di
-    ld hl, $c628
+    ld hl, _ROUTINE_QUEUE_TAIL
     inc [hl]
     ld a, [hl]
     and $03
@@ -5578,8 +5553,8 @@ jr_000_1a7b:
     ret
 
 
-Call_000_1a7e:
-    ld a, [$c7f1]
+_music_play_isr:
+    ld a, [_SFX_PLAY_BANK]
     inc a
     jr z, jr_000_1abd
 
@@ -5590,18 +5565,18 @@ Call_000_1a7e:
     ld a, [$c646]
     ld hl, $c63f
     or [hl]
-    ld [$d9de], a
+    ld [_hUGE_mute_mask], a
     ld hl, $c63e
     ld [hl], $01
 
 jr_000_1a99:
-    call Call_000_2365
+    call _sfx_play_isr
     ld a, e
     or a
     jr nz, jr_000_1abd
 
     ld a, [$c646]
-    ld [$d9de], a
+    ld [_hUGE_mute_mask], a
     ld hl, $d9dd
     ld [hl], $64
     ld hl, $c63e
@@ -5664,21 +5639,21 @@ Call_000_1af6:
     ld a, [hl+]
     ld e, a
     ld d, [hl]
-    ld a, [$c63d]
+    ld a, [_MUSIC_CURRENT_TRACK_BANK]
     push bc
     push de
     call Call_000_05dc
     pop hl
     pop bc
     xor a
-    ld hl, $c640
+    ld hl, _MUSIC_NEXT_TRACK
     ld [hl+], a
     ld [hl], a
     jr jr_000_1b1c
 
 jr_000_1b17:
     push bc
-    call Call_000_09b9
+    call hUGE_dosound
     pop bc
 
 jr_000_1b1c:
@@ -5688,7 +5663,7 @@ jr_000_1b1c:
     ld [hl], c
     ret
 
-
+parallax_LCD_isr:
     ld hl, $c69d
     ld a, [hl+]
     ld h, [hl]
@@ -5737,12 +5712,11 @@ jr_000_1b58:
     ld [hl], $c6
     ret
 
-
-Call_000_1b61:
+_projectiles_update:
     add sp, -$09
-    ld a, [$c7cb]
-    ld [$c7d0], a
-    ld a, [$c7cc]
+    ld a, [_projectiles_active_head]
+    ld [_projectiles_inactive_head + 3], a
+    ld a, [_projectiles_active_head + 1]
     ld [$c7d1], a
     xor a
     ld hl, $c7d2
@@ -5814,7 +5788,7 @@ Jump_000_1b7a:
     jr jr_000_1bcf
 
 jr_000_1bc9:
-    ld hl, $c7cb
+    ld hl, _projectiles_active_head
     ld a, c
     ld [hl+], a
     ld [hl], b
@@ -5828,7 +5802,7 @@ jr_000_1bcf:
     add hl, bc
     ld c, l
     ld b, h
-    ld hl, $c7cd
+    ld hl, _projectiles_inactive_head
     ld a, [hl+]
     ld [bc], a
     inc bc
@@ -5862,7 +5836,7 @@ jr_000_1bfe:
     ld hl, $001d
     add hl, bc
     ld a, [hl]
-    ld hl, $da1f
+    ld hl, _GAME_TIME
     and [hl]
     jr nz, jr_000_1c4f
 
@@ -5999,7 +5973,7 @@ jr_000_1c4f:
     ld a, c
     ld [hl+], a
     ld [hl], b
-    ld hl, $da1f
+    ld hl, _GAME_TIME
     ld c, [hl]
     ld a, [$c7d0]
     ld hl, sp+$07
@@ -6055,7 +6029,7 @@ jr_000_1c4f:
     ld d, [hl]
     push de
     ld e, $01
-    ld hl, $4b20
+    ld hl, _actor_overlapping_bb
     call RST_08
     add sp, $07
     ld hl, sp+$07
@@ -6583,7 +6557,7 @@ Jump_000_1f56:
     ld a, [hl]
     push af
     inc sp
-    call Call_000_0da2
+    call _move_metasprite
     add sp, $03
     ld a, e
     ld hl, $c50e
@@ -6852,7 +6826,7 @@ jr_000_20d1:
     ld a, [hl]
     push af
     inc sp
-    call Call_000_0da2
+    call _move_metasprite
     add sp, $03
     ld a, e
     ld hl, $c50e
@@ -6890,10 +6864,10 @@ Jump_000_2165:
     ret
 
 
-Call_000_2173:
+_scroll_load_pending_row:
     ldh a, [$90]
     ld c, a
-    ld hl, $c7e7
+    ld hl, _pending_w_i
     ld a, [hl]
     sub $07
     jr nc, jr_000_2182
@@ -7040,10 +7014,10 @@ Jump_000_2234:
     ret
 
 
-Call_000_223f:
+_scroll_load_pending_col:
     ldh a, [$90]
     ld c, a
-    ld hl, $c7e4
+    ld hl, _pending_h_i
     ld a, [hl]
     sub $07
     jr nc, jr_000_224e
@@ -7057,7 +7031,7 @@ jr_000_224e:
     xor a
 
 jr_000_2251:
-    ld hl, $c529
+    ld hl, _image_bank
     ld a, [hl]
     ldh [$90], a
     ld de, $2000
@@ -7069,29 +7043,29 @@ jr_000_2251:
     ld a, [hl]
     ld [de], a
     push bc
-    ld a, [$c532]
+    ld a, [_image_tile_width]
     push af
     inc sp
-    ld hl, $c52a
+    ld hl, _image_ptr
     ld a, [hl+]
     ld e, a
     ld d, [hl]
     push de
     ld c, $01
     push bc
-    ld a, [$c7e3]
+    ld a, [_pending_h_y]
     ld h, a
-    ld a, [$c7e2]
+    ld a, [_pending_h_x]
     ld l, a
     push hl
     call Call_000_2297
     add sp, $07
     pop bc
-    ld hl, $c7e3
+    ld hl, _pending_h_y
     ld a, [hl]
     add b
     ld [hl], a
-    ld hl, $c7e4
+    ld hl, _pending_h_i
     ld a, [hl]
     sub b
     ld [hl], a
@@ -7208,12 +7182,12 @@ jr_000_2310:
 
 jr_000_2317:
     ld hl, $9800
-    jr jr_000_231f
+    jr _set_xy_submap
 
 jr_000_231c:
     ld hl, $9c00
 
-jr_000_231f:
+_set_xy_submap:
     push bc
     swap e
     rlc e
@@ -7276,15 +7250,15 @@ Jump_000_233e:
     push bc
     jr jr_000_2332
 
-Call_000_2365:
-    ld hl, $c7f2
+_sfx_play_isr:
+    ld hl, _SFX_PLAY_SAMPLE
     ld a, [hl+]
     ld e, a
     or [hl]
     ret z
 
     ld d, [hl]
-    ld hl, $c7f4
+    ld hl, _SFX_FRAME_SKIP
     xor a
     or [hl]
     jr z, jr_000_2377
@@ -7301,7 +7275,7 @@ jr_000_2377:
     ld l, e
     ldh a, [$90]
     ld e, a
-    ld a, [$c7f1]
+    ld a, [_SFX_PLAY_BANK]
     inc a
     jr z, jr_000_2375
 
@@ -7312,7 +7286,7 @@ jr_000_2377:
     ld a, [hl]
     swap a
     and d
-    ld [$c7f4], a
+    ld [_SFX_FRAME_SKIP], a
     ld a, [hl+]
     and d
     ld d, a
@@ -7459,9 +7433,9 @@ Jump_000_2427:
 
 jr_000_2428:
     ld a, l
-    ld [$c7f2], a
+    ld [_SFX_PLAY_SAMPLE], a
     ld a, h
-    ld [$c7f3], a
+    ld [_SFX_PLAY_SAMPLE + 1], a
     ld a, e
     ldh [$90], a
     ld [$2000], a
@@ -7469,21 +7443,21 @@ jr_000_2428:
     ret
 
 
-Call_000_2438:
-    ld hl, $c816
+_on_SIO_receive:
+    ld hl, _link_packet_len
     ld a, [hl]
     or a
     jr z, jr_000_2468
 
     dec [hl]
-    ld hl, $c817
+    ld hl, _link_packet_ptr
     ld a, [hl+]
     ld c, a
     ld b, [hl]
     ld hl, sp+$02
     ld a, [hl]
     ld [bc], a
-    ld hl, $c817
+    ld hl, _link_packet_ptr
     inc [hl]
     jr nz, jr_000_2452
 
@@ -7491,16 +7465,16 @@ Call_000_2438:
     inc [hl]
 
 jr_000_2452:
-    ld hl, $c816
+    ld hl, _link_packet_len
     ld a, [hl]
     or a
-    jp nz, Jump_000_021d
+    jp nz, _SIO_receive
 
-    ld hl, $c817
+    ld hl, _link_packet_ptr
     ld [hl], $f6
     inc hl
     ld [hl], $c7
-    ld hl, $c819
+    ld hl, _link_packet_received
     ld [hl], $01
     ret
 
@@ -7508,60 +7482,58 @@ jr_000_2452:
 jr_000_2468:
     ld hl, sp+$02
     ld a, [hl]
-    ld [$c816], a
-    ld hl, $c817
+    ld [_link_packet_len], a
+    ld hl, _link_packet_ptr
     ld [hl], $f6
     inc hl
     ld [hl], $c7
-    jp Jump_000_021d
+    jp _SIO_receive
 
-
-Call_000_2479:
-    ld a, [$c61e]
+_SIO_update:
+    ld a, [_SIO_STATUS]
     sub $04
     jr nz, jr_000_249f
 
-    ld hl, $c7f5
+    ld hl, _link_operation_mode
     ld [hl], $00
-    ld hl, $c81a
+    ld hl, _link_packet_snd_len
     ld [hl], $00
-    ld hl, $c816
+    ld hl, _link_packet_len
     ld [hl], $00
-    ld hl, $c817
+    ld hl, _link_packet_ptr
     ld [hl], $f6
     inc hl
     ld [hl], $c7
-    ld hl, $c61e
+    ld hl, _SIO_STATUS
     ld [hl], $00
     ld e, $00
     ret
 
-
 jr_000_249f:
-    ld a, [$c61f]
+    ld a, [_link_byte_sent]
     or a
     jr z, jr_000_24dd
 
-    ld a, [$c81a]
+    ld a, [_link_packet_snd_len]
     or a
     jr z, jr_000_24d8
 
-    ld hl, $c61f
+    ld hl, _link_byte_sent
     ld [hl], $00
-    ld a, [$c81a]
+    ld a, [_link_packet_snd_len]
     dec a
     jr nz, jr_000_24bb
 
-    ld hl, $c620
+    ld hl, _link_next_mode
     ld [hl], $02
 
 jr_000_24bb:
-    ld hl, $c81b
+    ld hl, _link_packet_snd_ptr
     ld l, [hl]
-    ld a, [$c81c]
+    ld a, [_link_packet_snd_ptr + 1]
     ld h, a
     ld b, [hl]
-    ld hl, $c81b
+    ld hl, _link_packet_snd_ptr
     inc [hl]
     jr nz, jr_000_24cc
 
@@ -7571,14 +7543,14 @@ jr_000_24bb:
 jr_000_24cc:
     push bc
     inc sp
-    call Call_000_020a
+    call _SIO_send_byte
     inc sp
-    ld hl, $c81a
+    ld hl, _link_packet_snd_len
     dec [hl]
     jr jr_000_24dd
 
 jr_000_24d8:
-    ld hl, $c81d
+    ld hl, _link_packet_sent
     ld [hl], $01
 
 jr_000_24dd:
@@ -7586,16 +7558,16 @@ jr_000_24dd:
     ret
 
 
-Call_000_24e0:
+_ui_update:
     ld c, $00
-    ld a, [$c91e]
-    ld hl, $c91f
+    ld a, [_WIN_POS_Y]
+    ld hl, _WIN_DEST_POS_Y
     sub [hl]
     jr z, jr_000_2525
 
     ld bc, $02a2
     ld a, c
-    ld hl, $c920
+    ld hl, _WIN_SPEED
     add [hl]
     ld c, a
     jr nc, jr_000_24f7
@@ -7604,11 +7576,11 @@ Call_000_24e0:
 
 jr_000_24f7:
     ld a, [bc]
-    ld hl, $da1f
+    ld hl, _GAME_TIME
     and [hl]
     jr nz, jr_000_2523
 
-    ld a, [$c920]
+    ld a, [_WIN_SPEED]
     or a
     jr nz, jr_000_2509
 
@@ -7619,19 +7591,19 @@ jr_000_2509:
     ld bc, $0001
 
 jr_000_250c:
-    ld a, [$c91e]
-    ld hl, $c91f
+    ld a, [_WIN_POS_Y]
+    ld hl, _WIN_DEST_POS_Y
     sub [hl]
     jr nc, jr_000_251d
 
-    ld hl, $c91e
+    ld hl, _WIN_POS_Y
     ld a, [hl]
     add c
     ld [hl], a
     jr jr_000_2523
 
 jr_000_251d:
-    ld hl, $c91e
+    ld hl, _WIN_POS_Y
     ld a, [hl]
     sub c
     ld [hl], a
@@ -7640,14 +7612,14 @@ jr_000_2523:
     ld c, $01
 
 jr_000_2525:
-    ld a, [$c91c]
-    ld hl, $c91d
+    ld a, [_WIN_POS_X]
+    ld hl, _WIN_DEST_POS_X
     sub [hl]
     jr z, jr_000_2568
 
     ld bc, $02a2
     ld a, c
-    ld hl, $c920
+    ld hl, _WIN_SPEED
     add [hl]
     ld c, a
     jr nc, jr_000_253a
@@ -7656,7 +7628,7 @@ jr_000_2525:
 
 jr_000_253a:
     ld a, [bc]
-    ld hl, $da1f
+    ld hl, _GAME_TIME
     and [hl]
     jr nz, jr_000_2566
 
@@ -7671,19 +7643,19 @@ jr_000_254c:
     ld bc, $0001
 
 jr_000_254f:
-    ld a, [$c91c]
-    ld hl, $c91d
+    ld a, [_WIN_POS_X]
+    ld hl, _WIN_DEST_POS_X
     sub [hl]
     jr nc, jr_000_2560
 
-    ld hl, $c91c
+    ld hl, _WIN_POS_X
     ld a, [hl]
     add c
     ld [hl], a
     jr jr_000_2566
 
 jr_000_2560:
-    ld hl, $c91c
+    ld hl, _WIN_POS_X
     ld a, [hl]
     sub c
     ld [hl], a
@@ -7700,17 +7672,17 @@ jr_000_2568:
     or a
     ret nz
 
-    ld a, [$c61b]
+    ld a, [_FRAME_JOY]
     and $30
     jr z, jr_000_257e
 
-    ld a, [$c61c]
+    ld a, [_LAST_JOY]
     and $30
     jr z, jr_000_2586
 
 Call_000_257e:
 jr_000_257e:
-    ld a, [$da1f]
+    ld a, [_GAME_TIME]
     ld hl, $c922
     and [hl]
     ret nz
@@ -7810,7 +7782,7 @@ jr_000_25f2:
     ld [hl], b
     ret
 
-
+__vm_sgb_transfer:
     dec sp
     ldh a, [$90]
     ld hl, sp+$00
@@ -7872,7 +7844,7 @@ jr_000_25f2:
     inc sp
     ret
 
-
+_vm_load_text:
     add sp, -$10
     ldh a, [$90]
     ld hl, sp+$00
@@ -10369,7 +10341,7 @@ Jump_000_31a6:
     ld a, [de]
     ld b, a
     push bc
-    call Call_000_358f
+    call _abs
     pop hl
     ld c, e
     ld b, d
@@ -10419,7 +10391,7 @@ Jump_000_31db:
     ld a, [de]
     ld b, a
     push bc
-    call Call_000_186e
+    call _isqrt
     pop hl
     ld c, e
     ld b, $00
@@ -10674,7 +10646,7 @@ jr_000_3300:
     ret
 
 
-Call_000_3307:
+_script_runner_update: ; 0x3307
     dec sp
     dec sp
     ld a, [$cb90]
@@ -10945,8 +10917,7 @@ jr_000_346f:
     inc sp
     ret
 
-
-Call_000_3472:
+_fill_win_rect:
     push bc
     ld hl, sp+$04
     ld a, [hl+]
@@ -10962,9 +10933,8 @@ Call_000_3472:
     pop bc
     ret
 
-
-Call_000_3484:
-    ld a, [$d9bf]
+_randw:
+    ld a, [_RAND_SEED]
     ld l, a
     ld e, a
     ld a, [$d9c0]
@@ -10986,7 +10956,7 @@ Call_000_3484:
     ld h, a
     ld a, l
     add $93
-    ld [$d9bf], a
+    ld [_RAND_SEED], a
     ld d, a
     ld a, h
     adc $5c
@@ -10994,16 +10964,15 @@ Call_000_3484:
     ld e, a
     ret
 
-
-Call_000_34af:
+_initrand:
     ld hl, sp+$02
     ld a, [hl+]
-    ld [$d9bf], a
+    ld [_RAND_SEED], a
     ld a, [hl]
-    ld [$d9c0], a
+    ld [_RAND_SEED + 1], a
     ret
 
-
+get_win_data:
 Call_000_34ba:
     ldh a, [rLCDC]
     and $10
@@ -11208,8 +11177,7 @@ jr_000_3589:
     ld d, h
     ret
 
-
-Call_000_358f:
+_abs:
     ld hl, sp+$03
     ld a, [hl-]
     ld d, a
@@ -11225,8 +11193,7 @@ Call_000_358f:
     ld d, a
     ret
 
-
-Call_000_359e:
+_set_win_tiles:
     push bc
     ld hl, sp+$04
     ld a, [hl+]
@@ -11240,22 +11207,22 @@ Call_000_359e:
     ld a, [hl-]
     ld h, [hl]
     ld l, a
-    call Call_000_37e3
+    call set_xy_wtt
     pop bc
     ret
 
-
+set_tile_data:
     ld hl, sp+$06
     ld d, [hl]
     jr jr_000_35c1
 
-Call_000_35b7:
+_set_win_data:
     ld d, $90
     ldh a, [rLCDC]
     and $10
     jr z, jr_000_35c1
 
-Call_000_35bf:
+set_sprite_data:
     ld d, $80
 
 jr_000_35c1:
@@ -11291,7 +11258,7 @@ jr_000_35de:
     and $02
     jr nz, jr_000_35de
 
-    ld a, [hl+]
+    ld a, [hl+] ; load background, hl has address of image
     ld [de], a
     inc de
     dec b
@@ -11610,7 +11577,7 @@ jr_000_372c:
     ld d, $7f
 
 jr_000_372e:
-    call Call_000_373a
+    call _joypad
     or a
     jr nz, jr_000_372c
 
@@ -11622,7 +11589,7 @@ jr_000_372e:
     ret
 
 
-Call_000_373a:
+_joypad:
     ld a, $20
     ldh [rP1], a
     ldh a, [rP1]
@@ -11651,10 +11618,10 @@ Call_000_373a:
     ld hl, sp+$02
     ld d, [hl]
 
-jr_000_3765:
-    call Call_000_373a
+.wait_pad:
+    call _joypad
     and d
-    jr z, jr_000_3765
+    jr z, .wait_pad
 
     ret
 
@@ -11662,8 +11629,8 @@ jr_000_3765:
 Call_000_376c:
     jp hl
 
-
-Call_000_376d:
+; memset
+_memset1:
     ld hl, sp+$07
     ld a, [hl-]
     ld d, a
@@ -11735,8 +11702,8 @@ jr_000_37aa:
     ld d, [hl]
     ret
 
-
-Call_000_37b0:
+; memset
+_memset2:
     ld hl, sp+$07
     ld a, [hl-]
     ld d, a
@@ -11792,7 +11759,7 @@ jr_000_37dd:
     ret
 
 
-Call_000_37e3:
+set_xy_wtt:
     push hl
     ldh a, [rLCDC]
     and $40
@@ -11800,7 +11767,7 @@ Call_000_37e3:
 
     jr jr_000_37f8
 
-Call_000_37ec:
+set_xy_btt:
     push hl
     ldh a, [rLCDC]
     and $08
@@ -11808,12 +11775,12 @@ Call_000_37ec:
 
 jr_000_37f3:
     ld hl, $9800
-    jr jr_000_37fb
+    jr set_xy_tt
 
 jr_000_37f8:
     ld hl, $9c00
 
-jr_000_37fb:
+set_xy_tt:
     push bc
     swap e
     rlc e
@@ -11835,7 +11802,7 @@ jr_000_380e:
     and $02
     jr nz, jr_000_380e
 
-    ld a, [$da36]
+    ld a, [_MAP_TILE_OFFSET]
     add [hl]
     ld [bc], a
     inc hl
@@ -12165,7 +12132,7 @@ jr_000_395a:
     ret
 
 
-Call_000_3964:
+_set_bkg_tiles:
     push bc
     ld hl, sp+$04
     ld a, [hl+]
@@ -12179,7 +12146,7 @@ Call_000_3964:
     ld a, [hl-]
     ld h, [hl]
     ld l, a
-    call Call_000_37ec
+    call set_xy_btt
     pop bc
     ret
 
@@ -12209,17 +12176,17 @@ Call_000_3964:
 
     nop
 
-Call_000_3991:
+gsinit:
     ld bc, $0019
     ld hl, $3978
-    ld de, $da1e
-    call Call_000_0dea
+    ld de, _FADE_STYLE
+    call _memcpy_simple
     xor a
-    ld hl, $c61e
+    ld hl, _SIO_STATUS
     ld c, $03
     rst $28
     ld a, $00
-    ld [$c61e], a
+    ld [_SIO_STATUS], a
     ldh [rSC], a
     ld a, $66
     ldh [rSB], a
@@ -12229,1623 +12196,5 @@ Call_000_3991:
     ld [hl], $00
     ret
 
-
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-
-Call_000_3b33:
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-
-Call_000_3c7c:
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-
-Call_000_3cfc:
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-
-Call_000_3d3f:
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-
-Call_000_3ec1:
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-    rst $38
-
-Call_000_3fff:
-    rst $38
+    ; unused
+    ds 1607, $ff

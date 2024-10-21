@@ -14,45 +14,44 @@ SECTION "ROM Bank $00a", ROMX[$4000], BANK[$a]
     ld [hl+], a
     ld [hl], a
     xor a
-    ld hl, $c51a
+    ld hl, _camera_x
     ld [hl+], a
     ld [hl], a
-    ld hl, $c51f
+    ld hl, _camera_offset_y
     ld [hl], $00
-    ld hl, $c51e
+    ld hl, _camera_offset_x
     ld [hl], $00
     ld e, $0a
     ld hl, $4029
     jp RST_08
 
-
-    ld hl, $c521
+_func_bank00a_4029:
+    ld hl, _camera_deadzone_y
     ld [hl], $00
-    ld hl, $c520
+    ld hl, _camera_deadzone_x
     ld [hl], $00
-    ld hl, $c522
+    ld hl, _camera_settings
     ld [hl], $03
     ret
 
-
+_input_init:
     ld de, $0005
     push de
     ld de, $0000
     push de
     ld de, $c616
     push de
-    call Call_000_37b0
+    call _memset2
     add sp, $06
-    ld hl, $c61c
+    ld hl, _LAST_JOY
     ld [hl], $00
-    ld hl, $c61b
+    ld hl, _FRAME_JOY
     ld [hl], $00
-    ld hl, $c61d
+    ld hl, _RECENT_JOY
     ld [hl], $00
     ld hl, $c616
     ld [hl], $01
     ret
-
 
     di
     ld de, $1b24
@@ -82,39 +81,40 @@ SECTION "ROM Bank $00a", ROMX[$4000], BANK[$a]
     ld [hl], $87
     ret
 
-
+_parallax_init:
     ld de, $0012
     push de
     ld de, $40a2
     push de
-    ld de, $c68b
+    ld de, _PARALLAX_ROWS
     push de
-    call Call_000_376d
+    call _memset1
     add sp, $06
     ret
 
-
+_data_bank00a_40a2:
     db $00, $0f, $02, $00, $02, $00, $00, $1f, $01, $02, $02, $00, $00, $00, $00, $04
     db $10, $00
 
-    ld hl, $c7f5
+_SIO_init:
+    ld hl, _link_operation_mode
     ld [hl], $00
-    ld hl, $c816
+    ld hl, _link_packet_len
     ld [hl], $00
-    ld bc, $c7f6
-    ld hl, $c817
+    ld bc, _link_packet
+    ld hl, _link_packet_ptr
     ld a, c
     ld [hl+], a
     ld [hl], b
-    ld hl, $c819
+    ld hl, _link_packet_received
     ld [hl], $00
-    ld hl, $c81a
+    ld hl, _link_packet_snd_len
     ld [hl], $00
-    ld hl, $c81b
+    ld hl, _link_packet_snd_ptr
     ld a, c
     ld [hl+], a
     ld [hl], b
-    ld hl, $c81d
+    ld hl, _link_packet_sent
     ld [hl], $00
     ret
 
@@ -845,15 +845,16 @@ NgHeadquartersOutsideToJTHouseOutsideTransition:: ; bank 0a 0x4ba1
 
     db $00
 
-    ld hl, $c51e
+_logo_init:
+    ld hl, _camera_offset_x
     ld [hl], $00
-    ld hl, $c51f
+    ld hl, _camera_offset_y
     ld [hl], $00
-    ld hl, $da1f
+    ld hl, _GAME_TIME
     ld [hl], $00
     ret
 
-
+_logo_update:
     ret
 
     ; unused

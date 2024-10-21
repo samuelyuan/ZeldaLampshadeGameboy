@@ -1,65 +1,65 @@
 SECTION "ROM Bank $006", ROMX[$4000], BANK[$6]
 
+_core_reset:
     ld e, $0a
-    ld hl, $40b4
+    ld hl, _SIO_init; jumps to bank 0a: 0x40b4
     call RST_08
     ld e, $0a
-    ld hl, $4039
+    ld hl, _input_init ; jumps to bank 0a: 0x4039
     call RST_08
     ld e, $03
-    ld hl, $4000
+    ld hl, _load_init ; jumps to bank 3: 0x4000
     call RST_08
     ld e, $09
-    ld hl, $4186
+    ld hl, _music_init_driver ; jumps to bank 9: 0x4186
     call RST_08
     ld e, $0a
-    ld hl, $4090
+    ld hl, _parallax_init ; jumps to bank 0a: 0x4090
     call RST_08
     ld e, $05
-    ld hl, $4080
+    ld hl, _scroll_init ; jumps to bank 5: 0x4080
     call RST_08
     ld e, $07
-    ld hl, $442d
+    ld hl, _fade_init ; jumps to bank 7: 0x442d
     call RST_08
     ld e, $0a
-    ld hl, $400b
+    ld hl, $400b ; jumps to bank 0a: 0x400b
     call RST_08
     ld e, $01
-    ld hl, $4000
+    ld hl, _actors_init ; jumps to bank 1: 0x4000
     call RST_08
     ld e, $01
-    ld hl, $563c
+    ld hl, _ui_init ; jumps to bank 1: 0x563c
     call RST_08
     xor a
     push af
     inc sp
     ld e, $05
-    ld hl, $4000
+    ld hl, _events_init ; jumps to bank 5: 0x4000
     call RST_08
     inc sp
     xor a
     push af
     inc sp
     ld e, $05
-    ld hl, $4040
+    ld hl, _timers_init ; jumps to bank 5: 0x4040
     call RST_08
     inc sp
     xor a
     push af
     inc sp
     ld e, $09
-    ld hl, $41dd
+    ld hl, _music_init_events ; jumps to bank 9: 0x41dd
     call RST_08
     inc sp
     ret
 
-
-Jump_006_4075:
+_process_vm:
     add sp, -$05
 
 Jump_006_4077:
 jr_006_4077:
-    call Call_000_3307
+    call _script_runner_update
     ld a, e
     or a
     jr z, jr_006_408d
@@ -77,7 +77,7 @@ jr_006_4077:
 
 jr_006_408d:
     call Call_000_16dd
-    ld a, [$c61b]
+    ld a, [_FRAME_JOY]
     sub $f0
     jr nz, jr_006_40c0
 
@@ -113,22 +113,22 @@ jr_006_40c0:
     xor $01
     jr nz, jr_006_40e6
 
-    ld a, [$c61b]
+    ld a, [_FRAME_JOY]
     or a
     jr z, jr_006_40d6
 
-    call Call_000_1583
+    call _events_update
 
 jr_006_40d6:
-    call Call_000_0280
-    ld a, [$da1f]
+    call _state_update
+    ld a, [_GAME_TIME]
     and $0f
     jr nz, jr_006_40e3
 
-    call Call_000_1655
+    call _timers_update
 
 jr_006_40e3:
-    call Call_000_19fc
+    call _music_events_update
 
 jr_006_40e6:
     ld c, $c0
@@ -136,40 +136,40 @@ jr_006_40e6:
     sub c
     jr nz, jr_006_40f4
 
-    ld hl, $da35
+    ld hl, ___render_shadow_OAM
     ld [hl], $df
     jr jr_006_40f9
 
 jr_006_40f4:
-    ld hl, $da35
+    ld hl, ___render_shadow_OAM
     ld [hl], $c0
 
 jr_006_40f9:
-    ld hl, $c50e
+    ld hl, _allocated_hardware_sprites
     ld [hl], $00
-    call Call_000_13f1
+    call _camera_update
     ld e, $05
-    ld hl, $40ca
+    ld hl, _scroll_update
     call RST_08
-    call Call_000_0e73
-    call Call_000_1b61
-    call Call_000_24e0
+    call _actors_update
+    call _projectiles_update
+    call _ui_update
     ld e, $01
-    ld hl, $4d3f
+    ld hl, _actor_handle_player_collision
     call RST_08
-    ld hl, $da1f
+    ld hl, _GAME_TIME
     inc [hl]
     ld a, $28
     push af
     inc sp
-    ld a, [$c50e]
+    ld a, [_allocated_hardware_sprites]
     push af
     inc sp
-    call Call_000_0ce4
+    call _hide_sprites_range
     pop hl
-    ld a, [$da35]
+    ld a, [___render_shadow_OAM]
     ldh [$92], a
-    call Call_000_0e35
+    call _wait_vbl_done
     jp Jump_006_4077
 
 
@@ -195,19 +195,19 @@ Jump_006_4136:
 
 jr_006_4156:
     ld e, $0a
-    ld hl, $405f
+    ld hl, $405f ; jumps to bank 0a: 0x405f
     call RST_08
-    call Call_000_05a4
+    call _core_reset_hook
     xor a
     push af
     inc sp
     ld e, $02
-    ld hl, $6100
+    ld hl, $6100 ; jumps to bank 02: 0x6100
     call RST_08
     inc sp
-    ld hl, $059c ; loads values in bank 0 address 0x059c
+    ld hl, _start_scene
     ld b, [hl]
-    ld hl, $059d
+    ld hl, _start_scene + 1
     ld a, [hl+]
     ld c, a
     ld a, [hl]
@@ -227,7 +227,7 @@ jr_006_4156:
     ld hl, sp+$04
     ld [hl], a
     ld e, $03
-    ld hl, $4b86
+    ld hl, _load_player
     call RST_08
     jp Jump_006_4288
 
@@ -284,7 +284,7 @@ jr_006_419b:
     ld e, a
     ld d, [hl]
     push de
-    call Call_000_12e0
+    call _ReadBankedFarPtr
     add sp, $05
     ld a, [bc]
     ld l, c
@@ -320,7 +320,7 @@ Jump_006_4216:
     push af
     inc sp
     push bc
-    call Call_000_1307
+    call _ReadBankedUWORD
     add sp, $03
     ld a, e
     push af
@@ -334,7 +334,7 @@ Jump_006_4216:
 
 Jump_006_4236:
     ld e, $07
-    ld hl, $4509
+    ld hl, _fade_out_modal
     call RST_08
     ld e, $0a
     ld hl, $405f
@@ -347,7 +347,7 @@ Jump_006_4236:
     push af
     inc sp
     push bc
-    call Call_000_1307
+    call _ReadBankedUWORD
     add sp, $03
     ld a, e
     push af
@@ -358,7 +358,7 @@ Jump_006_4236:
     inc sp
     ld hl, $cb91
     ld [hl], e
-    ld hl, $c526
+    ld hl, _CURRENT_SCENE
     ld c, [hl]
     ld hl, $c527
     ld a, [hl+]
@@ -369,7 +369,7 @@ Jump_006_4236:
     push bc
     push hl
     ld e, $03
-    ld hl, $42ac
+    ld hl, _load_scene
     call RST_08
     add sp, $04
     ld a, e
@@ -426,39 +426,39 @@ jr_006_42b4:
 
 jr_006_42c4:
     ld e, $01
-    ld hl, $4055
+    ld hl, $4055 ; bank 1: 0x4055
     call RST_08
-    call Call_000_027b
+    call state_init
     ld c, $c0
     ldh a, [$92]
     sub c
     jr nz, jr_006_42dd
 
-    ld hl, $da35
+    ld hl, ___render_shadow_OAM
     ld [hl], $df
     jr jr_006_42e2
 
 jr_006_42dd:
-    ld hl, $da35
+    ld hl, ___render_shadow_OAM
     ld [hl], $c0
 
 jr_006_42e2:
-    ld hl, $c50e
+    ld hl, _allocated_hardware_sprites
     ld [hl], $00
-    call Call_000_13f1
+    call _camera_update
     ld e, $05
     ld hl, $468f
     call RST_08
-    call Call_000_0e73
+    call _actors_update
     ld a, $28
     push af
     inc sp
-    ld a, [$c50e]
+    ld a, [_allocated_hardware_sprites]
     push af
     inc sp
-    call Call_000_0ce4
+    call _hide_sprites_range
     pop hl
-    ld a, [$da35]
+    ld a, [___render_shadow_OAM]
     ldh [$92], a
     ld hl, sp+$04
     ld a, [hl]
@@ -474,10 +474,10 @@ jr_006_42e2:
     add sp, $05
     ret
 
-
-    ld hl, $c81f
+_core_run: ; bank 6: 0x4310
+    ld hl, _IS_SGB
     ld [hl], $00
-    ld a, [$c0a0]
+    ld a, [_CPU]
     sub $11
     jr nz, jr_006_432e
 
@@ -493,12 +493,12 @@ jr_006_4331:
     ld a, $01
 
 jr_006_4333:
-    ld [$c81e], a
-    ld a, [$c0a1]
+    ld [_IS_CGB], a
+    ld a, [_IS_GBA]
     or a
     jr z, jr_006_4342
 
-    ld a, [$c81e]
+    ld a, [_IS_CGB]
     or a
     jr nz, jr_006_4345
 
@@ -510,7 +510,7 @@ jr_006_4345:
     ld a, $01
 
 jr_006_4347:
-    ld [$c0a1], a
+    ld [_IS_GBA], a
     xor a
     and a
     push af
@@ -518,12 +518,12 @@ jr_006_4347:
     push de
     ld de, $df00
     push de
-    call Call_000_37b0
+    call _memset2
     add sp, $06
     ld e, $06
     ld hl, $47a3
     call RST_08
-    call Call_000_0e45
+    call _display_off
     ld e, $0a
     ld hl, $4080
     call RST_08
@@ -537,9 +537,9 @@ jr_006_4347:
     ld b, $00
     ld c, a
     push bc
-    call Call_000_34af
+    call _initrand
     pop hl
-    call Call_000_05a4
+    call _core_reset_hook
     ld a, $01
     push af
     inc sp
@@ -603,10 +603,10 @@ jr_006_43c4:
     ld hl, $61bc
     call RST_08
     add sp, $06
-    jp Jump_006_4075
+    jp _process_vm
 
 
-Call_006_43f5:
+_printer_send_receive:
     ld hl, sp+$02
     ld a, [hl]
     ldh [rSB], a
@@ -656,8 +656,8 @@ jr_006_43fe:
     ld bc, $0000
     nop
 
-Call_006_442f:
-    ld hl, $c611
+_printer_send_byte:
+    ld hl, _fade_timer + 3
     ld b, [hl]
     ld c, $00
     push bc
@@ -665,7 +665,7 @@ Call_006_442f:
     ld a, [hl]
     push af
     inc sp
-    call Call_006_43f5
+    call _printer_send_receive
     inc sp
     ld a, e
     pop bc
@@ -674,14 +674,14 @@ Call_006_442f:
     ld e, a
     ld a, d
     or b
-    ld hl, $c611
+    ld hl, _fade_timer + 3
     ld [hl], e
     inc hl
     ld [hl], a
     ret
 
 
-Call_006_444e:
+_printer_send_command:
     ld hl, sp+$02
     ld a, [hl+]
     ld c, a
@@ -701,7 +701,7 @@ jr_006_4455:
     push de
     push af
     inc sp
-    call Call_006_442f
+    call _printer_send_byte
     inc sp
     pop de
     pop bc
@@ -743,7 +743,7 @@ jr_006_4485:
     push de
     push af
     inc sp
-    call Call_006_43f5
+    call _printer_send_receive
     inc sp
     pop de
     pop bc
@@ -787,7 +787,7 @@ jr_006_44a9:
     push de
     push af
     inc sp
-    call Call_006_43f5
+    call _printer_send_receive
     inc sp
     pop de
     ld hl, sp+$00
@@ -805,22 +805,22 @@ jr_006_44d1:
     ld a, [$c614]
     push af
     inc sp
-    call Call_006_43f5
+    call _printer_send_receive
     inc sp
     ld a, [$c615]
     push af
     inc sp
-    call Call_006_43f5
+    call _printer_send_receive
     inc sp
     xor a
     push af
     inc sp
-    call Call_006_43f5
+    call _printer_send_receive
     inc sp
     xor a
     push af
     inc sp
-    call Call_006_43f5
+    call _printer_send_receive
     inc sp
     ld hl, $c613
     ld [hl], $00
@@ -846,7 +846,7 @@ jr_006_450b:
     add b
     ld [bc], a
 
-Call_006_4513:
+_printer_wait:
     ld hl, sp+$02
     ld a, [hl+]
     ld c, a
@@ -859,7 +859,7 @@ jr_006_4518:
     inc sp
     ld de, $4411
     push de
-    call Call_006_444e
+    call _printer_send_command
     add sp, $03
     ld a, e
     pop bc
@@ -887,9 +887,10 @@ jr_006_453a:
     and $f0
     ret nz
 
-    call Call_000_0e35
+    call _wait_vbl_done
     jr jr_006_4518
 
+_gbprinter_detect:
     ld hl, $c613
     ld [hl], $00
     ld a, $0a
@@ -897,7 +898,7 @@ jr_006_453a:
     inc sp
     ld de, $4407
     push de
-    call Call_006_444e
+    call _printer_send_command
     add sp, $03
     ld hl, sp+$06
     ld c, [hl]
@@ -905,11 +906,11 @@ jr_006_453a:
     ld hl, $00ff
     push hl
     push bc
-    call Call_006_4513
+    call _printer_wait
     add sp, $04
     ret
 
-
+_gbprinter_print_overlay:
     add sp, -$1f
     ld hl, sp+$18
     ld [hl], $00
@@ -930,7 +931,7 @@ jr_006_453a:
 
 
 jr_006_4580:
-    call Call_000_0265
+    call _GetWinAddr
     ld hl, sp+$1b
     ld a, e
     ld [hl+], a
@@ -1072,7 +1073,7 @@ jr_006_4629:
     inc sp
     ld de, $441b
     push de
-    call Call_006_444e
+    call _printer_send_command
     add sp, $03
     ld hl, sp+$26
     ld a, [hl]
@@ -1137,13 +1138,13 @@ jr_006_4676:
     inc sp
     ld de, $da20
     push de
-    call Call_006_444e
+    call _printer_send_command
     add sp, $03
     ld hl, $0202
     push hl
     ld de, $0078
     push de
-    call Call_006_4513
+    call _printer_wait
     add sp, $04
     ld a, e
     and $f0
@@ -1153,7 +1154,7 @@ jr_006_4676:
     push hl
     ld de, $04b0
     push de
-    call Call_006_4513
+    call _printer_wait
     add sp, $04
     ld a, e
     and $f0
@@ -1164,13 +1165,13 @@ jr_006_4676:
     inc sp
     ld de, $4407
     push de
-    call Call_006_444e
+    call _printer_send_command
     add sp, $03
     ld hl, $00ff
     push hl
     ld de, $000a
     push de
-    call Call_006_4513
+    call _printer_wait
     add sp, $04
     ld a, e
     ld hl, sp+$17
@@ -1227,7 +1228,7 @@ Jump_006_4710:
     inc sp
     ld de, $441b
     push de
-    call Call_006_444e
+    call _printer_send_command
     add sp, $03
     ld hl, sp+$27
     ld a, [hl]
@@ -1276,13 +1277,13 @@ Jump_006_4710:
     inc sp
     ld de, $da20
     push de
-    call Call_006_444e
+    call _printer_send_command
     add sp, $03
     ld hl, $0202
     push hl
     ld de, $0078
     push de
-    call Call_006_4513
+    call _printer_wait
     add sp, $04
     ld a, e
     and $f0
@@ -1292,7 +1293,7 @@ Jump_006_4710:
     push hl
     ld de, $04b0
     push de
-    call Call_006_4513
+    call _printer_wait
     add sp, $04
     ld a, e
     and $f0
@@ -1304,7 +1305,7 @@ jr_006_4790:
     inc sp
     ld de, $4411
     push de
-    call Call_006_444e
+    call _printer_send_command
     add sp, $03
     ld hl, sp+$1e
     ld [hl], e
@@ -1608,7 +1609,7 @@ jr_006_490f:
     ld e, a
     ld d, [hl]
     push de
-    call Call_000_376d
+    call _memset1
     add sp, $06
     ld hl, sp+$03
     ld a, [hl+]
@@ -1804,7 +1805,7 @@ jr_006_4a0e:
     ld e, a
     ld d, [hl]
     push de
-    call Call_000_376d
+    call _memset1
     add sp, $06
     ld hl, sp+$07
     ld a, [hl+]
@@ -1870,7 +1871,7 @@ Jump_006_4a9c:
     add sp, $0b
     ret
 
-
+_func_bank006_4a9f:
     dec sp
     ld hl, sp+$00
     push hl
@@ -1909,7 +1910,7 @@ jr_006_4ace:
     inc sp
     ret
 
-
+_func_bank006_4ad0:
     add sp, -$09
     ld hl, sp+$00
     push hl
@@ -2041,7 +2042,7 @@ jr_006_4b42:
     push hl
     push bc
     push de
-    call Call_000_376d
+    call _memset1
     add sp, $06
 
 jr_006_4b79:
@@ -2395,7 +2396,7 @@ jr_006_4d2b:
     ld d, [hl]
     push de
     ld e, $06
-    ld hl, $4c19
+    ld hl, $4c19 ; jumps to bank 6: 0x4c19
     call RST_08
     add sp, $04
     ld hl, sp+$00
@@ -2740,7 +2741,7 @@ jr_006_4efd:
     add sp, $08
     ret
 
-
+_vm_set_sprites_visible:
     ld hl, sp+$08
     ld a, [hl]
     ld [$da2e], a
@@ -2759,13 +2760,13 @@ jr_006_4f10:
     ldh [rLCDC], a
     ret
 
-
-    ld a, [$c61b]
-    ld hl, $c61c
+_vm_input_wait:
+    ld a, [_FRAME_JOY]
+    ld hl, _LAST_JOY
     sub [hl]
     jr z, jr_006_4f27
 
-    ld a, [$c61b]
+    ld a, [_FRAME_JOY]
     ld hl, sp+$08
     and [hl]
     ret nz
@@ -2793,7 +2794,7 @@ jr_006_4f27:
     ld [bc], a
     ret
 
-
+_vm_context_prepare:
     ld bc, $c5c0
     ld hl, sp+$08
     ld a, [hl]
@@ -2832,7 +2833,7 @@ jr_006_4f27:
     ld [bc], a
     ret
 
-
+_vm_input_attach:
     ld bc, $c5e8
     ld hl, sp+$08
     ld e, [hl]
@@ -2854,6 +2855,7 @@ jr_006_4f7c:
     inc bc
     jr jr_006_4f71
 
+_vm_input_detach:
     ld bc, $c5e8
     ld hl, sp+$08
     ld e, [hl]
@@ -2874,6 +2876,7 @@ jr_006_4f90:
     inc bc
     jr jr_006_4f87
 
+_vm_input_get:
     ld hl, sp+$08
     ld a, [hl+]
     ld c, a
@@ -2916,7 +2919,7 @@ jr_006_4fb5:
     ld [bc], a
     ret
 
-
+_vm_fade:
     ld hl, sp+$08
     ld b, [hl]
     ld a, b
@@ -2953,7 +2956,7 @@ jr_006_4ff3:
     ld hl, $4467
     jp RST_08
 
-
+_vm_timer_prepare:
     ld bc, $c5f0
     ld hl, sp+$08
     ld a, [hl]
@@ -2992,7 +2995,7 @@ jr_006_4ff3:
     ld [bc], a
     ret
 
-
+_vm_timer_set:
     ld bc, $c604
     ld hl, sp+$08
     ld a, [hl]
@@ -3015,7 +3018,7 @@ jr_006_4ff3:
     ld [bc], a
     ret
 
-
+_vm_timer_stop:
     ld bc, $c604
     ld hl, sp+$08
     ld a, [hl]
@@ -3031,7 +3034,7 @@ jr_006_4ff3:
     ld [hl], $00
     ret
 
-
+_vm_timer_reset:
     ld bc, $c604
     ld hl, sp+$08
     ld a, [hl]
@@ -3051,7 +3054,7 @@ jr_006_4ff3:
     ld [bc], a
     ret
 
-
+_vm_get_tile_xy:
     add sp, -$06
     ld hl, sp+$0c
     ld a, [hl+]
@@ -3180,7 +3183,7 @@ jr_006_50da:
     push de
     inc sp
     push bc
-    call Call_000_1307
+    call _ReadBankedUWORD
     add sp, $03
     ld c, e
     ld b, $00
@@ -3194,7 +3197,7 @@ jr_006_50da:
     add sp, $06
     ret
 
-
+_vm_replace_tile:
     add sp, -$04
     ld hl, sp+$0a
     ld a, [hl+]
@@ -3311,11 +3314,11 @@ jr_006_5173:
     inc sp
     push af
     inc sp
-    call Call_000_1270
+    call _SetBankedBkgData
     add sp, $09
     ret
 
-
+_vm_poll:
     add sp, -$07
     ld hl, sp+$0d
     ld a, [hl]
@@ -3396,8 +3399,8 @@ jr_006_5201:
     bit 0, e
     jr z, jr_006_5229
 
-    ld a, [$c61b]
-    ld hl, $c61c
+    ld a, [_FRAME_JOY]
+    ld hl, _LAST_JOY
     sub [hl]
     jr z, jr_006_5229
 
@@ -3408,7 +3411,7 @@ jr_006_5201:
     ld a, $01
     ld [hl+], a
     ld [hl], $00
-    ld hl, $c61b
+    ld hl, _FRAME_JOY
     ld e, [hl]
     ld d, $00
     ld a, e
@@ -3484,7 +3487,7 @@ jr_006_5276:
     add sp, $07
     ret
 
-
+_vm_set_sprite_mode:
     ld hl, sp+$08
     ld a, [hl]
     or a
@@ -3563,7 +3566,7 @@ jr_006_52af:
     push bc
     inc sp
     push de
-    call Call_000_1307
+    call _ReadBankedUWORD
     add sp, $03
     ld b, e
     ld hl, sp+$00
@@ -3675,14 +3678,14 @@ jr_006_5355:
     inc sp
     push bc
     inc sp
-    call Call_000_1270
+    call _SetBankedBkgData
     add sp, $05
 
 jr_006_5368:
     add sp, $03
     ret
 
-
+_vm_rumble:
     ld hl, $c820
     ld c, [hl]
     res 5, c
@@ -3720,7 +3723,7 @@ jr_006_5382:
     ld d, a
     ld e, [hl]
     push de
-    call Call_000_1270
+    call _SetBankedBkgData
     add sp, $05
     ret
 
@@ -3780,7 +3783,7 @@ jr_006_53c4:
     inc sp
     push bc
     push de
-    call Call_000_12e0
+    call _ReadBankedFarPtr
     add sp, $05
     ld hl, sp+$04
     ld a, [hl+]
@@ -3805,7 +3808,7 @@ jr_006_53c4:
     push af
     inc sp
     push de
-    call Call_000_1307
+    call _ReadBankedUWORD
     add sp, $03
     ld hl, sp+$06
     ld a, e
@@ -3840,7 +3843,7 @@ jr_006_53c4:
     ld a, [hl]
     push af
     inc sp
-    call Call_000_1270
+    call _SetBankedBkgData
     add sp, $0e
     ret
 
@@ -3852,7 +3855,7 @@ jr_006_53c4:
     ld hl, $c7f5
     ld [hl], a
     sub $02
-    jp z, Jump_000_021d
+    jp z, _SIO_receive
 
     ret
 
@@ -4048,7 +4051,7 @@ jr_006_554b:
     push bc
     ld de, $c7f6
     push de
-    call Call_000_376d
+    call _memset1
     add sp, $06
     ld hl, $c81b
     ld [hl], $f6
@@ -4061,7 +4064,7 @@ jr_006_554b:
     ld [hl], $00
     push af
     inc sp
-    call Call_000_020a
+    call _SIO_send_byte
     inc sp
     ld a, [$c81a]
     or a
@@ -4167,7 +4170,7 @@ jr_006_55ec:
     ld de, $c7f6
     push de
     push bc
-    call Call_000_376d
+    call _memset1
     add sp, $06
     ld hl, $da32
     ld a, [hl]
@@ -4292,7 +4295,7 @@ jr_006_5679:
     ld e, a
     ld d, [hl]
     push de
-    call Call_000_376d
+    call _memset1
     add sp, $06
     ld hl, $da32
     ld a, [hl]
@@ -4397,7 +4400,7 @@ jr_006_56f8:
     push de
     ld de, $c7f6
     push de
-    call Call_000_376d
+    call _memset1
     add sp, $06
     ld hl, $c81b
     ld [hl], $f6
@@ -4410,7 +4413,7 @@ jr_006_56f8:
     ld [hl], $00
     push af
     inc sp
-    call Call_000_020a
+    call _SIO_send_byte
     inc sp
     ld a, [$c81a]
     or a
@@ -4499,11 +4502,8 @@ jr_006_579c:
     add sp, $15
     ret
 
-
-    db $25, $12, $04, $1a, $00, $57, $ae, $00, $01, $00, $00, $02, $09, $58, $4f
-
-    ld b, b
-    nop
+    ; bank 6: 0x579f
+    db $25, $12, $04, $1a, $00, $57, $ae, $00, $01, $00, $00, $02, $09, $58, $4f, $40, $00
 
     db "Hey I'm Dim of the\n"
     db "Super Flash Bros."
