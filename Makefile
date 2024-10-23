@@ -11,7 +11,7 @@ asm_files :=  $(call rwildcard,src,*.asm)
 %.1bpp: %.png
 	rgbgfx -d 1 -o $@ $<
 
-game.o: game.asm bank_*.asm $(asm_files)
+game.o: game.asm $(asm_files)
 	rgbasm --preserve-ld --nop-after-halt -o game.o game.asm
 
 game.gb: game.o
