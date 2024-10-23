@@ -3320,6 +3320,12 @@ jr_003_6526:
 ExplorationMusic::
     INCLUDE "audio/exploration.asm"
 
-bank003_7fe1:
-    db $25, $12, $04, $61, $14, $00, $00, $ff, $fc, $31, $ff, $fc, $14, $00, $01, $ff
-    db $fc, $0d, $ff, $fc, $00, $55, $af, $02, $21, $01, $c6, $0d, $57, $03, $00
+RoomBeforeLampshadeBossSceneInit:: ; 0x7fe1
+    db $25
+    db $12, $04
+    db $61
+    db $14, $00, $00, $ff, $fc
+    db $31, $ff, $fc
+    db $14, $00, $01, $ff, $fc
+    db $0d, $ff, $fc, $00, $55, $af, $02
+    db $21, $01, $c6, $0d, $57, $03, $00

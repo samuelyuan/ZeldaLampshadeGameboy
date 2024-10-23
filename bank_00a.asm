@@ -22,7 +22,7 @@ SECTION "ROM Bank $00a", ROMX[$4000], BANK[$a]
     ld hl, _camera_offset_x
     ld [hl], $00
     ld e, $0a
-    ld hl, $4029
+    ld hl, _func_bank00a_4029
     jp RST_08
 
 _func_bank00a_4029:
@@ -53,6 +53,7 @@ _input_init:
     ld [hl], $01
     ret
 
+_func_bank00a_405f:
     di
     ld de, $1b24
     push de
@@ -118,26 +119,15 @@ _SIO_init:
     ld [hl], $00
     ret
 
-pcworld_outside_sign_bank00a_40dd:
-    db $25, $40, $00
+PCWorldOutsideSign:: ; 0x40dd
+    INCLUDE "src/scripts/outsideshop/pcworld_outsidesign.asm"
 
-    db "T0t411Y\n" ; 0x40e0
-    db "1337\n"
-    db "Pr1C35"
+JasperDialogue::   ; bank 0a 0x410d
+    INCLUDE "src/scripts/outsideshop/jasper.asm"
 
-    db $00, $47, $03, $01, $05, $14, $00, $00, $45, $ff, $0d, $00, $41, $ff, $00, $44
-    db $07, $01, $45, $fe, $12, $00, $44, $03, $01, $00
-
-jasper_dialogue:   ; bank 0a 0x410d
-    db $25, $40, $00
-
-    db "I'm so bored!" ; 0x4110
-
-    db $00, $47, $03, $01, $04, $14, $00, $00, $45, $ff, $0e, $00, $41, $ff, $00, $44
-    db $07, $01, $45, $fe, $12, $00, $44, $03, $01, $00
-
-graveyard_dialogue_4137: ; bank 0a: 0x4137
-    db $25, $40, $00
+GraveyardTombstoneDialogue:: ; bank 0a: 0x4137
+    db $25
+    db $40, $00
 
     db "Can I\n" ; 0x413a
     db "R.I.P.\n"
@@ -146,17 +136,8 @@ graveyard_dialogue_4137: ; bank 0a: 0x4137
     db $00, $47, $03, $01, $05, $14, $00, $00, $45, $ff, $0d, $00, $41, $ff, $00, $44
     db $07, $01, $45, $fe, $12, $00, $44, $03, $01, $00
 
-pcworld_inside_sign_bank00a_4167: ; 0x4167
-    db $25, $40, $00
-
-    db "T0t411Y\n" ; 0x416a
-    db "1337\n"
-    db "Pr1C35"
-
-    db $00, $47, $03, $01, $05, $14, $00, $00, $45, $ff, $0d, $00, $41, $ff, $00, $44, $07
-    db $01, $45, $fe, $12, $00, $44, $03
-
-    db $01, $00
+PCWorldInsideSign::; 0x4167
+    INCLUDE "src/scripts/pcworld/insidesign.asm"
     
 GraveyardMapDraw:: ; 0x4197
     db $14, $12 
@@ -540,7 +521,7 @@ GraveCoverSpriteImage:: ; 0x4536
     db $02, $00
     INCBIN "gfx/bank00a_gravecover_4538.2bpp"
     
-ImageBank009_7a05SpriteFrames::
+SignSpriteFrames::
     ; bank 0a 0x4558
     db $80, $00, $00, $00
 
@@ -845,17 +826,7 @@ NgHeadquartersOutsideToJTHouseOutsideTransition:: ; bank 0a 0x4ba1
 
     db $00
 
-_logo_init:
-    ld hl, _camera_offset_x
-    ld [hl], $00
-    ld hl, _camera_offset_y
-    ld [hl], $00
-    ld hl, _GAME_TIME
-    ld [hl], $00
-    ret
-
-_logo_update:
-    ret
+    INCLUDE "src/logo.asm"
 
     ; unused
     ds $3428, $ff

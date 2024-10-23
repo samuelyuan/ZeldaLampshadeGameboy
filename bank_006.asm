@@ -85,7 +85,7 @@ jr_006_408d:
     push af
     inc sp
     ld e, $02
-    ld hl, $6100
+    ld hl, _func_bank002_6100
     call RST_08
     inc sp
     ld bc, $4000
@@ -195,14 +195,14 @@ Jump_006_4136:
 
 jr_006_4156:
     ld e, $0a
-    ld hl, $405f ; jumps to bank 0a: 0x405f
+    ld hl, _func_bank00a_405f ; jumps to bank 0a: 0x405f
     call RST_08
     call _core_reset_hook
     xor a
     push af
     inc sp
     ld e, $02
-    ld hl, $6100 ; jumps to bank 02: 0x6100
+    ld hl, _func_bank002_6100 ; jumps to bank 02: 0x6100
     call RST_08
     inc sp
     ld hl, _start_scene
@@ -217,7 +217,7 @@ jr_006_4156:
     ld b, a
     push bc
     ld e, $03
-    ld hl, $42ac
+    ld hl, _load_scene
     call RST_08
     add sp, $04
     ld a, e
@@ -234,34 +234,34 @@ jr_006_4156:
 
 jr_006_419b:
     ld e, $0a
-    ld hl, $405f
+    ld hl, _func_bank00a_405f
     call RST_08
     xor a
     push af
     inc sp
     ld e, $02
-    ld hl, $6100
+    ld hl, _func_bank002_6100
     call RST_08
     inc sp
     xor a
     push af
     inc sp
     ld e, $05
-    ld hl, $4040
+    ld hl, _timers_init
     call RST_08
     inc sp
     xor a
     push af
     inc sp
     ld e, $05
-    ld hl, $4000
+    ld hl, _events_init
     call RST_08
     inc sp
     xor a
     push af
     inc sp
     ld e, $09
-    ld hl, $41dd
+    ld hl, _music_init_events
     call RST_08
     inc sp
     ld hl, $cb95
@@ -300,7 +300,7 @@ jr_006_419b:
     inc sp
     push bc
     ld e, $03
-    ld hl, $42ac
+    ld hl, _load_scene
     call RST_08
     add sp, $04
     ld a, e
@@ -326,7 +326,7 @@ Jump_006_4216:
     push af
     inc sp
     ld e, $06
-    ld hl, $48aa
+    ld hl, _func_bank006_48aa
     call RST_08
     inc sp
     jp Jump_006_4077
@@ -337,7 +337,7 @@ Jump_006_4236:
     ld hl, _fade_out_modal
     call RST_08
     ld e, $0a
-    ld hl, $405f
+    ld hl, _func_bank00a_405f
     call RST_08
     ld a, [$cb94]
     ld hl, $cb95
@@ -1471,7 +1471,7 @@ jr_006_48a7:
     add sp, $05
     ret
 
-
+_func_bank006_48aa:
     add sp, -$0d
     ld hl, sp+$00
     push hl
@@ -4502,189 +4502,22 @@ jr_006_579c:
     add sp, $15
     ret
 
-    ; bank 6: 0x579f
-    db $25, $12, $04, $1a, $00, $57, $ae, $00, $01, $00, $00, $02, $09, $58, $4f, $40, $00
+DimDialogue:: ; bank 6: 0x579f
+    INCLUDE "src/scripts/dim.asm"
 
-    db "Hey I'm Dim of the\n"
-    db "Super Flash Bros."
-   
-    nop
-    ld b, a
-    inc bc
-    ld bc, $1405
-    nop
-    nop
-    ld b, l
-    rst $38
-    dec c
-    nop
-    ld b, c
-    rst $38
-    nop
-    ld b, h
-    rlca
-    ld bc, $0040
-    
-    db "I wonder when\n"
-    db "Randy will bring"
-
-    nop
-    ld b, a
-    inc bc
-    ld bc, $1405
-    nop
-    nop
-    ld b, c
-    rst $38
-
-jr_006_5810:
-    nop
-    ld b, h
-
-jr_006_5812:
-    rlca
-    ld bc, $0040
-    
-    db "me the latest\n"
-    db "advertising\n"
-    db "payment..."
-
-    nop
-    ld b, a
-    inc bc
-    ld bc, $1405
-    nop
-    nop
-    ld b, c
-    rst $38
-    nop
-    ld b, h
-    rlca
-    ld bc, $fe45
-    ld [de], a
-    nop
-    ld b, h
-    inc bc
-    db $01
-
-    db $1a, $00, $58, $5b, $00, $02, $00, $00, $05, $09, $58, $c1
-
-    ld b, b
-    nop
-
-    db "Have you used the\n"
-    db "hair products?"
-
-    nop
-    ld b, a
-    inc bc
-    ld bc, $1404
-    nop
-    nop
-    ld b, l
-    rst $38
-    ld c, $00
-    ld b, c
-
-jr_006_588a:
-    rst $38
-    nop
-    ld b, h
-    rlca
-
-jr_006_588e:
-    ld bc, $0040
-    
-    db "Your hair looks\n"
-    db "so shiny..."
-
-    nop
-    ld b, a
-    inc bc
-    ld bc, $1404
-    nop
-    nop
-    ld b, c
-    rst $38
-    nop
-    ld b, h
-    rlca
-    ld bc, $fe45
-    ld [de], a
-    nop
-    ld b, h
-    inc bc
-    db $01
-
-    db $1a, $00, $58, $cd, $00, $01, $00, $00, $01
-
-    add hl, bc
-    ld e, c
-    db $ee
-
+LampshadeBossApproachMessage:: ; 0x59ef message when you press button next to boss
+    db $25
     db $40, $00
-    
-    db "You've got my big\n"
-    db "bag of money?"
-    
-    db $00, $47, $03, $01, $05, $14, $00, $00, $45, $ff, $0d, $00, $41, $ff, $00
-    db $44, $07, $01, $40, $00
-    
-    db "Thanks - now I can\n"
-    db "buy a Revolution!"
-    
-    db $00, $47, $03, $01, $05, $14, $00, $00, $41, $ff, $00, $44, $07, $01, $40, $00
-    
-    db "Please take this\n"
-    db "spray bottle as a\n"
-    db "gift."
-    
-    db $00, $47, $03, $01, $05, $14, $00, $00, $41, $ff, $00, $44, $07, $01, $45
-    db $fe, $12, $00, $44, $03, $01, $14, $00, $02, $00, $00, $14, $00, $03, $ff, $fc
-    db $14, $00, $02, $ff, $fd, $75, $ff, $fc, $40, $00
-    
-    db "You got the Girly\n"
-    db "Hair Products!"
-    
-    db $00, $47, $03, $01, $04, $14, $00, $00, $45, $ff, $0e, $00, $41, $ff, $00, $44
-    db $07, $01, $40, $00
 
-    db "Perfect for\n"
-    db "fighting hat hair!"
+    db "Yikes!!!", $00
 
-    db $00, $47, $03, $01, $04, $14, $00, $00, $41, $ff, $00, $44, $07, $01, $45, $fe
-    db $12, $00, $44, $03, $01, $00
-
-    dec h
-    ld b, b
-    nop
-    ld e, c
-    ld l, c
-    ld l, e
-    ld h, l
-    ld [hl], e
-    ld hl, $2121
-    nop
-    ld b, a
-    inc bc
-    ld bc, $1404
-    nop
-    nop
-    ld b, l
-    rst $38
-    ld c, $00
-    ld b, c
-    rst $38
-    nop
-    ld b, h
-    rlca
-    ld bc, $fe45
-    ld [de], a
-    nop
-    ld b, h
-    inc bc
-    db $01
-    nop
+    db $47, $03, $01, $04, $14, $00, $00
+    db $45, $ff, $0e, $00
+    db $41, $ff, $00
+    db $44, $07, $01
+    db $45, $fe, $12, $00
+    db $44, $03, $01
+    db $00
 
 JTHouseOutsideTileImage::
     db $6c, $00

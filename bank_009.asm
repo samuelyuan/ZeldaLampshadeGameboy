@@ -1970,1195 +1970,266 @@ jr_009_49d5:
     ld [bc], a
     ret
 
-bank009_49de:
-    db $25, $12, $04, $40, $00
+PulledPlugMessage:: ; 0x49de
+    db $25
+    db $12, $04
+    db $40, $00
 
     db "You pulled the\n" ; 0x49e3
     db "plug...", $00
 
-    db $47, $03, $01, $04, $14, $00, $00, $45, $ff, $0e, $00, $41, $ff, $00, $44, $07
-    db $01, $45, $fe, $12, $00, $44, $03, $01, $21, $01, $c6, $0d, $57, $01, $14, $00
-    db $00, $ff, $fc, $14, $06, $00, $ff, $fd, $14, $07, $00, $ff, $fe, $35, $ff, $fc
-    db $32, $02, $ff, $fc, $27, $03, $02
-
+    db $47, $03, $01, $04, $14, $00, $00
+    db $45, $ff, $0e, $00
+    db $41, $ff, $00
+    db $44, $07, $01
+    db $45, $fe, $12, $00
+    db $44, $03, $01
+    db $21, $01, $c6, $0d
+    db $57, $01
+    db $14, $00, $00, $ff, $fc
+    db $14, $06, $00, $ff, $fd
+    db $14, $07, $00, $ff, $fe
+    db $35, $ff, $fc
+    db $32, $02, $ff, $fc
+    db $27, $03, $02
     db $09, $f0, $5c, $00 ; bank 9 0x5cf0 DefeatedLampshadeBossScreen
 
-bank009_4a35:
-    db $25, $40, $00
+WellMessage:: ; 0x4a35
+    db $25
+    db $40, $00
 
     db "A sinister looking\n"
-    db "well..."
-
-    nop
-    ld b, a
-    inc bc
-    ld bc, $1404
-
-jr_009_4a58:
-    nop
-    nop
-    ld b, l
-    rst $38
-    ld c, $00
-    ld b, c
-    rst $38
-    nop
-    ld b, h
-    rlca
-
-jr_009_4a63:
-    ld bc, $fe45
-    ld [de], a
-    nop
-    ld b, h
-    inc bc
-    ld bc, $2500
-    ld b, b
-    nop
+    db "well...", $00
+    
+    db $47, $03, $01, $04, $14, $00, $00
+    db $45, $ff, $0e, $00
+    db $41, $ff, $00
+    db $44, $07, $01
+    db $45, $fe, $12, $00
+    db $44, $03, $01
+    db $00
+    
+DefeatedLampshadeBossMessage:: ; 0x4a6c
+    db $25
+    db $40, $00
 
     db "Wow, that was\n"
-    db "easy..."
+    db "easy...", $00
 
-    nop
-    ld b, a
-    inc bc
-    ld bc, $1404
-    nop
-    nop
-    ld b, l
-    rst $38
-    ld c, $00
-    ld b, c
-    rst $38
-    nop
-    ld b, h
-    rlca
-    ld bc, $fe45
-    ld [de], a
-    nop
-    ld b, h
-    inc bc
-    ld bc, $2500
-    ld [de], a
-    inc b
-    ld b, b
-    nop
+    db $47, $03, $01, $04, $14, $00, $00
+    db $45, $ff, $0e, $00
+    db $41, $ff, $00
+    db $44, $07, $01
+    db $45, $fe, $12, $00
+    db $44, $03, $01
+    db $00
+    
+GotLampshadeMessage:: ; 0x4a9e
+    db $25
+    db $12, $04
+    db $40, $00
 
     db "You got the\n"
-    db "Mystical Lampshade!"
+    db "Mystical Lampshade!",  $00
 
-    nop
-    ld b, a
-    inc bc
-    ld bc, $1404
-    nop
-    nop
-    ld b, l
-    rst $38
-    ld c, $00
-    ld b, c
-    rst $38
-    nop
-    ld b, h
-    rlca
-    ld bc, $0040
-
+    db $47, $03, $01, $04, $14, $00, $00
+    db $45, $ff, $0e, $00
+    db $41, $ff, $00
+    db $44, $07, $01
+    db $40, $00
+    
     db "You'll need to\n" ; 0x4ad6
-    db "take it to the"
-
-    nop
-    ld b, a
-    inc bc
-    ld bc, $1404
-    nop
-    nop
-    ld b, c
-    rst $38
-    nop
-    ld b, h
-    rlca
-    ld bc, $0040
+    db "take it to the", $00
+    
+    db $47, $03, $01, $04, $14, $00, $00
+    db $41, $ff, $00
+    db $44, $07, $01
+    db $40, $00
 
     db "Temple of Light\n" ; 0x4b03
-    db "to the North."
-
-    nop
-    ld b, a
-    inc bc
-    ld bc, $1404
-    nop
-    nop
-    ld b, c
-    rst $38
-    nop
-    ld b, h
-    rlca
-    ld bc, $fe45
-    ld [de], a
-    nop
-    ld b, h
-    inc bc
-    ld bc, $0014
-    ld [bc], a
-    rst $38
-    db $fc
-    inc sp
-    rst $38
-    db $fc
-    inc d
-    nop
-    inc bc
-    rst $38
-    db $fc
-    inc d
-    nop
-    inc c
-    rst $38
-    db $fd
-    ld [hl], l
-    rst $38
-    db $fc
-    ld hl, $c603
-    dec c
-    ld d, a
-    ld bc, $0014
-    nop
-    rst $38
-
-jr_009_4b54:
-    db $fc
-    inc d
-    inc bc
-
-jr_009_4b57:
-    add b
-    rst $38
-    db $fd
-
-jr_009_4b5a:
-    inc d
-    inc b
-    add b
-    rst $38
-    cp $35
-    rst $38
-    db $fc
-
-jr_009_4b62:
-    ld [hl-], a
-    ld [bc], a
-    rst $38
-
-jr_009_4b65:
-    db $fc
-    daa
-    inc bc
-    ld [bc], a
-
-jr_009_4b69:
+    db "to the North.", $00
+    
+    db $47, $03, $01, $04, $14, $00, $00
+    db $41, $ff, $00
+    db $44, $07, $01
+    db $45, $fe, $12, $00
+    db $44, $03, $01
+    db $14, $00, $02, $ff, $fc
+    db $33, $ff, $fc
+    db $14, $00, $03, $ff, $fc
+    db $14, $00, $0c, $ff, $fd
+    db $75, $ff, $fc
+    db $21, $03, $c6, $0d
+    db $57, $01
+    db $14, $00, $00, $ff, $fc
+    db $14, $03, $80, $ff, $fd
+    db $14, $04, $80, $ff, $fe
+    db $35, $ff, $fc
+    db $32, $02, $ff, $fc
+    db $27, $03, $02
     db $09, $91, $61, $00 ; bank 9 0x6191 Well
 
-    ; 0x4b6d
+RubberninjaDialogue::    ; 0x4b6d
+    INCLUDE "src/scripts/pcworld/rubberninja.asm"
+
+JenDialogue::    ; 0x4be0
+    INCLUDE "src/scripts/pcworld/jen.asm"
+
+AlexLabbeDialogue::    ; bank 9: 0x4c52
+    INCLUDE "src/scripts/outsideshop/alexlabbe.asm"
+    
+WellSigns:: ; 0x4c9f
+    INCLUDE "src/scripts/well/directionsign.asm"
+
+GerkinmanDialogue::   ; bank 9 0x4cf1
+    INCLUDE "src/scripts/outsideshop/gerkinman.asm"
+
+JoeyDialogue::    ; bank 9 0x4d41
+    INCLUDE "src/scripts/jroutside/joey.asm"
+
+RichieDialogue::   ; bank 9 0x4da5
+    INCLUDE "src/scripts/jrinside/richie.asm"
+
+JTDialogue::    ; bank 9 0x4e18
+    INCLUDE "src/scripts/jthouse/jt.asm"
+
+TomFulpDialogue::    ; bank 9 0x4f45
+    INCLUDE "src/scripts/ngheadquarters/tomfulp.asm"
+
+JohnDialogue::    ; bank 9 0x4fce
+    INCLUDE "src/scripts/jroutside/john.asm"
+
+DanDialogueJTHouseOutside::    ; bank 9 0x500b
+    INCLUDE "src/scripts/jthouse/dan_jthouseoutside.asm"
+    
+BridgeSigns:: ; 0x5081
     db $25, $40, $00
-
-    ; 0x4b70
-    db "We might be\n"
-    db "stamping down on\n"
-    db "prices,"
-
-    nop
-    ld b, a
-    inc bc
-    ld bc, $1405
-    nop
-    nop
-    ld b, l
-    rst $38
-    dec c
-    nop
-    ld b, c
-    rst $38
-    nop
-    ld b, h
-    rlca
-    ld bc, $0040
-
-    db "but we don't seem\n"
-    db "to sell any PCs!"
-
-    nop
-    ld b, a
-    inc bc
-    ld bc, $1405
-    nop
-    nop
-    ld b, c
-    rst $38
-    nop
-    ld b, h
-    rlca
-    ld bc, $fe45
-    ld [de], a
-    nop
-
-jr_009_4bdc:
-    ld b, h
-    inc bc
-    db $01, $00
-
-    ; 0x4be0
-    db $25, $40, $00
-
-    db "I'm not a plot\n"
-    db "character, but I'm\n"
-    db "still in the game!"
-
-    nop
-    ld b, a
-    inc bc
-    ld bc, $1405
-    nop
-    nop
-    ld b, l
-    rst $38
-    dec c
-    nop
-    ld b, c
-
-jr_009_4c24:
-    rst $38
-    nop
-    ld b, h
-    rlca
-    db $01, $40, $00
-
-    db "Power to the NPC!"
-
-    nop
-    ld b, a
-    inc bc
-    ld bc, $1405
-    nop
-    nop
-    ld b, c
-    rst $38
-    nop
-    ld b, h
-    rlca
-    ld bc, $fe45
-    ld [de], a
-
-jr_009_4c4d:
-    nop
-    ld b, h
-    inc bc
-
-    db $01, $00
-
-    ; bank 9: 0x4c52
-    db $25, $40, $00
-
-    db "Enjoy the movie!"
-
-    nop
-    ld b, a
-    inc bc
-    ld bc, $1404
-    nop
-    nop
-    ld b, l
-    rst $38
-    ld c, $00
-    ld b, c
-    rst $38
-    nop
-    ld b, h
-
-jr_009_4c75:
-    rlca
-    ld bc, $0040
-
-    db "... mmmm popcorn"
-
-    nop
-    ld b, a
-    inc bc
-    ld bc, $1404
-    nop
-    nop
-    ld b, c
-    rst $38
-    nop
-    ld b, h
-    rlca
-    ld bc, $fe45
-    ld [de], a
-    nop
-    ld b, h
-    inc bc
-    ld bc, $2500
-    ld b, b
-    nop
-
+    
     db "North:\n"
-    db "Temple of Light"
-
-    nop
-    ld b, a
-    inc bc
-    ld bc, $1404
-    nop
-    nop
-    ld b, l
-    rst $38
-    ld c, $00
-    ld b, c
-    rst $38
-    nop
-    ld b, h
-    rlca
-    ld bc, $0040
-
-    db "West:\n"
-    db "Graveyard"
-
-    nop
-    ld b, a
-    inc bc
-    ld bc, $1404
-    nop
-    nop
-    ld b, c
-    rst $38
-    nop
-    ld b, h
-    rlca
-    ld bc, $fe45
-    ld [de], a
-    nop
-    ld b, h
-    inc bc
-    db $01, $00
-
-    ; bank 9 0x4cf1
-    db $25, $40, $00
-
-    db "I'm Gerkinman."
-
-    nop
-    ld b, a
-    inc bc
-    ld bc, $1404
-    nop
-    nop
-    ld b, l
-    rst $38
-    ld c, $00
-    ld b, c
-    rst $38
-    nop
-    ld b, h
-    rlca
-    ld bc, $0040
-
-    db "Revel in my\n"
-    db "weirdery."
-
-    nop
-    ld b, a
-    inc bc
-    ld bc, $1404
-    nop
-    nop
-    ld b, c
-    rst $38
-    nop
-    ld b, h
-    rlca
-    ld bc, $fe45
-    ld [de], a
-    nop
-    ld b, h
-    inc bc
-    db $01, $00
-
-    ; bank 9 0x4d41
-    db $25, $40, $00
-
-    db "There used to be\n"
-    db "a FROG in this\n"
-    db "pond..."
-
-    nop
-    ld b, a
-    inc bc
-    ld bc, $1405
-    nop
-    nop
-    ld b, l
-    rst $38
-    dec c
-    nop
-    ld b, c
-    rst $38
-    nop
-    ld b, h
-    rlca
-    ld bc, $0040
-
-    db "but it ran away!"
-
-    nop
-    ld b, a
-    inc bc
-    ld bc, $1405
-    nop
-    nop
-    ld b, c
-    rst $38
-    nop
-    ld b, h
-    rlca
-    ld bc, $fe45
-    ld [de], a
-    nop
-    ld b, h
-    inc bc
-    db $01, $00
-
-    ; bank 9 0x4da5
-    db $25, $40, $00
-
-    db "Hi, I'm Richie\n"
-    db "Zirbes."
-
-    nop
-    ld b, a
-
-jr_009_4dc0:
-    inc bc
-    ld bc, $1405
-
-jr_009_4dc4:
-    nop
-    nop
-
-jr_009_4dc6:
-    ld b, l
-    rst $38
-    dec c
-    nop
-    ld b, c
-    rst $38
-    nop
-    ld b, h
-    rlca
-    ld bc, $0040
-
-    db "I'm working really\n"
-    db "hard on PK4 and\n"
-    db "the PK: Game."
-
-    nop
-    ld b, a
-    inc bc
-    ld bc, $1405
-    nop
-    nop
-    ld b, c
-    rst $38
-    nop
-    ld b, h
-    rlca
-    ld bc, $fe45
-    ld [de], a
-    nop
-    ld b, h
-    inc bc
-    db $01, $00
-
-    ; bank 9 0x4e18
-    db $25, $12, $05, $1a, $00, $4e, $27, $00, $07, $00, $00, $02, $09, $4e, $57, $40, $00
-
-    db "Aww...\n"
-    db "he's asleep..."
-
-    nop
-    ld b, a
-    inc bc
-    ld bc, $1404
-    nop
-
-jr_009_4e45:
-    nop
-    ld b, l
-    rst $38
-    ld c, $00
-
-jr_009_4e4a:
-    ld b, c
-    rst $38
-    nop
-    ld b, h
-
-jr_009_4e4e:
-    rlca
-    ld bc, $fe45
-    ld [de], a
-
-jr_009_4e53:
-    nop
-    ld b, h
-    inc bc
-    ld bc, $001a
-    ld c, [hl]
-
-jr_009_4e5a:
-    ld h, e
-    nop
-    ld [$0000], sp
-    dec b
-    add hl, bc
-    ld c, [hl]
-    adc b
-    ld b, b
-    nop
-
-    db "Oh dear..."
-
-    nop
-    ld b, a
-    inc bc
-    ld bc, $1404
-    nop
-    nop
-    ld b, l
-    rst $38
-    ld c, $00
-    ld b, c
-    rst $38
-    nop
-    ld b, h
-    rlca
-    ld bc, $fe45
-    ld [de], a
-    nop
-    ld b, h
-    inc bc
-    ld bc, $001a
-    ld c, [hl]
-    sub h
-    nop
-    rlca
-    nop
-    nop
-    ld bc, $4f09
-    ld b, h
-    ld b, b
-    nop
-
-    db "Maybe this taser\n"
-    db "will wake him up..."
-
-    nop
-    ld b, a
-    inc bc
-    ld bc, $1404
-    nop
-    nop
-    ld b, l
-    rst $38
-    ld c, $00
-    ld b, c
-    rst $38
-    nop
-    ld b, h
-    rlca
-    ld bc, $fe45
-    ld [de], a
-    nop
-    ld b, h
-    inc bc
-    ld bc, $0014
-    ld bc, $fcff
-    add h
-    nop
-    ld [bc], a
-    rst $38
-    db $fc
-    inc d
-    nop
-    ld bc, $fcff
-    dec a
-    inc bc
-    rst $38
-    db $fc
-    inc d
-    nop
-    ld e, $ff
-    ei
-    dec c
-    rst $38
-    ei
-    nop
-    ld d, l
-    xor a
-    ld [bc], a
-    inc d
-    nop
-    ld bc, $fcff
-    inc d
-    ld bc, $ff00
-    db $fd
-    inc d
-    dec b
-    add b
-    rst $38
-    cp $14
-    nop
-    ld bc, $ffff
-    jr nc, @+$01
-
-    db $fc
-    inc d
-    nop
-    ld bc, $fcff
-    add h
-    nop
-    inc bc
-
-jr_009_4f11:
-    rst $38
-    db $fc
-    inc d
-    nop
-    inc b
-
-jr_009_4f16:
-    rst $38
-    db $fc
-    inc d
-    nop
-
-jr_009_4f1a:
-    nop
-    rst $38
-    db $fd
-    ld [hl], l
-    rst $38
-    db $fc
-    inc d
-    nop
-    ld [bc], a
-    rst $38
-
-jr_009_4f24:
-    db $fc
-    inc d
-    ld [bc], a
-    nop
-    rst $38
-    db $fd
-    inc d
-
-jr_009_4f2b:
-    inc b
-    add b
-    rst $38
-    cp $14
-    nop
-    ld bc, $ffff
-    jr nc, @+$01
-
-    db $fc
-    inc d
-    nop
-    ld [bc], a
-    rst $38
-    db $fc
-    inc sp
-    rst $38
-    db $fc
-    inc d
-    nop
-    ld [$0000], sp
-    nop
-
-    ; bank 9 0x4f45
-    db $25, $40, $00
-
-    db "Welcome to the top\n"
-    db "secret NG\n"
-    db "headquarters."
-
-    nop
-    ld b, a
-    inc bc
-    ld bc, $1405
-    nop
-    nop
-    ld b, l
-    rst $38
-    dec c
-    nop
-    ld b, c
-    rst $38
-    nop
-    ld b, h
-    rlca
-    ld bc, $0040
-
-    db "We finally set up\n"
-    db "an office."
-
-    nop
-    ld b, a
-    inc bc
-    ld bc, $1405
-    nop
-    nop
-    ld b, c
-    rst $38
-    nop
-    ld b, h
-    rlca
-    ld bc, $0040
-
-    db "YOINK!"
-
-    nop
-    ld b, a
-    inc bc
-    ld bc, $1405
-    nop
-    nop
-    ld b, c
-    rst $38
-    nop
-    ld b, h
-    rlca
-
-jr_009_4fc5:
-    ld bc, $fe45
-
-jr_009_4fc8:
-    ld [de], a
-    nop
-    ld b, h
-    inc bc
-
-jr_009_4fcc:
-    db $01, $00
-
-    ; bank 9 0x4fce
-    db $25, $40, $00
-
-    db "Mmm, that burger\n"
-    db "was dead tasty!"
-
-jr_009_4ff0:
-    nop
-    ld b, a
-    inc bc
-    ld bc, $1404
-    nop
-    nop
-    ld b, l
-    rst $38
-    ld c, $00
-    ld b, c
-    rst $38
-    nop
-    ld b, h
-    rlca
-    ld bc, $fe45
-
-jr_009_5005:
-    ld [de], a
-    nop
-    ld b, h
-    inc bc
-    db $01, $00
-
-    ; bank 9 0x500b
-    db $25
-    ld a, [de]
-    nop
-    ld d, b
-    jr jr_009_5011
-
-jr_009_5011:
-    rlca
-    nop
-    nop
-    inc bc
-    add hl, bc
-    ld d, b
-    add b
-    ld b, b
-    nop
-
-    db "That water didn't\n"
-    db "wake him up,"
-
-    nop
-    ld b, a
-    inc bc
-    ld bc, $1404
-
-jr_009_503e:
-    nop
-    nop
-    ld b, l
-    rst $38
-    ld c, $00
-    ld b, c
-    rst $38
-    nop
-    ld b, h
-    rlca
-    ld bc, $0040
-
-    db "he needs to be\n"
-    db "shocked awake..."
-
-    nop
-    ld b, a
-    inc bc
-    ld bc, $1404
-    nop
-    nop
-    ld b, c
-    rst $38
-    nop
-    ld b, h
-    rlca
-    ld bc, $fe45
-    ld [de], a
-    nop
-    ld b, h
-    inc bc
-    ld bc, $2500
-    ld b, b
-    nop
-
-    db "North:\n"
-    db "Temple of Light"
-
-jr_009_509a:
-    nop
-    ld b, a
-    inc bc
-    ld bc, $1404
-    nop
-    nop
-    ld b, l
-    rst $38
-    ld c, $00
-    ld b, c
-    rst $38
-    nop
-    ld b, h
-    rlca
-
-jr_009_50ab:
-    ld bc, $0040
-
+    db "Temple of Light", $00
+    
+    db $47, $03, $01, $04, $14, $00, $00
+    db $45, $ff, $0e, $00
+    db $41, $ff, $00
+    db $44, $07, $01
+    db $40, $00
+    
     db "South:\n"
-    db "Town"
+    db "Town", $00
+    
+    db $47, $03, $01, $04, $14, $00, $00
+    db $41, $ff, $00
+    db $44, $07, $01
+    db $45, $fe, $12, $00
+    db $44, $03, $01
+    db $00
+    
+JTBedSouthMessage:: ; 0x50cf
+    db $25
+    db $12, $05
+    db $14, $00, $00, $ff, $fc
+    db $33, $ff, $fc
+    db $14, $00, $01, $ff, $fc
+    db $14, $00, $01, $ff, $fd
+    db $75, $ff, $fc
+    db $14, $00, $30, $ff, $fb
+    db $0d, $ff, $fb, $00, $55, $af, $02
+    db $40, $00
 
-    nop
-    ld b, a
+    db "Good night!", $00
 
-jr_009_50bb:
-    inc bc
-    ld bc, $1404
-    nop
-    nop
-    ld b, c
-    rst $38
-    nop
-    ld b, h
-
-jr_009_50c5:
-    rlca
-    ld bc, $fe45
-    ld [de], a
-
-jr_009_50ca:
-    nop
-    ld b, h
-    inc bc
-    ld bc, $2500
-    ld [de], a
-    dec b
-    inc d
-    nop
-    nop
-    rst $38
-    db $fc
-    inc sp
-    rst $38
-    db $fc
-    inc d
-    nop
-    ld bc, $fcff
-    inc d
-    nop
-    ld bc, $fdff
-    ld [hl], l
-    rst $38
-    db $fc
-    inc d
-    nop
-    jr nc, @+$01
-
-    ei
-    dec c
-    rst $38
-    ei
-    nop
-    ld d, l
-    xor a
-    ld [bc], a
-    ld b, b
-    nop
-
-    db "Good night!"
-
-    nop
-    ld b, a
-
-jr_009_5102:
-    inc bc
-    ld bc, $1404
-    nop
-    nop
-    ld b, l
-    rst $38
-    ld c, $00
-    ld b, c
-    rst $38
-    nop
-    ld b, h
-    rlca
-    ld bc, $fe45
-    ld [de], a
-    nop
-    ld b, h
-    inc bc
-    ld bc, $1f21
-    add $0d
-    ld d, a
-    ld bc, $0014
-    nop
-    rst $38
-    db $fc
-    inc d
-    ld [bc], a
-    nop
-    rst $38
-    db $fd
-    inc d
-    ld b, $80
-    rst $38
-    cp $35
-    rst $38
-    db $fc
-    ld [hl-], a
-    ld bc, $fcff
-    daa
-    inc bc
-    ld [bc], a
-    add hl, bc
-    add hl, hl
-    ld e, c
-    nop
-    dec h
-    ld b, b
-    nop
-
+    db $47, $03, $01, $04, $14, $00, $00
+    db $45, $ff, $0e, $00
+    db $41, $ff, $00
+    db $44, $07, $01
+    db $45, $fe, $12, $00
+    db $44, $03, $01
+    db $21, $1f, $c6, $0d
+    db $57, $01
+    db $14, $00, $00, $ff, $fc
+    db $14, $02, $00, $ff, $fd
+    db $14, $06, $80, $ff, $fe
+    db $35, $ff, $fc
+    db $32, $01, $ff, $fc
+    db $27, $03, $02
+    db $09, $29, $59, $00 ; 0x5929 JT House Inside
+    
+DimHouseBookcaseMessage:: ; 0x513c:
+    db $25
+    db $40, $00
+    
     db "Old 'Sonic the\n"
     db "Comic's are piled\n"
-    db "against the wall"
+    db "against the wall", $00
+    
+    db $47, $03, $01, $05, $14, $00, $00
+    db $45, $ff, $0d, $00
+    db $41, $ff, $00
+    db $44, $07, $01
+    db $45, $fe, $12, $00
+    db $44, $03, $01
+    db $00
 
-    nop
-    ld b, a
-    inc bc
-    ld bc, $1405
-    nop
-    nop
-    ld b, l
-    rst $38
-    dec c
-    nop
-    ld b, c
-    rst $38
-    nop
-    ld b, h
-    rlca
-    ld bc, $fe45
-    ld [de], a
-    nop
-    ld b, h
-    inc bc
-    ld bc, $2500
-    ld b, b
-    nop
-
+JTHouseBookcaseMessage:: ; 0x518a 
+    db $25
+    db $40, $00
+    
     db "A single book lies\n"
-    db "in the bookcase."
-
-    nop
-    ld b, a
-    inc bc
-    ld bc, $1404
-    nop
-    nop
-
-jr_009_51b8:
-    ld b, l
-    rst $38
-    ld c, $00
-    ld b, c
-    rst $38
-    nop
-
-jr_009_51bf:
-    ld b, h
-    rlca
-    ld bc, $0040
-
+    db "in the bookcase.", $00
+    
+    db $47, $03, $01, $04, $14, $00, $00
+    db $45, $ff, $0e, $00
+    db $41, $ff, $00
+    db $44, $07, $01
+    db $40, $00
+    
     db "'The official cheat\n"
-    db "guide to life:"
-
-    nop
-    ld b, a
-    inc bc
-    ld bc, $1404
-    nop
-    nop
-    ld b, c
-    rst $38
-    nop
-    ld b, h
-    rlca
-    ld bc, $0040
-
+    db "guide to life:", $00
+    
+    db $47, $03, $01, $04, $14, $00, $00
+    db $41, $ff, $00
+    db $44, $07, $01
+    db $40, $00
+    
     db "with pull out\n"
-    db "secret section'"
+    db "secret section'", $00
+    
+    db $47, $03, $01, $04, $14, $00, $00
+    db $41, $ff, $00
+    db $44, $07, $01
+    db $45, $fe, $12, $00
+    db $44, $03, $01
+    db $00
+    
+JTHouseBedNorthMessage:: ; 0x5229
+    db $25
+    db $12, $05
+    db $14, $00, $00, $ff, $fc
+    db $33, $ff, $fc
+    db $14, $00, $02, $ff, $fc
+    db $14, $00, $01, $ff, $fd
+    db $75, $ff, $fc
+    db $14, $00, $30, $ff, $fb
+    db $0d, $ff, $fb, $00, $55, $af, $02
+    db $40, $00
 
-    nop
-    ld b, a
-    inc bc
-    ld bc, $1404
-    nop
-    nop
-    ld b, c
-    rst $38
-    nop
-    ld b, h
-    rlca
-    ld bc, $fe45
-    ld [de], a
-    nop
-    ld b, h
-    inc bc
-    ld bc, $2500
-    ld [de], a
-    dec b
-    inc d
-    nop
-    nop
-    rst $38
-    db $fc
-    inc sp
-    rst $38
-    db $fc
-    inc d
-    nop
+    db "Good night!", $00
 
-jr_009_5236:
-    ld [bc], a
-    rst $38
-    db $fc
-
-jr_009_5239:
-    inc d
-    nop
-    ld bc, $fdff
-    ld [hl], l
-    rst $38
-    db $fc
-    inc d
-    nop
-    jr nc, @+$01
-
-    ei
-    dec c
-    rst $38
-    ei
-    nop
-    ld d, l
-    xor a
-    ld [bc], a
-    ld b, b
-
-jr_009_524e:
-    nop
-
-    db "Good night!"
-
-    nop
-    ld b, a
-    inc bc
-    ld bc, $1404
-    nop
-    nop
-    ld b, l
-    rst $38
-    ld c, $00
-    ld b, c
-    rst $38
-    nop
-    ld b, h
-    rlca
-    ld bc, $fe45
-    ld [de], a
-    nop
-
-jr_009_5270:
-    ld b, h
-    inc bc
-    ld bc, $1f21
-    add $0d
-    ld d, a
-    ld bc, $0014
-    nop
-    rst $38
-    db $fc
-    inc d
-
-jr_009_527f:
-    ld [bc], a
-    nop
-    rst $38
-    db $fd
-    inc d
-    ld bc, $ff80
-    cp $35
-    rst $38
-    db $fc
-    ld [hl-], a
-    ld bc, $fcff
-    daa
-    inc bc
-    ld [bc], a
-    add hl, bc
-    add hl, hl
-
-    ld e, c
-    nop
+    db $47, $03, $01, $04, $14, $00, $00
+    db $45, $ff, $0e, $00
+    db $41, $ff, $00
+    db $44, $07, $01
+    db $45, $fe, $12, $00
+    db $44, $03, $01
+    db $21, $1f, $c6, $0d
+    db $57, $01
+    db $14, $00, $00, $ff, $fc
+    db $14, $02, $00, $ff, $fd
+    db $14, $01, $80, $ff, $fe
+    db $35, $ff, $fc
+    db $32, $01, $ff, $fc
+    db $27, $03, $02
+    db $09, $29, $59, $00 ; 0x5929 JT House Inside
 
 bank009_5296:
     INCBIN "gfx/bank009_5296.2bpp"
@@ -3410,14 +2481,14 @@ JTHouseInsideDialogue:: ; 0x57f1
     db $07, $00, $00, $0f, $f8, $07, $00, $00, $00, $00, $ff, $10, $00, $00, $00, $00
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
 
-    db $09, $d6, $6c ; bank 9: 0x6cd6
+    db $09, $d6, $6c ; bank 9: 0x6cd6 south bed
     db $09, $cf, $50 ; bank 9: 0x50cf
 
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $20, $00, $01, $80
     db $02, $00, $00, $0f, $f8, $07, $00, $00, $00, $00, $ff, $10, $00, $00, $00, $00
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
 
-    db $09, $d6, $6c ; bank 9: 0x6cd6
+    db $09, $d6, $6c ; bank 9: 0x6cd6 north bed
     db $09, $29, $52 ; bank 9: 0x5229
 
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $20, $00, $04, $80
@@ -3569,23 +2640,35 @@ LampshadeBossRoomDialogue:: ; 0x5aaa
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
 
 LampshadeBossRoomSceneInit:: ; 0x5b46
-    db $25, $12, $01, $58, $45, $0d, $0a, $01, $59, $0f, $01
+    db $25
+    db $12, $01
+    db $58, $45, $0d, $0a, $01
+    db $59, $0f, $01
 
     db $60, $00, $7f, $9f, $04 ; bank 4 0x7f9f lampshade boss music
 
-    db $14, $00, $01, $ff, $ff, $0d, $ff, $ff, $00, $55, $af, $02, $21, $0f, $c6, $0d
-    db $57, $03, $40, $00
+    db $14, $00, $01, $ff, $ff
+    db $0d, $ff, $ff, $00, $55, $af, $02
+    db $21, $0f, $c6, $0d
+    db $57, $03
+    db $40, $00
 
-    db "LAMPSHADE GUARDIAN" ; 0x5b6a
+    db "LAMPSHADE GUARDIAN", $00 ; 0x5b6a
 
-    db $00, $47, $03, $01, $04, $14, $00, $00, $45, $ff, $0e, $00, $41, $ff, $00, $44
-    db $07, $01, $40, $00
+    db $47, $03, $01, $04, $14, $00, $00
+    db $45, $ff, $0e, $00
+    db $41, $ff, $00
+    db $44, $07, $01
+    db $40, $00
 
     db "INVINCIBLE SEWER\n" ; 0x5b90
-    db "DEMON"
+    db "DEMON", $00
 
-    db $00, $47, $03, $01, $04, $14, $00, $00, $41, $ff, $00, $44, $07, $01, $45, $fe
-    db $12, $00, $44, $03, $01, $00
+    db $47, $03, $01, $04, $14, $00, $00
+    db $41, $ff, $00
+    db $44, $07, $01
+    db $45, $fe, $12, $00
+    db $44, $03, $01, $00
 
 LampshadeBossRoomEntry::    ; 0x5bbc
     db $14, $12, $00
@@ -3630,13 +2713,28 @@ DefeatedLampshadeBossDialogue:: ; 0x5bf7
 
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
 
-bank009_5c93: ; related to DefeatedLampshadeBossScreen
-    db $25, $12, $05, $14, $00, $02, $ff, $fc, $14, $00, $0c, $ff, $fd, $75, $ff, $fc
-    db $14, $00, $03, $ff, $fc, $14, $00, $00, $ff, $fd, $75, $ff, $fc, $61, $14, $00
-    db $02, $ff, $fc, $3e, $08, $ff, $fc, $14, $00, $01, $ff, $fb, $0d, $ff, $fb, $00
-    db $55, $af, $02, $21, $01, $c6, $0d, $57, $03, $14, $00, $1e, $ff, $fb, $0d, $ff
-    db $fb, $00, $55, $af, $02, $14, $00, $02, $ff, $fc, $14, $03, $80, $ff, $fd, $14
-    db $06, $00, $ff, $fe, $14, $00, $00, $ff, $ff, $30, $ff, $fc, $00
+DefeatedLampshadeBossScreenSceneInit:: ; related to DefeatedLampshadeBossScreen
+    db $25
+    db $12, $05
+    db $14, $00, $02, $ff, $fc
+    db $14, $00, $0c, $ff, $fd
+    db $75, $ff, $fc
+    db $14, $00, $03, $ff, $fc
+    db $14, $00, $00, $ff, $fd
+    db $75, $ff, $fc
+    db $61
+    db $14, $00, $02, $ff, $fc
+    db $3e, $08, $ff, $fc
+    db $14, $00, $01, $ff, $fb
+    db $0d, $ff, $fb, $00, $55, $af, $02
+    db $21, $01, $c6, $0d, $57, $03
+    db $14, $00, $1e, $ff, $fb, $0d, $ff
+    db $fb, $00, $55, $af, $02
+    db $14, $00, $02, $ff, $fc
+    db $14, $03, $80, $ff, $fd
+    db $14, $06, $00, $ff, $fe
+    db $14, $00, $00, $ff, $ff
+    db $30, $ff, $fc, $00
 
 DefeatedLampshadeBossScreenEntry::    ; 0x5cf0
     db $14, $12, $00
@@ -3647,8 +2745,8 @@ DefeatedLampshadeBossScreenEntry::    ; 0x5cf0
     db $08, $bf, $68 ; bank 0x68bf collision
     db $04, $b4, $7f ; bank 4 0x7fb4 palette 0
     db $09, $26, $53 ; bank 9 0x5326 palette 1
-    db $09, $93, $5c, $00
-    db $00, $00
+    db $09, $93, $5c
+    db $00, $00, $00
     db $0a, $58, $43 ; bank 0a 0x4358 sprites
     db $09, $f7, $5b
     db $00, $00, $00, $00 ; no transition
@@ -3683,8 +2781,8 @@ TempleLightOutsideEntry::    ; 0x5d93
     db $08, $27, $6a ; bank 8 0x6a27 collision
     db $04, $b4, $7f ; bank 4 0x7fb4 palette 0
     db $09, $26, $53 ; bank 9 0x5326 palette 1
-    db $07, $99, $63, $00
-    db $00, $00
+    db $07, $99, $63
+    db $00, $00, $00
     db $0a, $5e, $43 ; bank 0a 0x435e sprites
     db $09, $2b, $5d ; bank 9 0x5d2b dialogue match
     db $0a, $61, $43, $00 ; bank 0a 0x4361 transition
@@ -3711,13 +2809,21 @@ TempleLightInsideDialogue:: ; 0x5dce
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
 
 TempleLightInsideSceneInit:: ; 0x5e36
-    db $25, $12, $04, $14, $00, $01, $ff, $fc, $14, $00, $0c, $ff, $fd, $75, $ff, $fc
-    db $14, $00, $02, $ff, $fc, $14, $00, $00, $ff, $fd, $75, $ff, $fc
+    db $25
+    db $12, $04
+    db $14, $00, $01, $ff, $fc
+    db $14, $00, $0c, $ff, $fd
+    db $75, $ff, $fc
+    db $14, $00, $02, $ff, $fc
+    db $14, $00, $00, $ff, $fd
+    db $75, $ff, $fc
 
     db $60, $00, $6e, $b1, $02 ; bank 2 0x6eb1 intro music
 
-    db $14, $00, $01, $ff, $fc, $0d, $ff, $fc, $00, $55, $af, $02, $21, $01
-    db $c6, $0d, $57, $03, $00
+    db $14, $00, $01, $ff, $fc
+    db $0d, $ff, $fc, $00, $55, $af, $02
+    db $21, $01, $c6, $0d
+    db $57, $03, $00
 
 TempleLightInsideEntry::    ; 0x5e6b
     db $14, $12, $00
@@ -3778,8 +2884,8 @@ JTHouseOutsideEntry:: ; bank 9 0x5f76
     db $08, $f7, $6c ; bank 8 0x6cf7 collision
     db $04, $b4, $7f ; bank 4 0x7fb4 palette 0
     db $09, $26, $53 ; bank 9 0x5326 palette 1
-    db $07, $1a, $65, $00
-    db $00, $00
+    db $07, $1a, $65
+    db $00, $00, $00
     db $0a, $84, $43 ; bank 0a 0x4384 sprites
     db $09, $a6, $5e ; bank 9 0x5ea6 dialogue match
     db $0a, $8d, $43, $00 ; bank 0a 0x438d transition
@@ -3789,18 +2895,22 @@ JTHouseOutsideEntry:: ; bank 9 0x5f76
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
 
 TitleScreenSceneInit:: ; 0x5fb1
-    db $25, $12, $04, $76, $00, $02, $00, $00, $00, $00
+    db $25
+    db $12, $04
+    db $76, $00, $02, $00, $00, $00, $00
 
     db $60, $00, $6e, $b1, $02 ; bank 2 0x6eb1 intro music
 
-    db $14, $00, $00, $ff, $fc, $33, $ff, $fc, $55
+    db $14, $00, $00, $ff, $fc
+    db $33, $ff, $fc
+    
+    db $55, $44, $c3, $0a, $04 ; bank 0a 0x44c3
 
-    ; 0x5fc9
-    db $44, $c3, $0a ; bank 0a 0x44c3
-
-    db $04, $53, $84, $10, $14
-    db $00, $01, $ff, $fc, $0d, $ff, $fc, $00, $55, $af, $02, $21, $01, $c6, $0d, $57
-    db $03, $00
+    db $53, $84, $10
+    db $14, $00, $01, $ff, $fc
+    db $0d, $ff, $fc, $00, $55, $af, $02
+    db $21, $01, $c6, $0d
+    db $57, $03, $00
 
 TitleScreenEntry:: ; bank 09: 0x5fe3
     db $14, $12, $05
@@ -4168,50 +3278,80 @@ bank009_66a2_dialogue:
     db "to sell any PCs!"
 
     db $00, $47, $03, $01, $05, $14, $00, $00, $41, $ff, $00, $44, $07, $01, $45, $fe
-    db $12, $00, $44, $03, $01, $00, $40, $00
+    db $12, $00, $44, $03, $01, $00
+
+bank009_6714:    
+    db $40, $00
 
     db "Hi, I work here\n"
-    db "over the summer,"
-
-    db $00, $47, $03, $01, $04, $14, $00, $00, $45, $ff, $0e, $00, $41, $ff, $00, $44
-    db $07, $01, $40, $00
+    db "over the summer,", $00
+    
+    db $47, $03, $01, $04, $14, $00, $00
+    db $45, $ff, $0e, $00
+    db $41, $ff, $00
+    db $44, $07, $01
+    db $40, $00
 
     db "but I keep burning\n"
-    db "myself..."
-
-    db $00, $47, $03, $01, $04, $14, $00, $00, $41, $ff, $00, $44, $07, $01, $45, $fe
-    db $12, $00, $44, $03, $01, $00, $40, $00
+    db "myself...", $00
+    
+    db $47, $03, $01, $04, $14, $00, $00
+    db $41, $ff, $00
+    db $44, $07, $01
+    db $45, $fe, $12, $00
+    db $44, $03, $01
+    db $00
+    
+    db $40, $00
 
     db "Sorry, we're all\n"
-    db "out of meat,"
-
-    db $00, $47, $03, $01, $05, $14, $00, $00, $45, $ff, $0d, $00, $41, $ff, $00, $44
-    db $07, $01, $40, $00
+    db "out of meat,", $00
+    
+    db $47, $03, $01, $05, $14, $00, $00
+    db $45, $ff, $0d, $00
+    db $41, $ff, $00
+    db $44, $07, $01
+    db $40, $00
 
     db "We just sold our\n"
     db "last burger to the\n"
-    db "guy with glasses."
-
-    db $00, $47, $03, $01, $05, $14, $00, $00, $41, $ff, $00, $44, $07, $01, $45, $fe
-    db $12, $00, $44, $03, $01, $00, $40, $00
+    db "guy with glasses.", $00
+    
+    db $47, $03, $01, $05, $14, $00, $00
+    db $41, $ff, $00
+    db $44, $07, $01
+    db $45, $fe, $12, $00
+    db $44, $03, $01
+    db $00
+    db $40, $00
 
     db "Thanks for the\n"
-    db "corpse."
-
-    db $00, $47, $03, $01, $04, $14, $00, $00, $45, $ff, $0e, $00, $41, $ff, $00, $44, $07
-    db $01, $40, $00
+    db "corpse.", $00
+    
+    db $47, $03, $01, $04, $14, $00, $00
+    db $45, $ff, $0e, $00
+    db $41, $ff, $00
+    db $44, $07, $01
+    db $40, $00
 
     db "I was worried we'd\n"
-    db "go out of business."
-
-    db $00, $47, $03, $01, $04, $14, $00, $00, $41, $ff, $00, $44, $07, $01, $45, $fe
-    db $12, $00, $44, $03, $01, $00, $12, $04, $40, $00
+    db "go out of business.", $00
+    
+    db $47, $03, $01, $04, $14, $00, $00
+    db $41, $ff, $00
+    db $44, $07, $01
+    db $45, $fe, $12, $00
+    db $44, $03, $01
+    db $00
+    
+    db $12, $04
+    db $40, $00
 
     db "Hey you've got\n"
     db "some meat! Good\n"
-    db "quality too..."
-
-    db $00, $47, $03, $01, $05, $14, $00, $00, $45, $ff, $0d, $00, $41, $ff, $00, $44, $07
+    db "quality too...", $00
+    
+    db $47, $03, $01, $05, $14, $00, $00, $45, $ff, $0d, $00, $41, $ff, $00, $44, $07
     db $01, $40, $00
 
     db "we'll make you a\n"
@@ -4222,46 +3362,69 @@ bank009_66a2_dialogue:
     db $12, $00, $44, $03, $01, $14, $00, $0c, $00, $00, $14, $00, $04, $ff, $fc, $14
     db $00, $0b, $ff, $fd, $75, $ff, $fc, $40, $00
 
-    db "You got the Burger!"
-
-    db $00, $47, $03, $01, $05, $14, $00, $00, $45, $ff, $0d, $00, $41, $ff, $00, $44, $07
-    db $01, $40, $00
+    db "You got the Burger!", $00
+    
+    db $47, $03, $01, $05, $14, $00, $00
+    db $45, $ff, $0d, $00
+    db $41, $ff, $00
+    db $44, $07, $01
+    db $40, $00
 
     db "Hmmm, so that's\n" ; 0x6925
     db "why they taste\n"
-    db "funny..."
+    db "funny...", $00
 
-    db $00, $47, $03, $01, $05, $14, $00, $00, $41, $ff, $00, $44, $07, $01, $45, $fe
-    db $12, $00, $44, $03, $01, $00, $12, $04, $14, $00, $01, $ff, $fc, $14, $00, $00
-    db $ff, $fd, $75, $ff, $fc, $14, $00, $02, $ff, $fc, $14, $00, $0c, $ff, $fd, $75
-    db $ff, $fc, $40, $00
+    db $47, $03, $01, $05, $14, $00, $00
+    db $41, $ff, $00
+    db $44, $07, $01
+    db $45, $fe, $12, $00
+    db $44, $03, $01
+    db $00
+    
+    db $12, $04
+    db $14, $00, $01, $ff, $fc
+    db $14, $00, $00, $ff, $fd
+    db $75, $ff, $fc
+    db $14, $00, $02, $ff, $fc
+    db $14, $00, $0c, $ff, $fd
+    db $75, $ff, $fc
+    db $40, $00
 
     db "You placed the\n" ; 0x6980
     db "lampshade on\n"
-    db "the altar."
-
-    db $00, $47, $03, $01, $05, $14, $00, $00, $45, $ff, $0d, $00, $41, $ff, $00, $44, $07
-    db $01, $40, $00
+    db "the altar.", $00
+    
+    db $47, $03, $01, $05, $14, $00, $00
+    db $45, $ff, $0d, $00
+    db $41, $ff, $00
+    db $44, $07, $01
+    db $40, $00
 
     db "The Feng Shui of\n" ; 0x69ba
     db "the room was\n"
-    db "perfected."
-
-    db $00, $47, $03, $01, $05, $14, $00, $00, $41, $ff, $00, $44, $07, $01, $45, $fe
-    db $12, $00, $44, $03, $01, $21, $1f, $c6, $0d, $57, $01, $14, $00, $00, $ff, $fc
-    db $14, $00, $00, $ff, $fd, $14, $00, $00, $ff, $fe, $35, $ff, $fc, $32, $00, $ff
-    db $fc
-
+    db "perfected.", $00
+    
+    db $47, $03, $01, $05, $14, $00, $00
+    db $41, $ff, $00
+    db $44, $07, $01
+    db $45, $fe, $12, $00
+    db $44, $03, $01
+    db $21, $1f, $c6, $0d
+    db $57, $01
+    db $14, $00, $00, $ff, $fc
+    db $14, $00, $00, $ff, $fd
+    db $14, $00, $00, $ff, $fe
+    db $35, $ff, $fc
+    db $32, $00, $ff, $fc
     db $27, $03, $02
-
     db $09, $1e, $60 ; bank 9 0x601e GameFinishedScreen
     db $00
 
-bank009_6a1a:
+ArrowSpriteImage:: ; 0x6a1a
     db $14, $00
-    INCBIN "gfx/bank009_6a1c.2bpp"
+    INCBIN "gfx/bank009_arrow_6a1c.2bpp"
 
-bank00_6b5c:
+ArrowSpriteFrames:: ; 0x6b5c
     db $00, $08, $06, $00, $00, $f8, $08, $00, $80, $00, $00, $00
     db $00, $08, $00, $00, $00, $f8, $02, $00, $80, $00, $00, $00
     db $00, $08, $04, $00, $00, $f8, $04, $20, $80, $00, $00, $00
@@ -4293,11 +3456,11 @@ bank00_6b5c:
 
     db $09, $1a, $6a, $00, $00, $00 ; bank 9 0x6a1a
 
-AlexlabbeSpriteImage:: ; 0x6bf9
+AlexLabbeSpriteImage:: ; 0x6bf9
     db $04, $00
     INCBIN "gfx/bank009_alexlabbe_6bfb.2bpp"
 
-AlexlabbeSpriteFrames::
+AlexLabbeSpriteFrames::
     ; frame 1: 0x6c3b
     db $00, $08, $00, $00, $00, $f8, $02, $00
 
@@ -4313,11 +3476,11 @@ AlexlabbeSpriteFrames::
 
     db $09, $f9, $6b, $00, $00, $00 ; points to sprite at bank 9: 0x6bf9
 
-bank009_6c6e:
+BedSpriteImage::
     db $04, $00
-    INCBIN "gfx/bank009_6c70.2bpp"
+    INCBIN "gfx/bank009_bed_6c70.2bpp"
 
-Bank009_6c70SpriteFrames::
+BedSpriteFrames:: ; 0x6c70
     ; frame 1 0x6cb0
     db $80, $00, $00, $00
 
@@ -4334,7 +3497,7 @@ Bank009_6c70SpriteFrames::
     db $00, $01, $00, $01, $00, $01, $00, $01, $00, $01, $00, $01, $00, $01, $00, $01
     db $00, $00
 
-    ; bank 9: 0x6ce3
+    ; bank 9: 0x6cd6
     db $02, $00, $e0, $c0, $6c, $c4, $6c, $d4, $6c, $00, $0f, $f8, $07
 
     db $09, $6e, $6c, $00, $00, $00 ; points to sprite at bank 9: 0x6c6e
@@ -4873,9 +4036,9 @@ SamusSpriteFrames::
 
     db $09, $80, $79, $00, $00, $00 ; points to bank 9: 0x7980
 
-ImageBank009_7a05SpriteImage: ; 0x7a03
+SignSpriteImage:: ; 0x7a03
     db $08, $00
-    INCBIN "gfx/bank009_7a05.2bpp"
+    INCBIN "gfx/bank009_sign_7a05.2bpp"
 
 JTSpriteFrames::
     ; JT frame 1: 0x7a85
@@ -4963,11 +4126,11 @@ SnakeSpriteFrames::
 
     db $09, $26, $7b, $00, $00, $00 ; points to bank 9: 0x7b26
 
-TomfulpSpriteImage:: ; 0x7c7d
+TomFulpSpriteImage:: ; 0x7c7d
     db $10, $00
     INCBIN "gfx/bank009_tomfulp_7c7f.2bpp"
 
-TomfulpSpriteFrames::
+TomFulpSpriteFrames::
     ; frame 1: 0x7d7f
     db $00, $08, $00, $00, $f0, $00, $02, $00, $10, $f8, $04, $00, $f0, $00, $06, $00
     db $80, $00, $00, $00

@@ -6572,7 +6572,7 @@ jr_001_616f:
     push bc
     call _camera_update
     ld e, $05
-    ld hl, $40ca
+    ld hl, _scroll_update
     call RST_08
     call _actors_update
     call Call_000_2000
@@ -6601,12 +6601,8 @@ jr_001_61aa:
     add sp, $03
     ret
 
-    ; bank 1 0x61ad
-    db $25, $40, $00
-    db "Welcome To Hyscule", $00
-    
-    db $47, $03, $01, $04, $14, $00, $00, $45, $ff, $0e
-    db $00, $41, $ff, $00, $44, $07, $01, $45, $fe, $12, $00, $44, $03, $01, $00
+WellWelcomeSign::    ; bank 1 0x61ad
+    INCLUDE "src/scripts/well/welcomesign.asm"
     
 PcWorldTileImage:: ; 0x61dc
     db $7a, $00

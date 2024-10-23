@@ -1,12 +1,17 @@
 all: game.gb
 
+# Recursive `wildcard` function.
+rwildcard = $(foreach d,$(wildcard $(1:=/*)),$(call rwildcard,$d,$2) $(filter $(subst *,%,$2),$d))
+
+asm_files :=  $(call rwildcard,src,*.asm)
+
 %.2bpp: %.png
 	rgbgfx -o $@ $<
 
 %.1bpp: %.png
 	rgbgfx -d 1 -o $@ $<
 
-game.o: game.asm bank_*.asm
+game.o: game.asm bank_*.asm $(asm_files)
 	rgbasm --preserve-ld --nop-after-halt -o game.o game.asm
 
 game.gb: game.o
