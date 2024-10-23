@@ -5400,6 +5400,6 @@ jr_005_78f5:
     add sp, $0d
     ret
 
-    INCLUDE "src/topdown.asm"
+    INCLUDE "src/engine/topdown.asm"
 
     rst $38

@@ -826,7 +826,7 @@ NgHeadquartersOutsideToJTHouseOutsideTransition:: ; bank 0a 0x4ba1
 
     db $00
 
-    INCLUDE "src/logo.asm"
+    INCLUDE "src/engine/logo.asm"
 
     ; unused
     ds $3428, $ff
