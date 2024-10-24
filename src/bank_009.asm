@@ -75,7 +75,7 @@ jr_009_4057:
     pop bc
     ret
 
-
+_func_bank009_4068:
     ld hl, sp+$06
     ld b, [hl]
     ld hl, sp+$00
@@ -273,7 +273,7 @@ jr_009_416a:
     push af
     inc sp
     ld e, $09
-    ld hl, $4068
+    ld hl, _func_bank009_4068
     call RST_08
     inc sp
     pop bc
@@ -317,17 +317,17 @@ _music_init_driver:
     ldh [rNR14], a
     ld a, $ff
     ldh [rNR51], a
-    ld hl, $c63e
+    ld hl, _MUSIC_MUTE_MASK
     ld [hl], $00
-    ld hl, $c63f
+    ld hl, _MUSIC_EFFECTIVE_MUTE
     ld [hl], $00
-    ld hl, $c644
+    ld hl, _MUSIC_PLAY_ISR_COUNTER
     ld [hl], $00
-    ld hl, $c645
+    ld hl, _MUSIC_PLAY_ISR_PAUSE
     ld [hl], $00
-    ld hl, $c646
+    ld hl, _MUSIC_GLOBAL_MUTE_MASK
     ld [hl], $00
-    ld hl, $c647
+    ld hl, _MUSIC_SFX_PRIORITY
     ld [hl], $00
     ret
 
@@ -365,7 +365,7 @@ jr_009_41fb:
     push de
     ld de, _MUSIC_EVENTS
     push de
-    call _memset2
+    call _memset
     add sp, $06
 
 jr_009_420c:
@@ -623,7 +623,7 @@ jr_009_45bd:
     ret
 
 
-    ld bc, $c629
+    ld bc, _MUSIC_EVENTS
     ld hl, sp+$08
     ld a, [hl]
     and $03
@@ -691,7 +691,7 @@ jr_009_45bd:
     ld hl, sp+$01
     ld [hl-], a
     ld a, [hl]
-    ld hl, $c647
+    ld hl, _MUSIC_SFX_PRIORITY
     sub [hl]
     jr c, jr_009_4669
 
@@ -699,7 +699,7 @@ jr_009_45bd:
     ld [hl], $ff
     ld hl, sp+$00
     ld a, [hl]
-    ld [$c647], a
+    ld [_MUSIC_SFX_PRIORITY], a
     ld a, [$c63f]
     ld b, a
     rrca
@@ -1138,7 +1138,7 @@ jr_009_484c:
     push hl
     push de
     push bc
-    call _memset1
+    call _memcpy
     add sp, $06
     ld de, $c0ba
     ld hl, $c57e
@@ -1152,7 +1152,7 @@ jr_009_484c:
     push hl
     push de
     push bc
-    call _memset1
+    call _memcpy
     add sp, $06
     ld hl, $c57e
     ld a, [hl+]
@@ -1197,7 +1197,7 @@ Jump_009_489a:
     push de
     ld de, $c0ba
     push de
-    call _memset1
+    call _memcpy
     add sp, $06
     ld bc, $c0be
     ld hl, $c57e

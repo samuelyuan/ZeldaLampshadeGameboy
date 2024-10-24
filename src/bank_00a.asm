@@ -39,9 +39,9 @@ _input_init:
     push de
     ld de, $0000
     push de
-    ld de, $c616
+    ld de, _JOYPADS
     push de
-    call _memset2
+    call _memset
     add sp, $06
     ld hl, _LAST_JOY
     ld [hl], $00
@@ -49,23 +49,23 @@ _input_init:
     ld [hl], $00
     ld hl, _RECENT_JOY
     ld [hl], $00
-    ld hl, $c616
+    ld hl, _JOYPADS
     ld [hl], $01
     ret
 
-_func_bank00a_405f:
+_remove_LCD_ISRs:
     di
     ld de, $1b24
     push de
-    call Call_000_368a
+    call _remove_LCD
     pop hl
     ld de, $177c
     push de
-    call Call_000_368a
+    call _remove_LCD
     pop hl
     ld de, $17f8
     push de
-    call Call_000_368a
+    call _remove_LCD
     pop hl
     ldh a, [rLCDC]
     and $ef
@@ -73,27 +73,30 @@ _func_bank00a_405f:
     ei
     ret
 
-
-    ld hl, $c64a
+_palette_init:
+    ; DMG_palette[0] = DMG_palette[2] = DMG_PALETTE(3, 2, 1, 0);
+    ld hl, _DMG_palette + 2
     ld [hl], $1b
-    ld hl, $c648
+    ld hl, _DMG_palette
     ld [hl], $1b
-    ld hl, $c649
+    ; DMG_palette[1] = DMG_PALETTE(3, 1, 0, 2);
+    ld hl, _DMG_palette + 1
     ld [hl], $87
     ret
 
 _parallax_init:
+    ; memcpy(parallax_rows, parallax_rows_defaults, sizeof(parallax_rows));
     ld de, $0012
     push de
-    ld de, $40a2
+    ld de, _parallax_rows_defaults
     push de
     ld de, _PARALLAX_ROWS
     push de
-    call _memset1
+    call _memcpy
     add sp, $06
     ret
 
-_data_bank00a_40a2:
+_parallax_rows_defaults:
     db $00, $0f, $02, $00, $02, $00, $00, $1f, $01, $02, $02, $00, $00, $00, $00, $04
     db $10, $00
 

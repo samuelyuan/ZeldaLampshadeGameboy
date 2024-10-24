@@ -1314,7 +1314,7 @@ _main:
     ld hl, sp+$06
     jr jr_000_05de
 
-Call_000_05dc:
+_hUGE_init:
     ld hl, sp+$02
 
 jr_000_05de:
@@ -1368,9 +1368,9 @@ hUGE_init:
     ld a, [hl+]
     ld d, a
     ld a, [de]
-    ld [$d9c1], a
+    ld [_RAND_SEED + 2], a
     ld c, $12
-    ld de, $d9c2
+    ld de, _RAND_SEED + 3
 
 jr_000_0616:
     ld a, [hl+]
@@ -1392,11 +1392,11 @@ jr_000_0622:
     ld [$d9ed], a
     ld [$d9f5], a
     ld a, $64
-    ld [$d9dd], a
+    ld [_hUGE_current_wave], a
     ld c, $00
 
 Call_000_0635:
-    ld hl, $d9c2
+    ld hl, _RAND_SEED + 3
     ld de, $d9d4
     call Call_000_064d
     ld hl, $d9c4
@@ -2893,7 +2893,7 @@ jr_000_0d58:
     ret
 
 
-Call_000_0d5c:
+_sgb_transfer:
     ld hl, sp+$02
     ld a, [hl+]
     ld h, [hl]
@@ -2997,7 +2997,7 @@ jr_000_0dba:
     ld c, a
     ld [de], a
     inc e
-    ld a, [___current_base_prop]
+    ld a, [___current_base_tile]
     add [hl]
     inc hl
     ld [de], a
@@ -3110,7 +3110,7 @@ jr_000_0e1c:
 _add_VBL:
     ld hl, $c0a5
 
-Jump_000_0e2a:
+_add_int:
 jr_000_0e2a:
     ld a, [hl+]
     or [hl]
@@ -3237,7 +3237,7 @@ jr_000_0ec2:
     ldh [$90], a
     ld a, [bc]
     ld [$2000], a
-    ld a, [$c50b]
+    ld a, [_EMOTE_ACTOR]
     ld hl, sp+$06
     ld [hl], a
     ld a, [$c50c]
@@ -3342,7 +3342,7 @@ jr_000_0f54:
     ld [hl], $49
     inc hl
     ld [hl], $40
-    ld hl, ___current_base_prop
+    ld hl, ___current_base_tile
     ld [hl], $7c
     ld a, e
     push af
@@ -3465,7 +3465,7 @@ Jump_000_0f88:
 
 
 jr_000_1013:
-    ld hl, $c7d8
+    ld hl, _DRAW_SCROLL_X
     ld b, [hl]
     ld a, c
     sub b
@@ -3839,7 +3839,7 @@ jr_000_11e7:
     ld hl, $000a
     add hl, bc
     ld a, [hl]
-    ld [___current_base_prop], a
+    ld [___current_base_tile], a
     ld l, e
     ld h, d
     inc hl
@@ -3865,7 +3865,7 @@ jr_000_1225:
     ld a, [hl+]
     ld c, a
     ld b, [hl]
-    ld hl, $da1b
+    ld hl, ___current_metasprite
     ld a, c
     ld [hl+], a
     ld [hl], b
@@ -3881,7 +3881,7 @@ jr_000_1225:
     call _move_metasprite
     add sp, $03
     ld a, e
-    ld hl, $c50e
+    ld hl, _allocated_hardware_sprites
     add [hl]
     ld [hl], a
     ld hl, $c50f
@@ -4034,7 +4034,7 @@ _MemcpyBanked:
     ldh [$90], a
     ld [$2000], a
     pop bc
-    call _memset1
+    call _memcpy
     ld a, [$c519]
     ldh [$90], a
     ld [$2000], a
@@ -4488,7 +4488,7 @@ Call_000_1524:
     push hl
     push de
     push bc
-    call _memset1
+    call _memcpy
     add sp, $06
     ld hl, sp+$00
     ld a, [hl]
@@ -4635,7 +4635,7 @@ jr_000_15ff:
     push af
     inc sp
     ld e, $02
-    ld hl, $61bc
+    ld hl, _script_execute
     call RST_08
     add sp, $08
 
@@ -4771,7 +4771,7 @@ jr_000_16aa:
     push af
     inc sp
     ld e, $02
-    ld hl, _func_bank002_61bc
+    ld hl, _script_execute
     call RST_08
     add sp, $08
     pop bc
@@ -5084,329 +5084,7 @@ jr_000_1858:
     ld [bc], a
     ret
 
-_isqrt:
-    add sp, -$04
-    ld bc, $4000
-    xor a
-    ld hl, sp+$02
-    ld [hl+], a
-    ld [hl], a
-
-jr_000_1878:
-    ld a, b
-    or c
-    jr z, jr_000_18be
-
-    ld hl, sp+$02
-    ld a, [hl+]
-    or c
-    ld e, a
-    ld a, [hl]
-    or b
-    ld hl, sp+$00
-    ld [hl], e
-    inc hl
-    ld [hl+], a
-    inc hl
-    srl [hl]
-    dec hl
-    rr [hl]
-    ld hl, sp+$06
-    ld e, l
-    ld d, h
-    ld hl, sp+$00
-    ld a, [de]
-    inc de
-    sub [hl]
-    inc hl
-    ld a, [de]
-    sbc [hl]
-    jr c, jr_000_18b4
-
-    ld hl, sp+$06
-    ld a, [hl+]
-    ld e, a
-    ld d, [hl]
-    pop hl
-    push hl
-    ld a, e
-    sub l
-    ld e, a
-    ld a, d
-    sbc h
-    ld hl, sp+$07
-    ld [hl-], a
-    ld [hl], e
-    ld hl, sp+$02
-    ld a, [hl]
-    or c
-    ld [hl+], a
-    ld a, [hl]
-    or b
-    ld [hl], a
-
-jr_000_18b4:
-    srl b
-    rr c
-    srl b
-    rr c
-    jr jr_000_1878
-
-jr_000_18be:
-    ld hl, sp+$02
-    ld e, [hl]
-    add sp, $04
-    ret
-
-_sine_wave:
-    nop
-    inc bc
-    ld b, $09
-    inc c
-    db $10
-    inc de
-    ld d, $19
-    inc e
-    rra
-    ld [hl+], a
-    dec h
-    jr z, jr_000_18fe
-
-    ld l, $31
-    inc sp
-    ld [hl], $39
-    inc a
-    ccf
-    ld b, c
-    ld b, h
-    ld b, a
-    ld c, c
-    ld c, h
-    ld c, [hl]
-    ld d, c
-    ld d, e
-    ld d, l
-    ld e, b
-    ld e, d
-    ld e, h
-    ld e, [hl]
-    ld h, b
-    ld h, d
-    ld h, h
-    ld h, [hl]
-    ld l, b
-    ld l, d
-    ld l, e
-    ld l, l
-    ld l, a
-    ld [hl], b
-    ld [hl], c
-    ld [hl], e
-    ld [hl], h
-    ld [hl], l
-    db $76
-    ld a, b
-    ld a, c
-    ld a, d
-    ld a, d
-    ld a, e
-    ld a, h
-    ld a, l
-    ld a, l
-
-jr_000_18fe:
-    ld a, [hl]
-    ld a, [hl]
-    ld a, [hl]
-    ld a, a
-    ld a, a
-    ld a, a
-    ld a, a
-    ld a, a
-    ld a, a
-    ld a, a
-    ld a, [hl]
-    ld a, [hl]
-    ld a, [hl]
-    ld a, l
-    ld a, l
-    ld a, h
-    ld a, e
-    ld a, d
-    ld a, d
-    ld a, c
-    ld a, b
-    db $76
-    ld [hl], l
-    ld [hl], h
-    ld [hl], e
-    ld [hl], c
-    ld [hl], b
-    ld l, a
-    ld l, l
-    ld l, e
-    ld l, d
-    ld l, b
-    ld h, [hl]
-    ld h, h
-    ld h, d
-    ld h, b
-    ld e, [hl]
-    ld e, h
-    ld e, d
-    ld e, b
-    ld d, l
-    ld d, e
-    ld d, c
-    ld c, [hl]
-    ld c, h
-    ld c, c
-    ld b, a
-    ld b, h
-    ld b, c
-    ccf
-    inc a
-    add hl, sp
-    ld [hl], $33
-    ld sp, $2b2e
-    jr z, jr_000_195e
-
-    ld [hl+], a
-    rra
-    inc e
-    add hl, de
-    ld d, $13
-    db $10
-    inc c
-    add hl, bc
-    ld b, $03
-    nop
-    db $fd
-    ld a, [$f4f7]
-    ldh a, [$ed]
-    ld [$e4e7], a
-    pop hl
-    sbc $db
-    ret c
-
-    push de
-    jp nc, $cdcf
-
-    jp z, $c4c7
-
-    pop bc
-    cp a
-    cp h
-    cp c
-    or a
-
-jr_000_195e:
-    or h
-    or d
-    xor a
-    xor l
-    xor e
-    xor b
-    and [hl]
-    and h
-    and d
-    and b
-    sbc [hl]
-    sbc h
-    sbc d
-    sbc b
-    sub [hl]
-    sub l
-    sub e
-    sub c
-    sub b
-    adc a
-    adc l
-    adc h
-    adc e
-    adc d
-    adc b
-    add a
-    add [hl]
-    add [hl]
-    add l
-    add h
-    add e
-    add e
-    add d
-    add d
-    add d
-    add c
-    add c
-    add c
-    add c
-    add c
-    add c
-    add c
-    add d
-    add d
-    add d
-    add e
-    add e
-    add h
-    add l
-    add [hl]
-    add [hl]
-    add a
-    adc b
-    adc d
-    adc e
-    adc h
-    adc l
-    adc a
-    sub b
-    sub c
-    sub e
-    sub l
-    sub [hl]
-    sbc b
-    sbc d
-    sbc h
-    sbc [hl]
-    and b
-    and d
-    and h
-    and [hl]
-    xor b
-    xor e
-    xor l
-    xor a
-    or d
-    or h
-    or a
-    cp c
-    cp h
-    cp a
-    pop bc
-    call nz, $cac7
-    call $d2cf
-    push de
-    ret c
-
-    db $db
-    sbc $e1
-    db $e4
-    rst $20
-    ld [$f0ed], a
-    db $f4
-    rst $30
-    ld a, [$00fd]
-    ld bc, $0001
-    nop
-    rst $38
-    rst $38
-    nop
-
-_dir_angle_lookup:
-    add b
-    ld b, b
-    nop
-    ret nz
+    INCLUDE "src/engine/math.asm"
 
     ld hl, sp+$04
     ld a, [hl]
@@ -5543,7 +5221,7 @@ jr_000_1a51:
     push af
     inc sp
     ld e, $02
-    ld hl, $61bc
+    ld hl, _script_execute
     call RST_08
     add sp, $08
     jr jr_000_19fe
@@ -5558,15 +5236,15 @@ _music_play_isr:
     inc a
     jr z, jr_000_1abd
 
-    ld a, [$c63e]
+    ld a, [_MUSIC_MUTE_MASK]
     or a
     jr nz, jr_000_1a99
 
-    ld a, [$c646]
-    ld hl, $c63f
+    ld a, [_MUSIC_GLOBAL_MUTE_MASK]
+    ld hl, _MUSIC_EFFECTIVE_MUTE
     or [hl]
     ld [_hUGE_mute_mask], a
-    ld hl, $c63e
+    ld hl, _MUSIC_MUTE_MASK
     ld [hl], $01
 
 jr_000_1a99:
@@ -5575,31 +5253,31 @@ jr_000_1a99:
     or a
     jr nz, jr_000_1abd
 
-    ld a, [$c646]
+    ld a, [_MUSIC_GLOBAL_MUTE_MASK]
     ld [_hUGE_mute_mask], a
-    ld hl, $d9dd
+    ld hl, _hUGE_current_wave
     ld [hl], $64
-    ld hl, $c63e
+    ld hl, _MUSIC_MUTE_MASK
     ld [hl], $00
-    ld [$c63f], a
-    ld hl, $c647
+    ld [_MUSIC_EFFECTIVE_MUTE], a
+    ld hl, _MUSIC_SFX_PRIORITY
     ld [hl], $00
-    ld hl, $c7f1
+    ld hl, _SFX_PLAY_BANK
     ld [hl], $ff
 
 jr_000_1abd:
-    ld a, [$c645]
+    ld a, [_MUSIC_PLAY_ISR_PAUSE]
     or a
     ret nz
 
-    ld a, [$c63d]
+    ld a, [_MUSIC_CURRENT_TRACK_BANK]
     inc a
     ret z
 
     jr jr_000_1ac9
 
 jr_000_1ac9:
-    ld hl, $c644
+    ld hl, _MUSIC_PLAY_ISR_COUNTER
     inc [hl]
     ld a, [hl]
     and $03
@@ -5607,13 +5285,13 @@ jr_000_1ac9:
 
     ldh a, [$90]
     ld c, a
-    ld hl, $c63d
+    ld hl, _MUSIC_CURRENT_TRACK_BANK
     ld a, [hl]
     ldh [$90], a
     ld de, $2000
     ld a, [hl]
     ld [de], a
-    ld hl, $c641
+    ld hl, _MUSIC_NEXT_TRACK + 1
     ld a, [hl-]
     or [hl]
     jr z, jr_000_1b17
@@ -5642,7 +5320,7 @@ Call_000_1af6:
     ld a, [_MUSIC_CURRENT_TRACK_BANK]
     push bc
     push de
-    call Call_000_05dc
+    call _hUGE_init
     pop hl
     pop bc
     xor a
@@ -5717,13 +5395,13 @@ _projectiles_update:
     ld a, [_projectiles_active_head]
     ld [_projectiles_inactive_head + 3], a
     ld a, [_projectiles_active_head + 1]
-    ld [$c7d1], a
+    ld [_projectile + 1], a
     xor a
-    ld hl, $c7d2
+    ld hl, _prev_projectile
     ld [hl+], a
     ld [hl], a
     ldh a, [$90]
-    ld [$c7cf], a
+    ld [_save_bank], a
 
 Jump_000_1b7a:
     ld hl, $c7d1
@@ -5794,7 +5472,7 @@ jr_000_1bc9:
     ld [hl], b
 
 jr_000_1bcf:
-    ld hl, $c7d0
+    ld hl, _projectile 
     ld a, [hl+]
     ld c, a
     ld b, [hl]
@@ -5808,13 +5486,13 @@ jr_000_1bcf:
     inc bc
     ld a, [hl]
     ld [bc], a
-    ld a, [$c7d0]
-    ld [$c7cd], a
+    ld a, [_projectile ]
+    ld [_projectiles_inactive_head], a
     ld a, [$c7d1]
     ld [$c7ce], a
     ld hl, sp+$07
     ld a, [hl]
-    ld [$c7d0], a
+    ld [_projectile ], a
     ld hl, sp+$08
     ld a, [hl]
     ld [$c7d1], a
@@ -5829,7 +5507,7 @@ jr_000_1bfe:
     ld h, [hl]
     ld l, a
     ld [hl], c
-    ld hl, $c7d0
+    ld hl, _projectile 
     ld a, [hl+]
     ld c, a
     ld b, [hl]
@@ -5844,7 +5522,7 @@ jr_000_1bfe:
     add hl, bc
     inc [hl]
     ld a, [hl]
-    ld hl, $c7d0
+    ld hl, _projectile 
     ld a, [hl+]
     ld e, a
     ld d, [hl]
@@ -5884,7 +5562,7 @@ jr_000_1c4a:
     ld [bc], a
 
 jr_000_1c4f:
-    ld hl, $c7d0
+    ld hl, _projectile 
     ld a, [hl+]
     ld c, a
     ld b, [hl]
@@ -5927,7 +5605,7 @@ jr_000_1c4f:
     ld a, c
     ld [hl+], a
     ld [hl], b
-    ld hl, $c7d0
+    ld hl, _projectile 
     ld a, [hl+]
     ld c, a
     ld b, [hl]
@@ -5975,7 +5653,7 @@ jr_000_1c4f:
     ld [hl], b
     ld hl, _GAME_TIME
     ld c, [hl]
-    ld a, [$c7d0]
+    ld a, [_projectile ]
     ld hl, sp+$07
     ld [hl], a
     ld a, [$c7d1]
@@ -6044,7 +5722,7 @@ jr_000_1c4f:
     ld a, [hl]
     ld hl, sp+$01
     ld [hl], a
-    ld a, [$c7d0]
+    ld a, [_projectile ]
     ld hl, sp+$07
     ld [hl], a
     ld a, [$c7d1]
@@ -6160,12 +5838,12 @@ jr_000_1c4f:
     push af
     inc sp
     ld e, $02
-    ld hl, $61bc
+    ld hl, _script_execute
     call RST_08
     add sp, $08
 
 jr_000_1dbc:
-    ld a, [$c7d0]
+    ld a, [_projectile ]
     ld hl, sp+$07
     ld [hl], a
     ld a, [$c7d1]
@@ -6209,13 +5887,13 @@ jr_000_1dbc:
     jr jr_000_1dfc
 
 jr_000_1df6:
-    ld hl, $c7cb
+    ld hl, _projectiles_active_head
     ld a, c
     ld [hl+], a
     ld [hl], b
 
 jr_000_1dfc:
-    ld hl, $c7d0
+    ld hl, _projectile 
     ld a, [hl+]
     ld b, [hl]
     add $23
@@ -6225,19 +5903,19 @@ jr_000_1dfc:
     inc b
 
 jr_000_1e07:
-    ld hl, $c7cd
+    ld hl, _projectiles_inactive_head
     ld a, [hl+]
     ld [bc], a
     inc bc
     ld a, [hl]
     ld [bc], a
-    ld a, [$c7d0]
-    ld [$c7cd], a
+    ld a, [_projectile ]
+    ld [_projectiles_inactive_head], a
     ld a, [$c7d1]
     ld [$c7ce], a
     ld hl, sp+$07
     ld a, [hl]
-    ld [$c7d0], a
+    ld [_projectile ], a
     ld hl, sp+$08
     ld a, [hl]
     ld [$c7d1], a
@@ -6287,7 +5965,7 @@ jr_000_1e2a:
     rr [hl]
     ld a, [hl+]
     ld [hl], a
-    ld hl, $c7d8
+    ld hl, _DRAW_SCROLL_X
     ld c, [hl]
     ld hl, sp+$06
     ld a, [hl-]
@@ -6421,13 +6099,13 @@ Jump_000_1ee1:
 jr_000_1f07:
     ld hl, sp+$01
     ld a, [hl]
-    ld [$c7cb], a
+    ld [_projectiles_active_head], a
     ld hl, sp+$02
     ld a, [hl]
     ld [$c7cc], a
 
 jr_000_1f13:
-    ld a, [$c7d0]
+    ld a, [_projectile ]
     ld hl, sp+$05
     ld [hl], a
     ld a, [$c7d1]
@@ -6451,19 +6129,19 @@ Jump_000_1f1f:
     ld a, [hl+]
     ld e, a
     ld d, [hl]
-    ld hl, $c7cd
+    ld hl, _projectiles_inactive_head
     ld a, [hl+]
     ld [de], a
     inc de
     ld a, [hl]
     ld [de], a
-    ld a, [$c7d0]
-    ld [$c7cd], a
+    ld a, [_projectile ]
+    ld [_projectiles_inactive_head], a
     ld a, [$c7d1]
     ld [$c7ce], a
     ld hl, sp+$03
     ld a, [hl]
-    ld [$c7d0], a
+    ld [_projectile ], a
     ld hl, sp+$04
     ld a, [hl]
     ld [$c7d1], a
@@ -6483,7 +6161,7 @@ Jump_000_1f56:
     ldh [$90], a
     ld a, [bc]
     ld [$2000], a
-    ld hl, $c7d0
+    ld hl, _projectile 
     ld a, [hl+]
     ld c, a
     ld b, [hl]
@@ -6493,7 +6171,7 @@ Jump_000_1f56:
     ld l, [hl]
     ld e, a
     ld d, l
-    ld a, [$c50e]
+    ld a, [_allocated_hardware_sprites]
     ld hl, sp+$06
     ld [hl], a
     ld hl, $0014
@@ -6560,10 +6238,10 @@ Jump_000_1f56:
     call _move_metasprite
     add sp, $03
     ld a, e
-    ld hl, $c50e
+    ld hl, _allocated_hardware_sprites
     add [hl]
     ld [hl], a
-    ld hl, $c7d0
+    ld hl, _projectile 
     ld a, [hl+]
     ld c, a
     ld b, [hl]
@@ -6576,7 +6254,7 @@ Jump_000_1f56:
     ld e, l
     ld d, h
     ld a, [de]
-    ld hl, $c7d0
+    ld hl, _projectile 
     ld [hl+], a
     inc de
     ld a, [de]
@@ -6597,21 +6275,21 @@ Jump_000_1ff2:
     ret
 
 
-Call_000_2000:
+_projectiles_render:
     add sp, -$07
-    ld a, [$c7cb]
-    ld [$c7d0], a
-    ld a, [$c7cc]
-    ld [$c7d1], a
+    ld a, [_projectiles_active_head]
+    ld [_projectile], a
+    ld a, [_projectiles_active_head + 1]
+    ld [_projectile + 1], a
     xor a
-    ld hl, $c7d2
+    ld hl, _prev_projectile
     ld [hl+], a
     ld [hl], a
     ldh a, [$90]
-    ld [$c7cf], a
+    ld [_save_bank], a
 
 Jump_000_2019:
-    ld hl, $c7d1
+    ld hl, _projectile + 1
     ld a, [hl-]
     or [hl]
     jp z, Jump_000_2165
@@ -6634,7 +6312,7 @@ Jump_000_2019:
     srl h
     rr l
     ld a, l
-    ld hl, $c7d8
+    ld hl, _DRAW_SCROLL_X
     ld e, [hl]
     sub e
     add $08
@@ -6657,7 +6335,7 @@ Jump_000_2019:
     srl h
     rr l
     ld a, l
-    ld hl, $c7da
+    ld hl, _DRAW_SCROLL_Y
     ld e, [hl]
     sub e
     add $08
@@ -6687,7 +6365,7 @@ jr_000_2073:
     ld a, [hl+]
     ld c, a
     ld b, [hl]
-    ld hl, $c7d3
+    ld hl, _prev_projectile + 1
     ld a, [hl-]
     or [hl]
     jr z, jr_000_209d
@@ -6712,13 +6390,13 @@ jr_000_2094:
 jr_000_209d:
     ld hl, sp+$05
     ld a, [hl]
-    ld [$c7cb], a
+    ld [_projectiles_active_head], a
     ld hl, sp+$06
     ld a, [hl]
-    ld [$c7cc], a
+    ld [_projectiles_active_head + 1], a
 
 jr_000_20a9:
-    ld hl, $c7d0
+    ld hl, _projectile 
     ld a, [hl+]
     ld d, [hl]
     add $23
@@ -6728,17 +6406,17 @@ jr_000_20a9:
     inc d
 
 jr_000_20b4:
-    ld hl, $c7cd
+    ld hl, _projectiles_inactive_head
     ld a, [hl+]
     ld [de], a
     inc de
     ld a, [hl]
     ld [de], a
-    ld a, [$c7d0]
-    ld [$c7cd], a
+    ld a, [_projectile ]
+    ld [_projectiles_inactive_head], a
     ld a, [$c7d1]
     ld [$c7ce], a
-    ld hl, $c7d0
+    ld hl, _projectile 
     ld a, c
     ld [hl+], a
     ld [hl], b
@@ -6754,7 +6432,7 @@ jr_000_20d1:
     ldh [$90], a
     ld a, [bc]
     ld [$2000], a
-    ld hl, $c7d0
+    ld hl, _projectile 
     ld a, [hl+]
     ld c, a
     ld b, [hl]
@@ -6764,7 +6442,7 @@ jr_000_20d1:
     ld l, [hl]
     ld e, a
     ld d, l
-    ld a, [$c50e]
+    ld a, [_allocated_hardware_sprites]
     ld hl, sp+$04
     ld [hl], a
     ld hl, $0014
@@ -6829,10 +6507,10 @@ jr_000_20d1:
     call _move_metasprite
     add sp, $03
     ld a, e
-    ld hl, $c50e
+    ld hl, _allocated_hardware_sprites
     add [hl]
     ld [hl], a
-    ld hl, $c7d0
+    ld hl, _projectile 
     ld a, [hl+]
     ld c, a
     ld b, [hl]
@@ -6845,7 +6523,7 @@ jr_000_20d1:
     ld e, l
     ld d, h
     ld a, [de]
-    ld hl, $c7d0
+    ld hl, _projectile 
     ld [hl+], a
     inc de
     ld a, [de]
@@ -6906,7 +6584,7 @@ jr_000_2185:
     ld a, [$c7e5]
     ld l, a
     push hl
-    call Call_000_2297
+    call _set_bkg_submap
     add sp, $07
     pop bc
     ld hl, $c7e5
@@ -6965,7 +6643,7 @@ jr_000_21e3:
     ld d, a
     ld e, [hl]
     push de
-    call Call_000_2297
+    call _set_bkg_submap
     add sp, $07
     pop bc
     ld a, c
@@ -7002,7 +6680,7 @@ Call_000_220b:
     ld d, a
     ld e, [hl]
     push de
-    call Call_000_2297
+    call _set_bkg_submap
 
 Jump_000_2234:
     add sp, $07
@@ -7058,7 +6736,7 @@ jr_000_2251:
     ld a, [_pending_h_x]
     ld l, a
     push hl
-    call Call_000_2297
+    call _set_bkg_submap
     add sp, $07
     pop bc
     ld hl, _pending_h_y
@@ -7076,7 +6754,7 @@ jr_000_2251:
     ret
 
 
-Call_000_2297:
+_set_bkg_submap:
     ld hl, sp+$02
     ld a, [hl+]
     ld b, a
@@ -7252,120 +6930,7 @@ Jump_000_233e:
 
     INCLUDE "src/engine/sfx_player.asm"
 
-_on_SIO_receive:
-    ld hl, _link_packet_len
-    ld a, [hl]
-    or a
-    jr z, jr_000_2468
-
-    dec [hl]
-    ld hl, _link_packet_ptr
-    ld a, [hl+]
-    ld c, a
-    ld b, [hl]
-    ld hl, sp+$02
-    ld a, [hl]
-    ld [bc], a
-    ld hl, _link_packet_ptr
-    inc [hl]
-    jr nz, jr_000_2452
-
-    inc hl
-    inc [hl]
-
-jr_000_2452:
-    ld hl, _link_packet_len
-    ld a, [hl]
-    or a
-    jp nz, _SIO_receive
-
-    ld hl, _link_packet_ptr
-    ld [hl], $f6
-    inc hl
-    ld [hl], $c7
-    ld hl, _link_packet_received
-    ld [hl], $01
-    ret
-
-
-jr_000_2468:
-    ld hl, sp+$02
-    ld a, [hl]
-    ld [_link_packet_len], a
-    ld hl, _link_packet_ptr
-    ld [hl], $f6
-    inc hl
-    ld [hl], $c7
-    jp _SIO_receive
-
-_SIO_update:
-    ld a, [_SIO_STATUS]
-    sub $04
-    jr nz, jr_000_249f
-
-    ld hl, _link_operation_mode
-    ld [hl], $00
-    ld hl, _link_packet_snd_len
-    ld [hl], $00
-    ld hl, _link_packet_len
-    ld [hl], $00
-    ld hl, _link_packet_ptr
-    ld [hl], $f6
-    inc hl
-    ld [hl], $c7
-    ld hl, _SIO_STATUS
-    ld [hl], $00
-    ld e, $00
-    ret
-
-jr_000_249f:
-    ld a, [_link_byte_sent]
-    or a
-    jr z, jr_000_24dd
-
-    ld a, [_link_packet_snd_len]
-    or a
-    jr z, jr_000_24d8
-
-    ld hl, _link_byte_sent
-    ld [hl], $00
-    ld a, [_link_packet_snd_len]
-    dec a
-    jr nz, jr_000_24bb
-
-    ld hl, _link_next_mode
-    ld [hl], $02
-
-jr_000_24bb:
-    ld hl, _link_packet_snd_ptr
-    ld l, [hl]
-    ld a, [_link_packet_snd_ptr + 1]
-    ld h, a
-    ld b, [hl]
-    ld hl, _link_packet_snd_ptr
-    inc [hl]
-    jr nz, jr_000_24cc
-
-    inc hl
-    inc [hl]
-
-jr_000_24cc:
-    push bc
-    inc sp
-    call _SIO_send_byte
-    inc sp
-    ld hl, _link_packet_snd_len
-    dec [hl]
-    jr jr_000_24dd
-
-jr_000_24d8:
-    ld hl, _link_packet_sent
-    ld [hl], $01
-
-jr_000_24dd:
-    ld e, $01
-    ret
-
+    INCLUDE "src/engine/sio.asm"
 
 _ui_update:
     ld c, $00
@@ -7535,11 +7100,11 @@ jr_000_25a0:
     sub [hl]
     ret c
 
-    ld hl, $c7f1
+    ld hl, _SFX_PLAY_BANK
     ld [hl], $ff
     ld hl, $c647
     ld [hl], $04
-    ld a, [$c63f]
+    ld a, [_MUSIC_EFFECTIVE_MUTE]
     ld l, a
     rrca
     jr nc, jr_000_25d5
@@ -7577,81 +7142,21 @@ jr_000_25e7:
 jr_000_25f2:
     ld a, $ff
     ldh [rNR51], a
-    ld hl, $c63f
+    ld hl, _MUSIC_EFFECTIVE_MUTE
     ld [hl], c
-    ld hl, $c7f1
+    ld hl, _SFX_PLAY_BANK
     ld [hl], $ff
-    ld hl, $c7f4
+    ld hl, _SFX_FRAME_SKIP
     ld [hl], $00
-    ld hl, $c7f2
+    ld hl, _SFX_PLAY_SAMPLE
     ld a, e
     ld [hl+], a
     ld [hl], d
-    ld hl, $c7f1
+    ld hl, _SFX_PLAY_BANK
     ld [hl], b
     ret
 
-__vm_sgb_transfer:
-    dec sp
-    ldh a, [$90]
-    ld hl, sp+$00
-    ld [hl], a
-    ld hl, sp+$07
-    ld a, [hl+]
-    ld c, a
-    ld b, [hl]
-    ld e, c
-    ld d, b
-    inc de
-    inc de
-    ld a, [de]
-    ldh [$90], a
-    ld a, [de]
-    ld [$2000], a
-    ld l, c
-    ld h, b
-    ld a, [hl+]
-    ld h, [hl]
-    ld l, a
-    push hl
-    call Call_000_0d5c
-    pop hl
-    ld l, c
-    ld h, b
-    ld a, [hl+]
-    ld h, [hl]
-    ld l, a
-    ld a, [hl]
-    and $03
-    ld e, a
-    ld d, $00
-    ld a, e
-    add a
-    rl d
-    add a
-    rl d
-    add a
-    rl d
-    add a
-    rl d
-    add l
-    ld e, a
-    ld a, d
-    adc h
-    ld d, a
-    ld a, e
-    ld [bc], a
-    inc bc
-    ld a, d
-    ld [bc], a
-    ld hl, sp+$00
-    ld a, [hl]
-    ldh [$90], a
-    ld de, $2000
-    ld a, [hl]
-    ld [de], a
-    inc sp
-    ret
+    INCLUDE "src/engine/vm_sgb.asm"
 
 _vm_load_text:
     add sp, -$10
@@ -8348,7 +7853,7 @@ jr_000_29b2:
     add sp, $0a
     ret
 
-
+_func_bank000_29b5:
     add sp, -$10
     ld hl, sp+$1b
     ld a, [hl+]
@@ -8391,7 +7896,7 @@ jr_000_29d7:
     push af
     inc sp
     ld e, $02
-    ld hl, $61bc
+    ld hl, _script_execute
     call RST_08
     add sp, $08
     push de
@@ -9436,7 +8941,7 @@ Jump_000_2eae:
     ld h, a
     push hl
     push bc
-    call Call_000_389d
+    call _modsint
     add sp, $04
     ld c, e
     ld b, d
@@ -11211,7 +10716,7 @@ jr_000_3671:
     reti
 
 
-Call_000_3679:
+_add_LCD:
     push bc
     ld hl, sp+$04
     ld c, [hl]
@@ -11224,10 +10729,10 @@ Call_000_3679:
 
 Call_000_3684:
     ld hl, $da0b
-    jp Jump_000_0e2a
+    jp _add_int
 
 
-Call_000_368a:
+_remove_LCD:
     push bc
     ld hl, sp+$04
     ld c, [hl]
@@ -11438,8 +10943,7 @@ _joypad:
 Call_000_376c:
     jp hl
 
-; memset
-_memset1:
+_memcpy:
     ld hl, sp+$07
     ld a, [hl-]
     ld d, a
@@ -11511,8 +11015,7 @@ jr_000_37aa:
     ld d, [hl]
     ret
 
-; memset
-_memset2:
+_memset:
     ld hl, sp+$07
     ld a, [hl-]
     ld d, a
@@ -11732,7 +11235,7 @@ Call_000_388c:
     ret
 
 
-Call_000_389d:
+_modsint:
     ld hl, sp+$05
     ld a, [hl-]
     ld d, a

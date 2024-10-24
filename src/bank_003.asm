@@ -876,7 +876,7 @@ Call_003_4404:
     push de
     ld de, _PARALLAX_ROWS
     push de
-    call _memset1
+    call _memcpy
     add sp, $06
     ld hl, sp+$40
     ld a, [hl+]
@@ -935,7 +935,7 @@ jr_003_44b2:
     push bc
     ld de, $c0db
     push de
-    call _memset1
+    call _memcpy
     add sp, $06
     ld hl, sp+$4f
     ld a, [hl+]
@@ -1061,7 +1061,7 @@ Jump_003_457a:
     push de
     ld de, $c0db
     push de
-    call _memset1
+    call _memcpy
     add sp, $06
     ld de, $0010
     push de
@@ -1069,7 +1069,7 @@ Jump_003_457a:
     push de
     ld de, $c0cb
     push de
-    call _memset2
+    call _memset
     add sp, $06
 
 jr_003_45a5:
@@ -1266,7 +1266,7 @@ jr_003_4679:
     push de
     ld de, $c0de
     push de
-    call _memset1
+    call _memcpy
     add sp, $06
     ld hl, _PLAYER_MOVING
     ld [hl], $00
@@ -2382,7 +2382,7 @@ jr_003_4bf7:
     push hl
     push bc
     push de
-    call _memset1
+    call _memcpy
     add sp, $06
     ld hl, sp+$11
     ld [hl], $02

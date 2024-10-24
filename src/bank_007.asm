@@ -933,7 +933,7 @@ jr_007_43f2:
     ret
 
 _fade_speeds:
-    db $00, $01, $03, $07, $0F, $1F, $3F
+    db $00, $01, $03, $07, $0f, $1f, $3f
 
 _fade_init:
     ld a, [$4428]
@@ -1112,7 +1112,7 @@ jr_007_4511:
     ld l, h
     push hl
     push de
-    call _memset2
+    call _memset
     add sp, $06
     ld a, $b9
     ld [bc], a
@@ -1132,7 +1132,7 @@ jr_007_4511:
     ld l, a
     ld [hl], $01
     push bc
-    call Call_000_0d5c
+    call _sgb_transfer
     pop hl
     ld a, $e4
     ldh [rOBP1], a
@@ -1243,7 +1243,7 @@ jr_007_45d9:
     ld l, h
     push hl
     push de
-    call _memset2
+    call _memset
     add sp, $06
     ld hl, sp+$27
     xor a
@@ -1308,7 +1308,7 @@ jr_007_461b:
     ld l, a
     ld [hl], $00
     push bc
-    call Call_000_0d5c
+    call _sgb_transfer
     pop hl
     ld hl, sp+$1e
     ld a, [hl]
@@ -1361,7 +1361,7 @@ jr_007_4649:
     ld l, a
     ld [hl], $01
     push bc
-    call Call_000_0d5c
+    call _sgb_transfer
     pop hl
     jr jr_007_46b0
 
@@ -1393,7 +1393,7 @@ jr_007_4687:
     ld l, a
     ld [hl], $00
     push bc
-    call Call_000_0d5c
+    call _sgb_transfer
     pop hl
 
 jr_007_46b0:
@@ -1463,7 +1463,7 @@ jr_007_46b0:
     ld l, a
     ld [hl], $00
     push bc
-    call Call_000_0d5c
+    call _sgb_transfer
     pop hl
     ld hl, sp+$16
     ld a, [hl]
@@ -1475,7 +1475,7 @@ jr_007_46b0:
     ld l, h
     push hl
     push de
-    call _memset2
+    call _memset
     add sp, $06
     push bc
     xor a
@@ -1503,7 +1503,7 @@ jr_007_46b0:
     ld l, a
     ld [hl], $00
     push bc
-    call Call_000_0d5c
+    call _sgb_transfer
     pop hl
     add sp, $1f
     ret

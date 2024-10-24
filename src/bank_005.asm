@@ -34,7 +34,7 @@ jr_005_401d:
     push de
     ld de, _INPUT_SLOTS
     push de
-    call _memset2
+    call _memset
     add sp, $06
     ld de, $0028
     push de
@@ -42,7 +42,7 @@ jr_005_401d:
     push de
     ld de, _INPUT_EVENTS
     push de
-    call _memset2
+    call _memset
     add sp, $06
     ret
 
@@ -80,7 +80,7 @@ jr_005_405d:
     push de
     ld de, _TIMER_VALUES
     push de
-    call _memset2
+    call _memset
     add sp, $06
     ld de, $0014
     push de
@@ -88,7 +88,7 @@ jr_005_405d:
     push de
     ld de, _TIMER_EVENTS
     push de
-    call _memset2
+    call _memset
     add sp, $06
     ret
 
@@ -1304,12 +1304,12 @@ jr_005_468c:
     add sp, $0d
     ret
 
-
+_scroll_repaint:
     ld e, $05
-    ld hl, $40aa
+    ld hl, _scroll_reset
     call RST_08
     ld e, $05
-    ld hl, $40ca
+    ld hl, _scroll_update
     jp RST_08
 
 
@@ -1409,7 +1409,7 @@ jr_005_46f6:
     push af
     inc sp
     ld e, $01
-    ld hl, $431a
+    ld hl, _activate_actors_in_row
     call RST_08
     pop hl
     pop bc
@@ -1534,7 +1534,7 @@ _vm_display_text:
     push af
     inc sp
     ld e, $01
-    ld hl, $57ff
+    ld hl, _ui_set_start_tile
     call RST_08
     pop hl
     ret
@@ -1591,7 +1591,7 @@ _vm_overlay_wait:
     push af
     inc sp
     ld e, $01
-    ld hl, $60de
+    ld hl, _ui_run_modal
     call RST_08
     inc sp
     ret
@@ -1837,7 +1837,7 @@ jr_005_491f:
     ld e, [hl]
     push de
     ld e, $01
-    ld hl, $575c
+    ld hl, _ui_draw_frame
     call RST_08
     add sp, $04
     pop bc
@@ -2189,7 +2189,7 @@ jr_005_4ac4:
     inc sp
     push de
     ld e, $01
-    ld hl, $5e85
+    ld hl, _ui_run_menu
     call RST_08
     add sp, $06
     ld c, e
@@ -2315,7 +2315,7 @@ jr_005_4b79:
     push de
     push bc
     ld e, $09
-    ld hl, $4268
+    ld hl, _scroll_rect
     call RST_08
     add sp, $05
     ret
@@ -3952,7 +3952,7 @@ Jump_005_7115:
     ld de, $c0b9
     push de
     ld e, $01
-    ld hl, $4665
+    ld hl, _actor_set_dir
     call RST_08
     add sp, $04
     jr jr_005_7143
@@ -3961,7 +3961,7 @@ jr_005_7136:
     ld de, $c0b9
     push de
     ld e, $01
-    ld hl, $4606
+    ld hl, _actor_set_anim_idle
     call RST_08
     pop hl
 
@@ -3984,7 +3984,7 @@ jr_005_7143:
     ld de, $c0bf
     push de
     ld e, $06
-    ld hl, $4d2e
+    ld hl, _func_bank006_4d2e
     call RST_08
     add sp, $05
     ld a, e
@@ -3995,7 +3995,7 @@ jr_005_7143:
     push af
     inc sp
     ld e, $01
-    ld hl, $4887
+    ld hl, _actor_overlapping_player
     call RST_08
     inc sp
     ld a, d

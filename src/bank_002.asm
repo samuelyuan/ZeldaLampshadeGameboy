@@ -7026,7 +7026,7 @@ jr_002_606e:
     ld d, [hl]
     push de
     push bc
-    call _memset2
+    call _memset
     add sp, $08
     ret
 
@@ -7130,11 +7130,11 @@ jr_002_60ef:
     ld d, [hl]
     push de
     push bc
-    call _memset1
+    call _memcpy
     add sp, $0c
     ret
 
-_func_bank002_6100:
+_script_runner_init:
     add sp, -$05
     ld hl, sp+$0b
     ld a, [hl]
@@ -7147,7 +7147,7 @@ _func_bank002_6100:
     push de
     ld de, _SCRIPT_MEMORY
     push de
-    call _memset2
+    call _memset
     add sp, $06
     ld de, $0130
     push de
@@ -7155,7 +7155,7 @@ _func_bank002_6100:
     push de
     ld de, $ca58
     push de
-    call _memset2
+    call _memset
     add sp, $06
 
 jr_002_612a:
@@ -7263,7 +7263,7 @@ jr_002_619d:
     add sp, $05
     ret
 
-_func_bank002_61bc:
+_script_execute:
     add sp, -$09
     ld hl, $cb8b
     ld a, [hl-]
