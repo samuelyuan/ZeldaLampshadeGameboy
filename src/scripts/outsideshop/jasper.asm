@@ -2,5 +2,10 @@
 
     db "I'm so bored!" ; 0x4110
 
-    db $00, $47, $03, $01, $04, $14, $00, $00, $45, $ff, $0e, $00, $41, $ff, $00, $44
-    db $07, $01, $45, $fe, $12, $00, $44, $03, $01, $00
+    db $00, $47, $03, $01, $04, $14, $00, $00
+    db vm_overlay_move_to, $ff, $0e, $00
+    db vm_display_text, $ff, $00
+    db vm_overlay_wait, $07, $01
+    db $45, $fe, $12, $00
+    db vm_overlay_wait, $03, $01
+    db $00

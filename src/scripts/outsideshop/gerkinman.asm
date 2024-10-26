@@ -3,11 +3,18 @@
 
     db "I'm Gerkinman.", $00
     
-    db $47, $03, $01, $04, $14, $00, $00, $45, $ff, $0e, $00, $41, $ff, $00, $44
-    db $07, $01, $40, $00
+    db vm_overlay_clear, $03, $01, $04, $14, $00, $00
+    db vm_overlay_move_to, $ff, $0e, $00
+    db vm_display_text, $ff, $00
+    db $44, $07, $01
+    db $40, $00
     
     db "Revel in my\n"
     db "weirdery.", $00
     
-    db $47, $03, $01, $04, $14, $00
-    db $00, $41, $ff, $00, $44, $07, $01, $45, $fe, $12, $00, $44, $03, $01, $00
+    db vm_overlay_clear, $03, $01, $04, $14, $00, $00
+    db vm_display_text, $ff, $00
+    db $44, $07, $01
+    db vm_overlay_move_to, $fe, $12, $00
+    db $44, $03, $01
+    db $00

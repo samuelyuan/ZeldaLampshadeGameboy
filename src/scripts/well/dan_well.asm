@@ -1,62 +1,103 @@
-    db $25, $12, $04
-    db $1a, $00, $63, $b3, $00, $04, $00, $00, $02 ; item < 4
-    db $09, $64, $4a, $40
-    db $00
+    db $25
+    db $12, $04
+    db vm_if_const, $00, $63, $b3, $00, $04, $00, $00, $02 ; item < 4
+    db $09, $64, $4a
+    db vm_load_text, $00
 
     db "I'm trying to get\n"
     db "some water out of\n"
-    db "the well"
+    db "the well", $00
+    
+    db vm_overlay_clear, $03, $01, $05, $14, $00, $00
+    db vm_overlay_move_to, $ff, $0d, $00
+    db vm_display_text, $ff, $00
+    db vm_overlay_wait, $07, $01
+    db vm_load_text, $00
 
-    db $00, $47, $03, $01, $05, $14, $00, $00, $45, $ff, $0d, $00, $41, $ff, $00, $44
-    db $07, $01, $40, $00
-
-    db "to wake up JT..."
-
-    db $00, $47, $03, $01, $05, $14, $00, $00, $41, $ff, $00, $44, $07, $01, $40, $00
+    db "to wake up JT...", $00
+    
+    db vm_overlay_clear, $03, $01, $05, $14, $00, $00
+    db vm_display_text, $ff, $00
+    db vm_overlay_wait, $07, $01
+    db vm_load_text, $00
 
     db "but there's no\n"
-    db "bucket to hold it"
-
-    db $00, $47, $03, $01, $05, $14, $00, $00, $41, $ff, $00, $44, $07, $01, $45, $fe
-    db $12, $00, $44, $03, $01
-    db $1a, $00, $64, $56, $00, $04, $00, $00, $01 ; item == 4
+    db "bucket to hold it", $00
+    
+    db vm_overlay_clear, $03, $01, $05, $14, $00, $00
+    db vm_display_text, $ff, $00
+    db vm_overlay_wait, $07, $01
+    db vm_overlay_move_to, $fe, $12, $00
+    db vm_overlay_wait, $03, $01
+    db vm_if_const, $00, $64, $56, $00, $04, $00, $00, $01 ; item == 4
     db $09, $65, $bf
-    db $40, $00
+    db vm_load_text, $00
 
     db "That vase will\n"
-    db "work in the well!"
-
-    db $00, $47, $03, $01, $04, $14, $00, $00, $45, $ff, $0e, $00, $41, $ff, $00, $44
-    db $07, $01, $45, $fe, $12, $00, $44, $03, $01, $14, $00, $1e, $ff, $fc, $0d, $ff
-    db $fc, $00, $55, $af, $02, $40, $00
+    db "work in the well!", $00
+    
+    db vm_overlay_clear, $03, $01, $04, $14, $00, $00
+    db vm_overlay_move_to, $ff, $0e, $00
+    db vm_display_text, $ff, $00
+    db vm_overlay_wait, $07, $01
+    db vm_overlay_move_to, $fe, $12, $00
+    db vm_overlay_wait, $03, $01
+    db vm_set_const, $00, $1e, $ff, $fc
+    db $0d, $ff, $fc, $00, $55, $af, $02
+    db vm_load_text, $00
 
     db "There was a frog\n"
-    db "in the water,"
+    db "in the water,", $00
+    
+    db vm_overlay_clear, $03, $01, $04, $14, $00, $00
+    db vm_overlay_move_to, $ff, $0e, $00
+    db vm_display_text, $ff, $00
+    db vm_overlay_wait, $07, $01
+    db vm_load_text, $00
 
-    db $00, $47, $03, $01, $04, $14, $00, $00, $45, $ff, $0e, $00, $41, $ff, $00, $44
-    db $07, $01, $40, $00
-
-    db "you can have it."
-
-    db $00, $47, $03, $01, $04, $14, $00, $00, $41, $ff, $00, $44, $07, $01, $45, $fe
-    db $12, $00, $44, $03, $01, $14, $00, $05, $00, $00, $14, $00, $06, $ff, $fc, $14
-    db $00, $05, $ff, $fd, $75, $ff, $fc, $40, $00
+    db "you can have it.", $00
+    
+    db vm_overlay_clear, $03, $01, $04, $14, $00, $00
+    db vm_display_text, $ff, $00
+    db vm_overlay_wait, $07, $01
+    db vm_overlay_move_to, $fe, $12, $00
+    db vm_overlay_wait, $03, $01
+    db vm_set_const, $00, $05, $00, $00
+    db vm_set_const, $00, $06, $ff, $fc
+    db vm_set_const, $00, $05, $ff, $fd
+    db $75, $ff, $fc
+    db vm_load_text, $00
 
     db "You got the\n"
-    db "Frog of Legend!"
+    db "Frog of Legend!", $00
 
-    db $00, $47, $03, $01, $04, $14, $00, $00, $45, $ff, $0e, $00, $41, $ff, $00, $44
-    db $07, $01, $40, $00
+    db vm_overlay_clear, $03, $01, $04, $14, $00, $00
+    db vm_overlay_move_to, $ff, $0e, $00
+    db vm_display_text, $ff, $00
+    db vm_overlay_wait, $07, $01
+    db vm_load_text, $00
 
     db "This frog has a\n"
-    db "world-wide fanbase,"
-
-    db $00, $47, $03, $01, $04, $14, $00, $00, $41, $ff, $00, $44, $07, $01, $40, $00
+    db "world-wide fanbase,", $00
+    
+    db vm_overlay_clear, $03, $01, $04, $14, $00, $00
+    db vm_display_text, $ff, $00
+    db vm_overlay_wait, $07, $01
+    db vm_load_text, $00
 
     db "as well as being\n"
-    db "quite tasty..."
+    db "quite tasty...", $00
 
-    db $00, $47, $03, $01, $04, $14, $00, $00, $41, $ff, $00, $44, $07, $01, $45, $fe
-    db $12, $00, $44, $03, $01, $14, $00, $04, $ff, $fc, $14, $00, $00, $ff, $fd, $14
-    db $04, $80, $ff, $fe, $14, $00, $01, $ff, $ff, $30, $ff, $fc, $14, $00, $04, $ff
-    db $fc, $33, $ff, $fc, $00
+    db vm_overlay_clear, $03, $01, $04, $14, $00, $00
+    db vm_display_text, $ff, $00
+    db vm_overlay_wait, $07, $01
+    db vm_overlay_move_to, $fe, $12, $00
+    db vm_overlay_wait, $03, $01
+    db vm_set_const, $00, $04, $ff, $fc
+    db vm_set_const, $00, $00, $ff, $fd
+    db vm_set_const, $04, $80, $ff, $fe
+    db vm_set_const, $00, $01, $ff, $ff
+    db $30, $ff, $fc
+    db vm_set_const, $00, $04, $ff, $fc
+    db $33, $ff, $fc
+    db $00

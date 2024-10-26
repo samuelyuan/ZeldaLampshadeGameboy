@@ -129,15 +129,7 @@ JasperDialogue::   ; bank 0a 0x410d
     INCLUDE "src/scripts/outsideshop/jasper.asm"
 
 GraveyardTombstoneDialogue:: ; bank 0a: 0x4137
-    db $25
-    db $40, $00
-
-    db "Can I\n" ; 0x413a
-    db "R.I.P.\n"
-    db "please"
-
-    db $00, $47, $03, $01, $05, $14, $00, $00, $45, $ff, $0d, $00, $41, $ff, $00, $44
-    db $07, $01, $45, $fe, $12, $00, $44, $03, $01, $00
+    INCLUDE "src/scripts/graveyard/tombstone.asm"
 
 PCWorldInsideSign::; 0x4167
     INCLUDE "src/scripts/pcworld/insidesign.asm"
