@@ -1,16 +1,15 @@
 SECTION "ROM Bank $00a", ROMX[$4000], BANK[$a]
 
-    dec h
-    ld a, [bc]
-    ld a, a
-    or a
-    inc b
-    ld h, c
-    ld d, a
-    ld bc, $0027
-    ld bc, $21af
-    inc e
-    push bc
+bank00a_4000:
+    db $25
+    db $0a, $7f, $b7, $04
+    db $61
+    db $57, $01
+    db $27, $00, $01
+    
+_camera_init:
+    xor a
+    ld hl, _camera_y
     ld [hl+], a
     ld [hl], a
     xor a
@@ -22,16 +21,16 @@ SECTION "ROM Bank $00a", ROMX[$4000], BANK[$a]
     ld hl, _camera_offset_x
     ld [hl], $00
     ld e, $0a
-    ld hl, _func_bank00a_4029
+    ld hl, _camera_reset
     jp RST_08
 
-_func_bank00a_4029:
+_camera_reset:
     ld hl, _camera_deadzone_y
     ld [hl], $00
     ld hl, _camera_deadzone_x
     ld [hl], $00
     ld hl, _camera_settings
-    ld [hl], $03
+    ld [hl], CAMERA_LOCK_FLAG
     ret
 
 _input_init:
@@ -55,15 +54,15 @@ _input_init:
 
 _remove_LCD_ISRs:
     di
-    ld de, $1b24
+    ld de, _parallax_LCD_isr
     push de
     call _remove_LCD
     pop hl
-    ld de, $177c
+    ld de, _simple_LCD_isr
     push de
     call _remove_LCD
     pop hl
-    ld de, $17f8
+    ld de, _fullscreen_LCD_isr
     push de
     call _remove_LCD
     pop hl

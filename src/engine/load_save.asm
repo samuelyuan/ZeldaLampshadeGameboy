@@ -1,3 +1,5 @@
+; Loaded in bank 6 0x47a3
+
 _data_init:
     dec sp
     dec sp

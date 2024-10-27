@@ -1,3 +1,5 @@
+; Loaded at bank 6 0x4f00
+
 _vm_set_sprites_visible:
     ld hl, sp+$08
     ld a, [hl]
@@ -943,7 +945,7 @@ jr_006_5368:
     ret
 
 _vm_rumble:
-    ld hl, $c820
+    ld hl, _current_ram_bank
     ld c, [hl]
     res 5, c
     ld hl, sp+$08
@@ -952,14 +954,14 @@ _vm_rumble:
     jr z, jr_006_5382
 
     set 5, c
-    ld hl, $c820
+    ld hl, _current_ram_bank
     ld [hl], c
     ld hl, $4000
     ld [hl], c
     ret
 
 jr_006_5382:
-    ld hl, $c820
+    ld hl, _current_ram_bank
     ld [hl], c
     ld hl, $4000
     ld [hl], c

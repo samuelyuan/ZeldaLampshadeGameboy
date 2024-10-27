@@ -1,3 +1,5 @@
+; Loaded in bank 9 0x43e0
+
 ; void vm_sin_scale(SCRIPT_CTX * THIS, INT16 idx, INT16 idx_angle, UBYTE accuracy) OLDCALL BANKED {
 _vm_sin_scale:
     add sp, -$04

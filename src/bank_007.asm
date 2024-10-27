@@ -762,753 +762,11 @@ jr_007_4364:
 jr_007_4366:
     db $20
 
-_DMGFadeToWhiteStep:
-    ld hl, sp+$03
+    INCLUDE "src/engine/fade_manager.asm"
 
-jr_007_4369:
-    ld a, [hl-]
-    ld e, [hl]
-    or a
-    ret z
+    INCLUDE "src/engine/sgb_border.asm"
 
-    ld d, a
-
-jr_007_436e:
-    ld h, $04
-
-jr_007_4370:
-    ld a, e
-
-jr_007_4371:
-    and $03
-
-jr_007_4373:
-    jr z, jr_007_4376
-
-    dec a
-
-jr_007_4376:
-    srl a
-
-jr_007_4378:
-    rr l
-    srl a
-    rr l
-    srl e
-    srl e
-    dec h
-
-jr_007_4383:
-    jr nz, jr_007_4370
-
-    ld e, l
-    dec d
-    jr nz, jr_007_436e
-
-    ret
-
-
-_DMGFadeToBlackStep:
-    ld hl, sp+$03
-    ld a, [hl-]
-    ld e, [hl]
-    or a
-    ret z
-
-    ld d, a
-
-jr_007_4391:
-    ld h, $04
-
-jr_007_4393:
-    ld a, e
-    and $03
-
-jr_007_4396:
-    cp $03
-    jr z, jr_007_439b
-
-    inc a
-
-jr_007_439b:
-    srl a
-    rr l
-    srl a
-    rr l
-    srl e
-    srl e
-    dec h
-    jr nz, jr_007_4393
-
-    ld e, l
-    dec d
-    jr nz, jr_007_4391
-
-    ret
-
-
-_ApplyPaletteChangeDMG:
-    ld a, $04
-    ld hl, sp+$02
-    sub [hl]
-    jr nc, jr_007_43b8
-
-    ld [hl], $04
-
-jr_007_43b8:
-    ld a, [_FADE_STYLE]
-    or a
-    jr nz, jr_007_43f2
-
-    ld a, [_DMG_palette]
-    ld hl, sp+$02
-    ld h, [hl]
-    push hl
-    inc sp
-    push af
-    inc sp
-    call _DMGFadeToWhiteStep
-    pop hl
-    ld a, e
-    ldh [rBGP], a
-    ld a, [_DMG_palette + 1]
-    ld hl, sp+$02
-    ld h, [hl]
-    push hl
-    inc sp
-    push af
-    inc sp
-    call _DMGFadeToWhiteStep
-    pop hl
-    ld a, e
-    ldh [rOBP0], a
-    ld a, [_DMG_palette + 2]
-    ld hl, sp+$02
-    ld h, [hl]
-    push hl
-    inc sp
-    push af
-    inc sp
-    call _DMGFadeToWhiteStep
-    pop hl
-    ld a, e
-    ldh [rOBP1], a
-    ret
-
-
-jr_007_43f2:
-    ld a, [_DMG_palette]
-    ld hl, sp+$02
-    ld h, [hl]
-    push hl
-    inc sp
-    push af
-    inc sp
-    call _DMGFadeToBlackStep
-    pop hl
-    ld a, e
-    ldh [rBGP], a
-    ld a, [_DMG_palette + 1]
-    ld hl, sp+$02
-    ld h, [hl]
-    push hl
-    inc sp
-    push af
-    inc sp
-    call _DMGFadeToBlackStep
-    pop hl
-    ld a, e
-    ldh [rOBP0], a
-    ld a, [_DMG_palette + 2]
-    ld hl, sp+$02
-    ld h, [hl]
-    push hl
-    inc sp
-    push af
-    inc sp
-    call _DMGFadeToBlackStep
-    pop hl
-    ld a, e
-    ldh [rOBP1], a
-    ret
-
-_fade_speeds:
-    db $00, $01, $03, $07, $0f, $1f, $3f
-
-_fade_init:
-    ld a, [$4428]
-    ld [_fade_frames_per_step], a
-    ld hl, _fade_timer
-    ld [hl], $05
-    ld hl, _fade_running
-    ld [hl], $00
-    ld a, $05
-    push af
-    inc sp
-    call _ApplyPaletteChangeDMG
-    inc sp
-    ret
-
-_fade_in:
-    ld a, [_fade_timer]
-    or a
-    ret z
-
-    ld hl, _fade_timer + 1
-    ld [hl], $00
-    ld hl, _fade_timer + 2
-    ld [hl], $00
-    ld hl, _fade_running
-    ld [hl], $01
-    ld hl, _fade_timer
-    ld a, $05
-    ld [hl], a
-    push af
-    inc sp
-    call _ApplyPaletteChangeDMG
-    inc sp
-    ret
-
-_fade_out:
-    ld a, [_fade_timer]
-    sub $05
-    ret z
-
-    jr jr_007_446f
-
-jr_007_446f:
-    ld hl, _fade_timer + 1
-    ld [hl], $00
-    ld hl, _fade_timer + 2
-    ld [hl], $01
-    ld hl, _fade_running
-    ld [hl], $01
-    ld hl, _fade_timer
-    ld [hl], $00
-    xor a
-    push af
-    inc sp
-    call _ApplyPaletteChangeDMG
-    inc sp
-    ret
-
-_fade_update:
-    ld a, [_fade_running]
-    or a
-    ret z
-
-    ld hl, _fade_timer + 1
-    ld c, [hl]
-    inc [hl]
-    ld a, c
-    ld hl, _fade_frames_per_step
-    and [hl]
-    ret nz
-
-    ld a, [_fade_timer + 2]
-    or a
-    jr nz, jr_007_44b6
-
-    ld hl, _fade_timer
-    ld a, [hl]
-    or a
-    jr z, jr_007_44a9
-
-    dec [hl]
-
-jr_007_44a9:
-    ld a, [_fade_timer]
-    or a
-    jr nz, jr_007_44cb
-
-    ld hl, _fade_running
-    ld [hl], $00
-    jr jr_007_44cb
-
-jr_007_44b6:
-    ld hl, _fade_timer
-    ld a, [hl]
-    sub $05
-    jr nc, jr_007_44bf
-
-    inc [hl]
-
-jr_007_44bf:
-    ld a, [_fade_timer]
-    sub $05
-    jr nz, jr_007_44cb
-
-    ld hl, _fade_running
-    ld [hl], $00
-
-jr_007_44cb:
-    ld a, [_fade_timer]
-    push af
-    inc sp
-    call _ApplyPaletteChangeDMG
-    inc sp
-    ret
-
-
-    ld a, [_fade_timer]
-    push af
-    inc sp
-    call _ApplyPaletteChangeDMG
-    inc sp
-    ret
-
-_fade_setspeed:
-    ld bc, $4426
-    ld hl, sp+$06
-    ld l, [hl]
-    ld h, $00
-    add hl, bc
-    ld c, l
-    ld b, h
-    ld a, [bc]
-    ld [_fade_frames_per_step], a
-    ret
-
-_fade_in_modal:
-    ld e, $07
-    ld hl, _fade_in
-    call RST_08
-
-jr_007_44f7:
-    ld a, [_fade_running]
-    or a
-    ret z
-
-    call _wait_vbl_done
-    ld e, $07
-    ld hl, _fade_update
-    call RST_08
-    jr jr_007_44f7
-
-_fade_out_modal:
-    ld e, $07
-    ld hl, _fade_out
-    call RST_08
-
-jr_007_4511:
-    ld a, [_fade_running]
-    or a
-    ret z
-
-    call _wait_vbl_done
-    ld e, $07
-    ld hl, _fade_update
-    call RST_08
-    jr jr_007_4511
-
-    add sp, -$1f
-    ld hl, sp+$00
-    ld c, l
-    ld b, h
-    ld e, c
-    ld d, b
-    ld hl, $0014
-    push hl
-    ld l, h
-    push hl
-    push de
-    call _memset
-    add sp, $06
-    ld a, $b9
-    ld [bc], a
-    ld l, c
-    ld h, b
-    inc hl
-    push hl
-    ld a, l
-    ld hl, sp+$16
-    ld [hl], a
-    pop hl
-    ld a, h
-    ld hl, sp+$15
-    ld [hl-], a
-    ld a, [hl+]
-    ld h, [hl]
-    ld l, a
-    ld [hl], $01
-    push bc
-    call _sgb_transfer
-    pop hl
-    ld a, $e4
-    ldh [rOBP1], a
-    ld a, $e4
-    ldh [rOBP0], a
-    ld a, $e4
-    ldh [rBGP], a
-    xor a
-    ldh [rSCY], a
-    xor a
-    ldh [rSCX], a
-    ldh a, [rLCDC]
-    ld hl, sp+$16
-    ld [hl+], a
-    ldh a, [rLCDC]
-    and $fd
-    ldh [rLCDC], a
-    ldh a, [rLCDC]
-    and $df
-    ldh [rLCDC], a
-    ldh a, [rLCDC]
-    or $01
-    ldh [rLCDC], a
-    ldh a, [rLCDC]
-    or $80
-    ldh [rLCDC], a
-    ld e, $00
-    ld a, c
-    ld [hl+], a
-    ld a, b
-    ld [hl+], a
-    ld a, c
-    ld [hl+], a
-    ld a, b
-    ld [hl+], a
-    ld [hl], $00
-
-jr_007_458c:
-    ld hl, sp+$1b
-    ld a, [hl]
-    sub $0e
-    jr z, jr_007_45d9
-
-    ld hl, sp+$17
-    ld a, [hl]
-    ld hl, sp+$1c
-    ld [hl], a
-    ld hl, sp+$18
-    ld a, [hl]
-    ld hl, sp+$1d
-    ld [hl+], a
-    ld [hl], e
-    xor a
-
-jr_007_45a1:
-    cp $14
-    jr z, jr_007_45ba
-
-    ld hl, sp+$1c
-    ld e, [hl]
-    inc hl
-    ld d, [hl]
-    inc hl
-    push af
-    ld a, [hl]
-    ld [de], a
-    pop af
-    inc [hl]
-    dec hl
-    dec hl
-    inc [hl]
-    jr nz, jr_007_45b7
-
-    inc hl
-    inc [hl]
-
-jr_007_45b7:
-    inc a
-    jr jr_007_45a1
-
-jr_007_45ba:
-    ld hl, sp+$1e
-    ld e, [hl]
-    ld hl, sp+$19
-    ld a, [hl+]
-    ld d, [hl]
-    push de
-    ld e, a
-    push de
-    ld hl, $0114
-    push hl
-    ld hl, sp+$21
-    ld h, [hl]
-    ld l, $00
-    push hl
-    call _set_bkg_tiles
-    add sp, $06
-    pop de
-    ld hl, sp+$1b
-    inc [hl]
-    jr jr_007_458c
-
-jr_007_45d9:
-    ld e, c
-    ld d, b
-    ld hl, $0014
-    push hl
-    ld l, h
-    push hl
-    push de
-    call _memset
-    add sp, $06
-    ld hl, sp+$27
-    xor a
-    sub [hl]
-    inc hl
-    ld a, $20
-    sbc [hl]
-    jr nc, jr_007_45f6
-
-    ld de, $0000
-    jr jr_007_460f
-
-jr_007_45f6:
-    ld hl, sp+$27
-    ld a, [hl+]
-    ld e, a
-    ld d, [hl]
-    srl d
-    rr e
-    srl d
-    rr e
-    srl d
-    rr e
-    srl d
-    rr e
-    srl d
-    rr e
-
-jr_007_460f:
-    ld hl, sp+$1e
-    ld [hl], e
-    ld a, [hl]
-    or a
-    jr z, jr_007_461b
-
-    ld a, $80
-    sub [hl]
-    jr nc, jr_007_4687
-
-jr_007_461b:
-    push bc
-    ld hl, sp+$2b
-    ld a, [hl]
-    push af
-    inc sp
-    ld hl, sp+$28
-    ld a, [hl+]
-    ld e, a
-    ld d, [hl]
-    push de
-    xor a
-    rrca
-    push af
-    call _SetBankedBkgData
-    add sp, $05
-    pop bc
-    ld a, $99
-    ld [bc], a
-    ld hl, sp+$14
-    ld a, [hl+]
-    ld h, [hl]
-    ld l, a
-    ld [hl], $00
-    push bc
-    call _sgb_transfer
-    pop hl
-    ld hl, sp+$1e
-    ld a, [hl]
-    or a
-    jr z, jr_007_4649
-
-    ld a, [hl]
-    add $80
-    ld [hl], a
-
-jr_007_4649:
-    ld hl, sp+$25
-    ld a, [hl+]
-    ld e, a
-    ld d, [hl]
-    ld hl, $1000
-    add hl, de
-    push hl
-    ld a, l
-    ld hl, sp+$27
-    ld [hl], a
-    pop hl
-    ld a, h
-    ld hl, sp+$26
-    ld [hl], a
-    ld hl, sp+$1e
-    ld a, [hl]
-    add a
-    push bc
-    ld hl, sp+$2b
-    ld h, [hl]
-    push hl
-    inc sp
-    ld hl, sp+$28
-    ld e, [hl]
-    inc hl
-    ld d, [hl]
-    push de
-    ld h, a
-    ld l, $00
-    push hl
-    call _SetBankedBkgData
-    add sp, $05
-    pop bc
-    ld a, $99
-    ld [bc], a
-    ld hl, sp+$14
-    ld a, [hl+]
-    ld h, [hl]
-    ld l, a
-    ld [hl], $01
-    push bc
-    call _sgb_transfer
-    pop hl
-    jr jr_007_46b0
-
-jr_007_4687:
-    ld hl, sp+$1e
-    ld a, [hl]
-    add a
-    push bc
-    ld hl, sp+$2b
-    ld h, [hl]
-    push hl
-    inc sp
-    ld hl, sp+$28
-    ld e, [hl]
-    inc hl
-    ld d, [hl]
-    push de
-    ld h, a
-    ld l, $00
-    push hl
-    call _SetBankedBkgData
-    add sp, $05
-    pop bc
-    ld a, $99
-    ld [bc], a
-    ld hl, sp+$14
-    ld a, [hl+]
-    ld h, [hl]
-    ld l, a
-    ld [hl], $00
-    push bc
-    call _sgb_transfer
-    pop hl
-
-jr_007_46b0:
-    ld hl, sp+$2c
-    ld a, [hl+]
-    ld e, a
-    ld a, [hl+]
-    ld d, a
-    srl d
-    rr e
-    srl d
-    rr e
-    srl d
-    rr e
-    srl d
-    rr e
-    ld a, e
-    push bc
-    ld h, [hl]
-    push hl
-    inc sp
-    ld hl, sp+$2d
-    ld e, [hl]
-    inc hl
-    ld d, [hl]
-    push de
-    ld h, a
-    ld l, $00
-    push hl
-    call _SetBankedBkgData
-    add sp, $05
-    pop bc
-    ld hl, sp+$31
-    ld a, [hl+]
-    ld e, a
-    ld a, [hl+]
-    ld d, a
-    srl d
-    rr e
-    srl d
-    rr e
-    srl d
-    rr e
-    srl d
-    rr e
-    ld a, e
-    push bc
-    ld h, [hl]
-    push hl
-    inc sp
-    ld hl, sp+$32
-    ld e, [hl]
-    inc hl
-    ld d, [hl]
-    push de
-    ld h, a
-    ld l, $80
-    push hl
-    call _SetBankedBkgData
-    add sp, $05
-    pop bc
-    ld a, $a1
-    ld [bc], a
-    ld hl, sp+$14
-    ld a, [hl+]
-    ld h, [hl]
-    ld l, a
-    ld [hl], $00
-    push bc
-    call _sgb_transfer
-    pop hl
-    ld hl, sp+$16
-    ld a, [hl]
-    ldh [rLCDC], a
-    ld e, c
-    ld d, b
-    ld hl, $0010
-    push hl
-    ld l, h
-    push hl
-    push de
-    call _memset
-    add sp, $06
-    push bc
-    xor a
-    inc a
-    push af
-    call _set_win_data
-    add sp, $04
-    xor a
-    ld h, a
-    ld l, $12
-    push hl
-    ld a, $14
-    push af
-    inc sp
-    xor a
-    rrca
-    push af
-    call Call_000_3718
-    add sp, $05
-    ld a, $b9
-    ld [bc], a
-    ld hl, sp+$14
-    ld a, [hl+]
-    ld h, [hl]
-    ld l, a
-    ld [hl], $00
-    push bc
-    call _sgb_transfer
-    pop hl
-    add sp, $1f
-    ret
-
-
+_func_bank007_4754:
     add sp, -$06
     ld hl, sp+$0c
     ld a, [hl]
@@ -1556,13 +814,13 @@ jr_007_46b0:
     jr jr_007_4796
 
 jr_007_4792:
-    ld hl, $cb98
+    ld hl, _SCRIPT_MEMORY
     add hl, bc
 
 jr_007_4796:
     ld c, l
     ld b, h
-    ld hl, $c522
+    ld hl, _camera_settings
     ld a, [hl]
     and $fc
     ld [hl], a
@@ -1576,7 +834,7 @@ jr_007_4796:
     ld [hl], a
     inc bc
     inc bc
-    ld a, [$c51a]
+    ld a, [_camera_x]
     ld hl, sp+$02
     sub [hl]
     jr nz, jr_007_47e1
@@ -1594,7 +852,7 @@ jr_007_4796:
     inc de
     ld a, [de]
     ld [hl], a
-    ld a, [$c51c]
+    ld a, [_camera_y]
     ld hl, sp+$04
     sub [hl]
     jr nz, jr_007_47e1
@@ -1607,7 +865,7 @@ jr_007_4796:
     ld hl, sp+$11
     ld a, [hl]
     and $03
-    ld hl, $c522
+    ld hl, _camera_settings
     ld c, [hl]
     or c
     ld [hl], a
@@ -1623,7 +881,7 @@ jr_007_47e1:
     ld hl, sp+$02
     ld e, l
     ld d, h
-    ld hl, $c51a
+    ld hl, _camera_x
     ld a, [de]
     inc de
     sub [hl]
@@ -1650,7 +908,7 @@ jr_007_4804:
 jr_007_4809:
     jr nc, jr_007_4818
 
-    ld hl, $c51a
+    ld hl, _camera_x
     ld a, [hl+]
     ld e, a
     ld a, [hl-]
@@ -1662,7 +920,7 @@ jr_007_4809:
     jr jr_007_483f
 
 jr_007_4818:
-    ld de, $c51a
+    ld de, _camera_x
     ld hl, sp+$02
     ld a, [de]
     inc de
@@ -1690,7 +948,7 @@ jr_007_4830:
 jr_007_4835:
     jr nc, jr_007_483f
 
-    ld hl, $c51a
+    ld hl, _camera_x
     inc [hl]
     jr nz, jr_007_483f
 
@@ -1703,7 +961,7 @@ jr_007_483f:
     ld a, [hl+]
     ld c, a
     ld b, [hl]
-    ld hl, $c51c
+    ld hl, _camera_y
     ld a, c
     sub [hl]
     inc hl
@@ -1729,7 +987,7 @@ jr_007_4859:
 jr_007_485e:
     jr nc, jr_007_486d
 
-    ld hl, $c51c
+    ld hl, _camera_y
     ld a, [hl+]
     ld e, a
     ld a, [hl-]
@@ -1741,7 +999,7 @@ jr_007_485e:
     jr jr_007_4890
 
 jr_007_486d:
-    ld hl, $c51c
+    ld hl, _camera_y
     ld a, [hl+]
     sub c
     ld a, [hl]
@@ -1766,7 +1024,7 @@ jr_007_4881:
 jr_007_4886:
     jr nc, jr_007_4890
 
-    ld hl, $c51c
+    ld hl, _camera_y
     inc [hl]
     jr nz, jr_007_4890
 
@@ -1821,7 +1079,7 @@ Jump_007_48a4:
     jr jr_007_48c7
 
 jr_007_48c3:
-    ld hl, $cb98
+    ld hl, _SCRIPT_MEMORY
     add hl, bc
 
 jr_007_48c7:
@@ -1830,7 +1088,7 @@ jr_007_48c7:
     ld e, c
     ld d, b
     ld a, [de]
-    ld hl, $c51a
+    ld hl, _camera_x
     ld [hl+], a
     inc de
     ld a, [de]
@@ -1840,12 +1098,12 @@ jr_007_48c7:
     ld e, c
     ld d, b
     ld a, [de]
-    ld hl, $c51c
+    ld hl, _camera_y
     ld [hl+], a
     inc de
     ld a, [de]
     ld [hl], a
-    ld hl, $c522
+    ld hl, _camera_settings
     ld a, [hl]
     and $fc
     ld [hl], a
@@ -2585,13 +1843,14 @@ LinkSpriteImage:: ; 0x79db
     db $2c, $00
     INCBIN "gfx/bank007_link_79dd.2bpp"
 
-    ld hl, $c51e
+_func_bank007_7c9d:
+    ld hl, _camera_offset_x
     ld [hl], $00
-    ld hl, $c51f
+    ld hl, _camera_offset_y
     ld [hl], $00
-    ld hl, $c520
+    ld hl, _camera_deadzone_x
     ld [hl], $18
-    ld hl, $c521
+    ld hl, _camera_deadzone_y
     ld [hl], $18
     ld hl, $c0be
     ld [hl], $01
@@ -2608,12 +1867,12 @@ LinkSpriteImage:: ; 0x79db
     ld de, $c0b9
     push de
     ld e, $01
-    ld hl, $4562
+    ld hl, _actor_set_frames
     call RST_08
     add sp, $04
     ret
 
-
+_func_bank007_:
     add sp, -$07
     ld hl, $c507
     ld [hl], $00
@@ -2723,7 +1982,7 @@ jr_007_7d41:
     inc sp
     push af
     inc sp
-    call Call_000_3541
+    call _muluschar
     pop hl
     pop bc
     sra d
@@ -2774,7 +2033,7 @@ jr_007_7d41:
     inc sp
     push af
     inc sp
-    call Call_000_3541
+    call _muluschar
     pop hl
     pop hl
     sra d
@@ -2992,7 +2251,7 @@ jr_007_7ec6:
     ld de, $c0bf
     push de
     ld e, $06
-    ld hl, $4c19
+    ld hl, _trigger_at_intersection
     call RST_08
     add sp, $04
     ld hl, sp+$00
@@ -3001,7 +2260,7 @@ jr_007_7ec6:
     push af
     inc sp
     ld e, $01
-    ld hl, $4887
+    ld hl, _actor_overlapping_player
     call RST_08
     inc sp
     ld c, e
@@ -3196,7 +2455,7 @@ Jump_007_7fbf:
     push af
     inc sp
     ld e, $02
-    ld hl, $61bc
+    ld hl, _script_execute
     call RST_08
     add sp, $08
     jr jr_007_7ffd
@@ -3212,7 +2471,7 @@ jr_007_7fea:
     push af
     inc sp
     ld e, $06
-    ld hl, $4b8e
+    ld hl, _trigger_interact
     call RST_08
     inc sp
 

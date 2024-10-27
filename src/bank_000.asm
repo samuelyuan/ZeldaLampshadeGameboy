@@ -5341,7 +5341,7 @@ jr_000_1b1c:
     ld [hl], c
     ret
 
-parallax_LCD_isr:
+_parallax_LCD_isr:
     ld hl, $c69d
     ld a, [hl+]
     ld h, [hl]
@@ -10414,7 +10414,7 @@ jr_000_3524:
     ld c, [hl]
     jr jr_000_3557
 
-Call_000_3541:
+_muluschar:
     ld hl, $0002
     ld b, h
     add hl, sp
@@ -10530,6 +10530,7 @@ set_tile_data:
     ld d, [hl]
     jr jr_000_35c1
 
+_set_bkg_data:
 _set_win_data:
     ld d, $90
     ldh a, [rLCDC]
@@ -10756,7 +10757,7 @@ Call_000_369b:
 
     jr jr_000_36b0
 
-Call_000_36a4:
+_fill_rect_btt:
     push hl
     ldh a, [rLCDC]
     and $08
@@ -10867,7 +10868,7 @@ Call_000_3705:
     ret
 
 
-Call_000_3718:
+_fill_bkg_rect:
     push bc
     ld hl, sp+$04
     ld a, [hl+]
@@ -10879,11 +10880,11 @@ Call_000_3718:
     ld a, [hl-]
     ld h, [hl]
     ld l, a
-    call Call_000_36a4
+    call _fill_rect_btt
     pop bc
     ret
 
-
+padup:
     push af
     push de
 

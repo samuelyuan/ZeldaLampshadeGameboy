@@ -1,3 +1,4 @@
+; Loaded at bank 5 0x78f8
 
 _topdown_init:
     ; camera_offset_x = 0
@@ -199,10 +200,10 @@ jr_005_7a19:
     inc sp
     ld de, _ACTORS + 1
     push de
-    ld de, $c0bf
+    ld de, _ACTORS + 6
     push de
     ld e, $06
-    ld hl, $4d2e ; jumps to bank 6: 0x4d2e
+    ld hl, _trigger_activate_at_intersection ; jumps to bank 6: 0x4d2e
     call RST_08
     add sp, $05
     ld a, e
@@ -1020,7 +1021,7 @@ jr_005_7e7b:
     ld de, $c0b9
     push de
     ld e, $01
-    ld hl, $4665
+    ld hl, _actor_set_dir
     call RST_08
     add sp, $04
     jr jr_005_7ea9
@@ -1029,7 +1030,7 @@ jr_005_7e9c:
     ld de, $c0b9
     push de
     ld e, $01
-    ld hl, $4606
+    ld hl, _actor_set_anim_idle
     call RST_08
     pop hl
 
@@ -1047,7 +1048,7 @@ jr_005_7ea9:
     push af
     inc sp
     ld e, $01
-    ld hl, $4887
+    ld hl, _actor_overlapping_player
     call RST_08
     inc sp
     ld a, d
@@ -1060,7 +1061,7 @@ jr_005_7ea9:
     or a
     jr z, jr_005_7ed4
 
-    ld hl, $c509
+    ld hl, _PLAYER_COLLISION_ACTOR
     ld a, e
     ld [hl+], a
     ld [hl], d
@@ -1084,7 +1085,7 @@ jr_005_7ed4:
     or e
     jr z, jr_005_7f08
 
-    ld hl, $c509
+    ld hl, _PLAYER_COLLISION_ACTOR
     ld a, e
     ld [hl+], a
     ld [hl], d
@@ -1157,7 +1158,7 @@ jr_005_7f08:
     inc sp
     push de
     ld e, $01
-    ld hl, $4665
+    ld hl, _actor_set_dir
     call RST_08
     add sp, $04
     pop de
@@ -1184,7 +1185,7 @@ jr_005_7f08:
     push af
     inc sp
     ld e, $02
-    ld hl, $61bc
+    ld hl, _script_execute
     call RST_08
     add sp, $08
 
@@ -1232,7 +1233,7 @@ jr_005_7f8c:
     inc sp
     push af
     inc sp
-    call Call_000_3541
+    call _muluschar
     pop hl
     pop bc
     ld l, e
@@ -1262,7 +1263,7 @@ jr_005_7f8c:
     inc sp
     push af
     inc sp
-    call Call_000_3541
+    call _muluschar
     pop hl
     pop bc
     ld l, e

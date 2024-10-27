@@ -318,7 +318,7 @@ jr_001_4172:
     push af
     inc sp
     ld e, $02
-    ld hl, $6301
+    ld hl, _script_terminate
     call RST_08
     inc sp
 
@@ -354,7 +354,7 @@ jr_001_41ab:
     push af
     inc sp
     ld e, $02
-    ld hl, $6367
+    ld hl, _script_detach_hthread
     call RST_08
     inc sp
 
@@ -388,7 +388,7 @@ _activate_actor:
     push bc
     push bc
     ld e, $01
-    ld hl, $4606
+    ld hl, _actor_set_anim_idle
     call RST_08
     pop hl
     pop bc
@@ -613,7 +613,7 @@ jr_001_42cd:
     push af
     inc sp
     ld e, $02
-    ld hl, $61bc
+    ld hl, _script_execute
     call RST_08
     add sp, $06
     pop bc
@@ -787,7 +787,7 @@ jr_001_43e0:
     ld d, [hl]
     push de
     ld e, $01
-    ld hl, $41db
+    ld hl, _activate_actor
     call RST_08
     pop hl
     pop bc
@@ -1027,7 +1027,7 @@ jr_001_4531:
     ld d, [hl]
     push de
     ld e, $01
-    ld hl, $41db
+    ld hl, _activate_actor
     call RST_08
     pop hl
     pop bc
@@ -1669,7 +1669,7 @@ _actor_in_front_of_player:
     ld de, $c0bf
     push de
     ld e, $01
-    ld hl, $4b20
+    ld hl, _actor_overlapping_bb
     call RST_08
     add sp, $13
     ret
@@ -2711,7 +2711,7 @@ _actor_handle_player_collision:
     push af
     inc sp
     ld e, $02
-    ld hl, $61bc
+    ld hl, _script_execute
     call RST_08
     add sp, $08
 
@@ -2743,7 +2743,7 @@ jr_001_4d84:
     push bc
     inc sp
     ld e, $02
-    ld hl, $61bc
+    ld hl, _script_execute
     call RST_08
     add sp, $08
 

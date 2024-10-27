@@ -1,3 +1,5 @@
+; Loaded in bank 9 0x434f
+
 _vm_save_clear:
     ld hl, sp+$08
     ld a, [hl]

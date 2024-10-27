@@ -1,3 +1,4 @@
+; Loaded in bank 6 0x43f5
 
 _printer_send_receive:
     ld hl, sp+$02

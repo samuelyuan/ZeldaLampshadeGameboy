@@ -1,3 +1,5 @@
+; Loaded in bank 6 0x4000
+
 _core_reset:
     ld e, $0a
     ld hl, _SIO_init; jumps to bank 0a: 0x40b4
@@ -21,7 +23,7 @@ _core_reset:
     ld hl, _fade_init ; jumps to bank 7: 0x442d
     call RST_08
     ld e, $0a
-    ld hl, $400b ; jumps to bank 0a: 0x400b
+    ld hl, _camera_init ; jumps to bank 0a: 0x400b
     call RST_08
     ld e, $01
     ld hl, _actors_init ; jumps to bank 1: 0x4000
@@ -97,7 +99,7 @@ jr_006_408d:
     push af
     inc sp
     ld e, $02
-    ld hl, $61bc
+    ld hl, _script_execute
     call RST_08
     add sp, $06
     jr jr_006_4077
