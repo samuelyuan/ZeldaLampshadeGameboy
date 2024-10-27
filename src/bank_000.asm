@@ -592,13 +592,8 @@ jr_000_0283:
     ld [$2000], a
     ret
 
-ui_time_masks:
-    db $00, $00
-
-    ld bc, $0703
-    rrca
-    rra
-    ccf
+_ui_time_masks:
+    db $00, $00, $01, $03, $07, $0f, $1f, $3f
 
 _ui_print_shift_char:
     ld hl, sp+$06
