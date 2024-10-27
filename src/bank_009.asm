@@ -81,7 +81,7 @@ jr_009_4298:
 
     INCLUDE "src/engine/vm_scene.asm"
 
-_func_bank009_48fb:
+_itoa_fmt:
     push bc
     ld hl, sp+$08
     ld a, [hl+]
@@ -96,7 +96,7 @@ _func_bank009_48fb:
     add a
     jr c, jr_009_490f
 
-    call Call_009_4934
+    call _utoa_fmt
     jr jr_009_4925
 
 jr_009_490f:
@@ -107,7 +107,7 @@ jr_009_490f:
     cpl
     ld e, a
     inc de
-    ld hl, $ca54
+    ld hl, _itoa_fmt_len
     ld a, [hl]
     or a
     jr z, jr_009_491e
@@ -118,7 +118,7 @@ jr_009_491e:
     ld a, $2d
     ld [bc], a
     inc bc
-    call Call_009_4934
+    call _utoa_fmt
 
 jr_009_4925:
     ld h, b
@@ -138,9 +138,9 @@ jr_009_4925:
     ret
 
 
-Call_009_4934:
+_utoa_fmt:
     push bc
-    ld hl, $ca57
+    ld hl, _itoa_fmt_buf + 2
     xor a
     ld [hl-], a
     ld [hl-], a
@@ -167,7 +167,7 @@ jr_009_493e:
     jr nz, jr_009_493e
 
     pop bc
-    ld a, [$ca54]
+    ld a, [_itoa_fmt_len]
     sub $05
     jr c, jr_009_4969
 
@@ -183,10 +183,10 @@ jr_009_495f:
     jr nz, jr_009_495f
 
     ld a, $05
-    ld [$ca54], a
+    ld [_itoa_fmt_len], a
 
 jr_009_4969:
-    ld a, [$ca54]
+    ld a, [_itoa_fmt_len]
     or a
     jr z, jr_009_4971
 
@@ -195,7 +195,7 @@ jr_009_4969:
 jr_009_4971:
     ld d, a
     ld e, $30
-    ld hl, $ca57
+    ld hl, _itoa_fmt_buf + 2
     ld a, [hl-]
     and $0f
     add d
@@ -206,7 +206,7 @@ jr_009_4971:
     ld d, $01
     ld [bc], a
     inc bc
-    ld a, [$ca54]
+    ld a, [_itoa_fmt_len]
     or a
     jr z, jr_009_498e
 
@@ -227,7 +227,7 @@ jr_009_498e:
     ld d, $01
     ld [bc], a
     inc bc
-    ld a, [$ca54]
+    ld a, [_itoa_fmt_len]
     or a
     jr z, jr_009_49a7
 
@@ -247,7 +247,7 @@ jr_009_49a7:
     ld d, $01
     ld [bc], a
     inc bc
-    ld a, [$ca54]
+    ld a, [_itoa_fmt_len]
     or a
     jr z, jr_009_49be
 
@@ -267,7 +267,7 @@ jr_009_49be:
     add e
     ld [bc], a
     inc bc
-    ld a, [$ca54]
+    ld a, [_itoa_fmt_len]
     or a
     jr z, jr_009_49d5
 
