@@ -920,7 +920,7 @@ jr_006_5340:
     push bc
     ld d, a
     push de
-    call Call_000_133f
+    call _MemcpyVRAMBanked
     add sp, $07
     jr jr_006_5368
 

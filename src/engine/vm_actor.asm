@@ -3207,7 +3207,7 @@ jr_002_4ebb:
     ld e, a
     ld d, [hl]
     push de
-    call Call_000_1524
+    call _load_animations
     add sp, $07
     pop bc
     ld hl, $0006
@@ -3642,7 +3642,7 @@ jr_002_50fd:
     push af
     inc sp
     push de
-    call Call_000_1524
+    call _load_animations
     add sp, $07
     pop bc
     ld hl, $0012
@@ -3822,7 +3822,7 @@ jr_002_51c7:
     push af
     inc sp
     push bc
-    call Call_000_1524
+    call _load_animations
     add sp, $07
     pop bc
     ld hl, sp+$02

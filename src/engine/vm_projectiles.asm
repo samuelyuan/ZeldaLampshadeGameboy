@@ -153,7 +153,7 @@ _vm_projectile_load_type:
     push af
     inc sp
     push de
-    call Call_000_135b
+    call _IndexOfFarPtr
     add sp, $06
     ld c, e
     ld hl, sp+$03

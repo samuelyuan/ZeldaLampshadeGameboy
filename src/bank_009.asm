@@ -4,68 +4,7 @@ SECTION "ROM Bank $009", ROMX[$4000], BANK[$9]
 
     INCLUDE "src/engine/music_manager.asm"
 
-_scroll_rect:
-    ld hl, sp+$09
-    ld a, [hl-]
-    or a
-    ret z
-
-    ld d, a
-    ld a, [hl-]
-    ld e, a
-    ld a, [hl-]
-    ld l, [hl]
-    ld h, a
-    push bc
-    dec d
-    jr z, jr_009_4293
-
-jr_009_4277:
-    ld b, h
-    ld c, l
-    ld a, $20
-    add l
-    ld l, a
-    adc h
-    sub l
-    ld h, a
-    push hl
-    push de
-
-jr_009_4282:
-    ldh a, [rSTAT]
-    and $02
-    jr nz, jr_009_4282
-
-    ld a, [hl+]
-    ld [bc], a
-    inc bc
-    dec e
-    jr nz, jr_009_4282
-
-    pop de
-    pop hl
-    dec d
-    jr nz, jr_009_4277
-
-jr_009_4293:
-    push hl
-    ld hl, sp+$0e
-    ld d, [hl]
-    pop hl
-
-jr_009_4298:
-    ldh a, [rSTAT]
-    and $02
-    jr nz, jr_009_4298
-
-    ld a, d
-    ld [hl+], a
-    dec e
-    jr nz, jr_009_4298
-
-    pop bc
-    ret
+    INCLUDE "src/engine/scroll_a.asm"
 
     INCLUDE "src/engine/vm_gbprinter.asm"
 
@@ -81,210 +20,7 @@ jr_009_4298:
 
     INCLUDE "src/engine/vm_scene.asm"
 
-_itoa_fmt:
-    push bc
-    ld hl, sp+$08
-    ld a, [hl+]
-    ld e, a
-    ld a, [hl+]
-    ld d, a
-    ld a, [hl+]
-    ld c, a
-    ld b, [hl]
-    push bc
-    ld a, d
-    add a
-    jr c, jr_009_490f
-
-    call _utoa_fmt
-    jr jr_009_4925
-
-jr_009_490f:
-    rra
-    cpl
-    ld d, a
-    ld a, e
-    cpl
-    ld e, a
-    inc de
-    ld hl, _itoa_fmt_len
-    ld a, [hl]
-    or a
-    jr z, jr_009_491e
-
-    dec [hl]
-
-jr_009_491e:
-    ld a, $2d
-    ld [bc], a
-    inc bc
-    call _utoa_fmt
-
-jr_009_4925:
-    ld h, b
-    ld l, c
-    pop de
-    ld a, d
-    cpl
-    ld d, a
-    ld a, e
-    cpl
-    ld e, a
-    inc de
-    add hl, de
-    ld d, h
-    ld e, l
-    pop bc
-    ret
-
-
-_utoa_fmt:
-    push bc
-    ld hl, _itoa_fmt_buf + 2
-    xor a
-    ld [hl-], a
-    ld [hl-], a
-    ld [hl], a
-    ld b, $10
-
-jr_009_493e:
-    sla e
-    rl d
-    ld a, [hl]
-    adc a
-    daa
-    ld [hl+], a
-    ld a, [hl]
-    adc a
-    daa
-    ld [hl+], a
-    ld a, [hl]
-    adc a
-    daa
-    ld [hl-], a
-    dec hl
-    dec b
-    jr nz, jr_009_493e
-
-    pop bc
-    ld a, [_itoa_fmt_len]
-    sub $05
-    jr c, jr_009_4969
-
-    jr z, jr_009_4969
-
-    ld d, a
-    ld a, $30
-
-jr_009_495f:
-    ld [bc], a
-    inc bc
-    dec d
-    jr nz, jr_009_495f
-
-    ld a, $05
-    ld [_itoa_fmt_len], a
-
-jr_009_4969:
-    ld a, [_itoa_fmt_len]
-    or a
-    jr z, jr_009_4971
-
-    ld a, $01
-
-jr_009_4971:
-    ld d, a
-    ld e, $30
-    ld hl, _itoa_fmt_buf + 2
-    ld a, [hl-]
-    and $0f
-    add d
-    jr z, jr_009_498e
-
-    sub d
-    add e
-    ld d, $01
-    ld [bc], a
-    inc bc
-    ld a, [_itoa_fmt_len]
-    or a
-    jr z, jr_009_498e
-
-    cp $05
-    jr nc, jr_009_498e
-
-    dec bc
-
-jr_009_498e:
-    ld a, [hl]
-    swap a
-    and $0f
-    add d
-    jr z, jr_009_49a7
-
-    sub d
-    add e
-    ld d, $01
-    ld [bc], a
-    inc bc
-    ld a, [_itoa_fmt_len]
-    or a
-    jr z, jr_009_49a7
-
-    cp $04
-    jr nc, jr_009_49a7
-
-    dec bc
-
-jr_009_49a7:
-    ld a, [hl-]
-    and $0f
-    add d
-    jr z, jr_009_49be
-
-    sub d
-    add e
-    ld d, $01
-    ld [bc], a
-    inc bc
-    ld a, [_itoa_fmt_len]
-    or a
-    jr z, jr_009_49be
-
-    cp $03
-    jr nc, jr_009_49be
-
-    dec bc
-
-jr_009_49be:
-    ld a, [hl]
-    swap a
-    and $0f
-    add d
-    jr z, jr_009_49d5
-
-    sub d
-    add e
-    ld [bc], a
-    inc bc
-    ld a, [_itoa_fmt_len]
-    or a
-    jr z, jr_009_49d5
-
-    cp $02
-    jr nc, jr_009_49d5
-
-    dec bc
-
-jr_009_49d5:
-    ld a, [hl]
-    and $0f
-    add e
-    ld [bc], a
-    inc bc
-    xor a
-    ld [bc], a
-    ret
+    INCLUDE "src/engine/vm_ui_a.asm"
 
 PulledPlugMessage:: ; 0x49de
     db $25
@@ -393,7 +129,7 @@ JenDialogue::    ; 0x4be0
 
 AlexLabbeDialogue::    ; bank 9: 0x4c52
     INCLUDE "src/scripts/outsideshop/alexlabbe.asm"
-    
+
 WellSigns:: ; 0x4c9f
     INCLUDE "src/scripts/well/directionsign.asm"
 
@@ -420,26 +156,26 @@ DanDialogueJTHouseOutside::    ; bank 9 0x500b
     
 BridgeSigns:: ; 0x5081
     db $25, $40, $00
-    
+
     db "North:\n"
     db "Temple of Light", $00
-    
+
     db $47, $03, $01, $04, $14, $00, $00
     db $45, $ff, $0e, $00
     db $41, $ff, $00
     db $44, $07, $01
     db $40, $00
-    
+
     db "South:\n"
     db "Town", $00
-    
+
     db $47, $03, $01, $04, $14, $00, $00
     db $41, $ff, $00
     db $44, $07, $01
     db $45, $fe, $12, $00
     db $44, $03, $01
     db $00
-    
+
 JTBedSouthMessage:: ; 0x50cf
     db $25
     db $12, $05
@@ -469,15 +205,15 @@ JTBedSouthMessage:: ; 0x50cf
     db $32, $01, $ff, $fc
     db $27, $03, $02
     db $09, $29, $59, $00 ; 0x5929 JT House Inside
-    
+
 DimHouseBookcaseMessage:: ; 0x513c:
     db $25
     db $40, $00
-    
+
     db "Old 'Sonic the\n"
     db "Comic's are piled\n"
     db "against the wall", $00
-    
+
     db $47, $03, $01, $05, $14, $00, $00
     db $45, $ff, $0d, $00
     db $41, $ff, $00
@@ -489,34 +225,34 @@ DimHouseBookcaseMessage:: ; 0x513c:
 JTHouseBookcaseMessage:: ; 0x518a 
     db $25
     db $40, $00
-    
+
     db "A single book lies\n"
     db "in the bookcase.", $00
-    
+
     db $47, $03, $01, $04, $14, $00, $00
     db $45, $ff, $0e, $00
     db $41, $ff, $00
     db $44, $07, $01
     db $40, $00
-    
+
     db "'The official cheat\n"
     db "guide to life:", $00
-    
+
     db $47, $03, $01, $04, $14, $00, $00
     db $41, $ff, $00
     db $44, $07, $01
     db $40, $00
-    
+
     db "with pull out\n"
     db "secret section'", $00
-    
+
     db $47, $03, $01, $04, $14, $00, $00
     db $41, $ff, $00
     db $44, $07, $01
     db $45, $fe, $12, $00
     db $44, $03, $01
     db $00
-    
+
 JTHouseBedNorthMessage:: ; 0x5229
     db $25
     db $12, $05
@@ -1256,7 +992,7 @@ GameFinishedScreenEntry:: ; 0x601e
     db $08, $c7, $6f ; bank 8 0x6fc7 collision
     db $04, $b4, $7f ; bank 4 0x7fb4 palette 0
     db $09, $26, $53 ; bank 9 0x5326 palette 1
-    db $0a, $ad, $43
+    db $0a, $ad, $43 ; bank 0a 0x43ad scene init
     db $00, $00, $00
     db $00, $00, $00
     db $00, $00, $00
@@ -1729,38 +1465,22 @@ DanSpriteImage:: ; 0x6ce9
 
 DanSpriteFrames::
     ; dan frame 1: 0x6e2b
-    db $00, $09, $10, $00, $00, $f8, $12, $00, $80
-
-    db $00, $00, $00
+    db $00, $09, $10, $00, $00, $f8, $12, $00, $80, $00, $00, $00
 
     ; dan frame 2: 0x6e37
-    db $00, $08, $12, $20, $00, $f8, $10, $20, $80
+    db $00, $08, $12, $20, $00, $f8, $10, $20, $80, $00, $00, $00
 
-    db $00, $00, $00
+    db $00, $08, $00, $00, $00, $f8, $02, $00, $80, $00, $00, $00
 
-    db $00, $08, $00, $00, $00, $f8, $02, $00, $80
+    db $00, $08, $04, $00, $00, $f8, $06, $00, $80, $00, $00, $00
 
-    db $00, $00, $00
+    db $00, $08, $08, $00, $00, $f8, $0a, $00, $80, $00, $00, $00
 
-    db $00, $08, $04, $00, $00, $f8, $06, $00, $80
+    db $00, $08, $0c, $00, $00, $f8, $0e, $00, $80, $00, $00, $00
 
-    db $00, $00, $00
+    db $00, $00, $00, $20, $00, $08, $02, $20, $80, $00, $00, $00
 
-    db $00, $08, $08, $00, $00, $f8, $0a, $00, $80
-
-    db $00, $00, $00
-
-    db $00, $08, $0c, $00, $00, $f8, $0e, $00, $80
-
-    db $00, $00, $00
-
-    db $00, $00, $00, $20, $00, $08, $02, $20, $80
-
-    db $00, $00, $00
-
-    db $00, $00, $04, $20, $00, $08, $06, $20, $80
-
-    db $00, $00, $00
+    db $00, $00, $04, $20, $00, $08, $06, $20, $80, $00, $00, $00
 
     ; frames
     db $2b, $6e
@@ -1784,14 +1504,10 @@ DanSpriteFrames::
 DanteSpriteFrames::
     ; dante frame 1: 0x6ec0
     db $fa, $0c, $00, $00, $00, $f8, $02, $00, $00, $f8, $04, $00, $08, $10, $06, $00
-    db $00, $f8, $08, $00, $00, $f8, $0a, $00, $80
-
-    db $00, $00, $00
+    db $00, $f8, $08, $00, $00, $f8, $0a, $00, $80, $00, $00, $00
     ; dante frame 2: 0x6edc
     db $fa, $0d, $0c, $00, $00, $f8, $0e, $00, $00, $f8, $10, $00, $08, $10, $12, $00
-    db $00, $f8, $08, $40, $00, $f8, $14, $00, $80
-
-    db $00, $00, $00
+    db $00, $f8, $08, $40, $00, $f8, $14, $00, $80, $00, $00, $00
 
     ; frames
     db $c0, $6e
@@ -1812,14 +1528,10 @@ DimSpriteImage:: ; 0x6f21
 
 DimSpriteFrames::
     ; frame 1: 0x6fa3
-    db $00, $08, $00, $00, $00, $f8, $02, $00, $80
-
-    db $00, $00, $00
+    db $00, $08, $00, $00, $00, $f8, $02, $00, $80, $00, $00, $00
 
     ; frame 2: 0x6faf
-    db $00, $08, $04, $00, $00, $f8, $06, $00, $80
-
-    db $00, $00, $00
+    db $00, $08, $04, $00, $00, $f8, $06, $00, $80, $00, $00, $00
 
     ; frames
     db $a3, $6f ; 0x6fa3
@@ -2263,9 +1975,7 @@ SignSpriteImage:: ; 0x7a03
 
 JTSpriteFrames::
     ; JT frame 1: 0x7a85
-    db $00, $08, $00, $00, $00, $f8, $02, $00, $80
-
-    db $00, $00, $00
+    db $00, $08, $00, $00, $00, $f8, $02, $00, $80, $00, $00, $00
 
     ; JT frame 2: 0x7a91
     db $00, $08, $04, $00, $00, $f8, $06, $00, $80, $00, $00, $00
@@ -2316,8 +2026,7 @@ SnakeSpriteFrames::
     ; 0x7c34
     db $f0, $00, $06, $00
 
-    db $80
-    db $00, $00, $00
+    db $80, $00, $00, $00
 
     ; frame 2: 0x7c3c
     db $f0, $10, $08, $00
@@ -2331,9 +2040,9 @@ SnakeSpriteFrames::
     ; 0x7c48
     db $10, $f8, $04, $00
 
-    db $f0, $00, $0e, $00, $80
+    db $f0, $00, $0e, $00
 
-    db $00, $00, $00
+    db $80, $00, $00, $00
 
     ; frames
     db $28, $7c

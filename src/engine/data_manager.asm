@@ -1022,7 +1022,7 @@ jr_003_4532:
     inc sp
     ld b, a
     push bc
-    call Call_000_1524
+    call _load_animations
     add sp, $07
     ld hl, sp+$4f
     ld a, [hl+]
@@ -1148,7 +1148,7 @@ jr_003_45a5:
     ld [hl], $00
 
 jr_003_4605:
-    ld a, [$c538]
+    ld a, [_SPRITES_LEN]
     ld hl, sp+$54
     sub [hl]
     jr z, jr_003_4679
@@ -1582,16 +1582,16 @@ jr_003_4836:
     inc hl
     ld d, [hl]
     push de
-    ld hl, $c538
+    ld hl, _SPRITES_LEN
     ld h, [hl]
     ld l, b
     push hl
     ld b, a
     push bc
-    call Call_000_135b
+    call _IndexOfFarPtr
     add sp, $06
     ld a, e
-    ld hl, $c538
+    ld hl, _SPRITES_LEN
     sub [hl]
     jr nc, jr_003_4867
 
@@ -1643,7 +1643,7 @@ jr_003_486d:
     push af
     inc sp
     push de
-    call Call_000_1524
+    call _load_animations
     add sp, $07
     ld hl, sp+$53
     ld a, [hl+]
@@ -1915,7 +1915,7 @@ Jump_003_49c7:
     ld e, a
     ld d, [hl]
     push de
-    ld a, [$c538]
+    ld a, [_SPRITES_LEN]
     push af
     inc sp
     ld hl, sp+$4e
@@ -1926,7 +1926,7 @@ Jump_003_49c7:
     ld e, a
     ld d, [hl]
     push de
-    call Call_000_135b
+    call _IndexOfFarPtr
     add sp, $06
     ld hl, sp+$4d
     ld [hl], e
@@ -1946,7 +1946,7 @@ Jump_003_49c7:
     ld [hl+], a
     inc hl
     ld a, [hl]
-    ld hl, $c538
+    ld hl, _SPRITES_LEN
     sub [hl]
     jr nc, jr_003_4a4b
 

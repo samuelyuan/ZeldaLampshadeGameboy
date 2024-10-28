@@ -1764,7 +1764,7 @@ jr_001_5e9b:
     ld [hl], a
 
 Jump_001_5f58:
-    call Call_000_16dd
+    call _input_update
     call _ui_update
     ld c, $c0
     ldh a, [$92]
@@ -2193,7 +2193,7 @@ jr_001_616f:
     inc [hl]
     call _wait_vbl_done
     push bc
-    call Call_000_16dd
+    call _input_update
     pop bc
     ld a, b
     or a

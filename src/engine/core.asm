@@ -76,7 +76,7 @@ jr_006_4077:
     jr jr_006_4077
 
 jr_006_408d:
-    call Call_000_16dd
+    call _input_update
     ld a, [_FRAME_JOY]
     sub $f0
     jr nz, jr_006_40c0
