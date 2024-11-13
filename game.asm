@@ -1,6 +1,7 @@
 INCLUDE "src/constants.asm"
 INCLUDE "src/vm_constants.asm"
 INCLUDE "src/hardware.inc"
+INCLUDE "src/hUGE.inc"
 INCLUDE "src/bank_000.asm"
 INCLUDE "src/bank_001.asm"
 INCLUDE "src/bank_002.asm"
